@@ -124,43 +124,55 @@
 
   .section-head {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    align-items: baseline;
+    gap: 12px;
     margin-bottom: 8px;
     opacity: 0;
   }
 
   .section-head .section-label {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 20px;
     font-weight: 700;
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--green);
+    color: var(--white);
     white-space: nowrap;
+    line-height: 1;
   }
 
   .section-head .section-line {
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, var(--green), transparent);
-    opacity: 0.25;
+    background: linear-gradient(90deg, rgba(239,255,254,0.2), transparent);
+    opacity: 0.5;
+    align-self: center;
   }
 
   .section-head .section-badge {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 4px 14px;
+    padding: 3px 12px;
     border: 1px solid rgba(130,253,71,0.18);
     border-radius: 100px;
     color: var(--green);
-    opacity: 0.85;
+    opacity: 0.8;
     white-space: nowrap;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     background: rgba(130,253,71,0.05);
+    align-self: center;
+  }
+
+  /* Temperature accent on section labels */
+  .section-head-hot .section-label {
+    color: var(--orange);
+  }
+
+  .section-head-cold .section-label {
+    color: var(--steel);
   }
 
   /* ─── MENU ITEMS LIST ─── */
@@ -944,6 +956,10 @@
     gap: 10px;
   }
 
+  body.horizontal .section-head .section-label {
+    font-size: 26px;
+  }
+
   body.horizontal .item-name {
     font-size: 24px;
   }
@@ -993,13 +1009,13 @@
     }
 
     .section-head .section-label {
-      font-size: 8px;
-      letter-spacing: 3px;
+      font-size: 15px;
+      letter-spacing: 2px;
     }
 
     .section-head .section-badge {
       font-size: 7px;
-      padding: 2px 7px;
+      padding: 2px 8px;
     }
 
     .menu-items {
@@ -1171,6 +1187,10 @@
       font-size: 11px;
       padding: 3px 12px;
     }
+
+    .section-head .section-label {
+      font-size: 24px;
+    }
   }
 
   @media (min-width: 1025px) {
@@ -1179,6 +1199,10 @@
     }
 
     .menu-header .concept-name {
+      font-size: 28px;
+    }
+
+    .section-head .section-label {
       font-size: 28px;
     }
 
@@ -1241,6 +1265,10 @@
 
     .menu-header {
       padding: 2px 0 4px;
+    }
+
+    .section-head .section-label {
+      font-size: 13px;
     }
 
     .item-name {
@@ -1366,7 +1394,7 @@
     </div>
 
     <!-- ══ CAFÉ CALIENTE ══ -->
-    <div class="section-head" data-anim>
+    <div class="section-head section-head-hot" data-anim>
       <span class="section-label"><span class="lang-es">_Café Caliente</span><span class="lang-en">_Hot Coffee</span></span>
       <div class="section-line"></div>
       <span class="section-badge">Pour Over &middot; V60</span>
@@ -1429,7 +1457,7 @@
     </div>
 
     <!-- ══ CAFÉ FRÍO ══ -->
-    <div class="section-head" data-anim>
+    <div class="section-head section-head-cold" data-anim>
       <span class="section-label"><span class="lang-es">_Café Frío</span><span class="lang-en">_Iced Coffee</span></span>
       <div class="section-line"></div>
       <span class="section-badge">Cold Brew &middot; 24hr</span>

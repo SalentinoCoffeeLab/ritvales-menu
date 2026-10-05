@@ -9,16 +9,19 @@
 
   :root {
     --black: #020102;
-    --board: #0a0a0a;
-    --cell-top: #1a1a1a;
-    --cell-bot: #111111;
-    --cell-border: rgba(255,255,255,0.06);
+    --board: #0b0812;
+    --cell-top: #1c1726;
+    --cell-bot: #110e18;
+    --cell-border: rgba(160,100,255,0.08);
     --split: rgba(0,0,0,0.55);
+    --purple: #A855F7;
+    --purple-deep: #7C3AED;
+    --purple-dim: rgba(168,85,247,0.4);
     --green: #82FD47;
     --cobalt: #224FD1;
-    --orange: #E87722;
     --steel: #AEE1F6;
-    --white: #EFFFFE;
+    --magenta: #E879F9;
+    --white: #F0EEFF;
     --mono: 'Space Mono', monospace;
     --sans: 'Inter', -apple-system, sans-serif;
 
@@ -65,7 +68,7 @@
     box-shadow:
       inset 0 1px 0 rgba(255,255,255,0.03),
       0 0 80px rgba(0,0,0,0.6),
-      0 0 120px rgba(130,253,71,0.01);
+      0 0 120px rgba(168,85,247,0.02);
     display: flex;
     flex-direction: column;
     gap: var(--row-gap);
@@ -76,15 +79,16 @@
     display: flex;
     gap: var(--gap);
     justify-content: center;
-    --tc: var(--green);
-    --tc-bot: rgba(130,253,71,0.75);
+    --tc: var(--purple);
+    --tc-bot: rgba(168,85,247,0.75);
     perspective: 600px;
   }
 
-  .flap-row.color-hot { --tc: var(--orange); --tc-bot: rgba(232,119,34,0.75); }
+  .flap-row.color-hot { --tc: var(--magenta); --tc-bot: rgba(232,121,249,0.75); }
   .flap-row.color-cold { --tc: var(--steel); --tc-bot: rgba(174,225,246,0.75); }
-  .flap-row.color-dim { --tc: rgba(130,253,71,0.45); --tc-bot: rgba(130,253,71,0.35); }
-  .flap-row.color-white { --tc: var(--white); --tc-bot: rgba(239,255,254,0.75); }
+  .flap-row.color-dim { --tc: rgba(168,85,247,0.4); --tc-bot: rgba(168,85,247,0.3); }
+  .flap-row.color-white { --tc: var(--white); --tc-bot: rgba(240,238,255,0.75); }
+  .flap-row.color-green { --tc: var(--green); --tc-bot: rgba(130,253,71,0.75); }
 
   /* Size tiers */
   .flap-row.row-lg .fc { height: var(--h-lg); }
@@ -227,13 +231,13 @@
   /* ─── SEPARATORS ─── */
   .board-sep {
     height: 1px;
-    background: linear-gradient(90deg, transparent 2%, rgba(130,253,71,0.1) 20%, rgba(130,253,71,0.1) 80%, transparent 98%);
+    background: linear-gradient(90deg, transparent 2%, rgba(168,85,247,0.12) 20%, rgba(168,85,247,0.12) 80%, transparent 98%);
     margin: var(--row-gap) 0;
   }
 
   .board-sep.thick {
     height: 2px;
-    background: linear-gradient(90deg, transparent 2%, rgba(130,253,71,0.18) 20%, rgba(130,253,71,0.18) 80%, transparent 98%);
+    background: linear-gradient(90deg, transparent 2%, rgba(168,85,247,0.22) 20%, rgba(168,85,247,0.22) 80%, transparent 98%);
     margin: var(--sep-gap) 0;
   }
 
@@ -244,10 +248,10 @@
     z-index: 45;
     opacity: 0.2;
   }
-  .corner-tl { top: 5px; left: 5px; border-top: 1px solid var(--green); border-left: 1px solid var(--green); }
-  .corner-tr { top: 5px; right: 5px; border-top: 1px solid var(--green); border-right: 1px solid var(--green); }
-  .corner-bl { bottom: 5px; left: 5px; border-bottom: 1px solid var(--green); border-left: 1px solid var(--green); }
-  .corner-br { bottom: 5px; right: 5px; border-bottom: 1px solid var(--green); border-right: 1px solid var(--green); }
+  .corner-tl { top: 5px; left: 5px; border-top: 1px solid var(--purple); border-left: 1px solid var(--purple); }
+  .corner-tr { top: 5px; right: 5px; border-top: 1px solid var(--purple); border-right: 1px solid var(--purple); }
+  .corner-bl { bottom: 5px; left: 5px; border-bottom: 1px solid var(--purple); border-left: 1px solid var(--purple); }
+  .corner-br { bottom: 5px; right: 5px; border-bottom: 1px solid var(--purple); border-right: 1px solid var(--purple); }
 
   /* ─── HUD ─── */
   .hud-time {
@@ -257,7 +261,7 @@
     font-family: var(--mono);
     font-size: 8px;
     letter-spacing: 1px;
-    color: rgba(130,253,71,0.2);
+    color: rgba(168,85,247,0.25);
     text-align: right;
   }
 
@@ -268,7 +272,7 @@
     font-family: var(--mono);
     font-size: 7px;
     letter-spacing: 1px;
-    color: rgba(130,253,71,0.15);
+    color: rgba(168,85,247,0.2);
   }
 
   .hud-lang {
@@ -281,8 +285,8 @@
     font-size: 9px;
     font-weight: 700;
     letter-spacing: 3px;
-    color: var(--green);
-    opacity: 0.4;
+    color: var(--purple);
+    opacity: 0.5;
   }
 
   /* ─── OVERLAYS ─── */
@@ -312,7 +316,7 @@
     align-items: center;
     gap: 0;
     background: rgba(2,1,2,0.85);
-    border: 1px solid rgba(130,253,71,0.2);
+    border: 1px solid rgba(168,85,247,0.25);
     border-radius: 6px;
     overflow: hidden;
     backdrop-filter: blur(10px);
@@ -328,13 +332,13 @@
     font-family: var(--mono);
     font-size: 7px;
     letter-spacing: 1px;
-    color: rgba(130,253,71,0.25);
+    color: rgba(168,85,247,0.3);
   }
 
   .toggle-divider {
     width: 1px;
     height: 14px;
-    background: rgba(130,253,71,0.15);
+    background: rgba(168,85,247,0.15);
   }
 
   .toggle-btn {
@@ -351,8 +355,8 @@
   }
 
   .toggle-btn.active {
-    color: var(--green);
-    background: rgba(130,253,71,0.08);
+    color: var(--purple);
+    background: rgba(168,85,247,0.08);
   }
 
   .toggle-btn:hover { color: var(--white); }
@@ -583,8 +587,8 @@
       en: padR('WASHED · PANELA CITRUS CHOC'),
       size: 'sm', color: 'dim' },
     { type: 'desc',
-      es: 'Dulce y limpio. Notas de panela, cítrico y chocolate.',
-      en: 'Sweet and clean. Brown sugar, citrus, and chocolate notes.' },
+      es: 'Café filtrado en V60. Grano lavado del Huila con notas a panela, mandarina y chocolate oscuro. Se sirve caliente, negro.',
+      en: 'V60 pour over. Washed Huila bean with notes of brown sugar, tangerine, and dark chocolate. Served hot, black.' },
     'sep',
 
     // Caturra Pineapple
@@ -593,8 +597,8 @@
       en: padR('CO-FERMENTED · PINEAPPLE COCONUT'),
       size: 'sm', color: 'dim' },
     { type: 'desc',
-      es: 'Tropical y cremoso. Piña y coco en cada sorbo.',
-      en: 'Tropical and creamy. Pineapple and coconut in every sip.' },
+      es: 'Café filtrado en V60. Grano co-fermentado con piña del Tolima. Sabor tropical, cremoso, con fondo a coco. Se sirve caliente, negro.',
+      en: 'V60 pour over. Co-fermented Tolima bean with pineapple. Tropical flavor, creamy, with coconut undertones. Served hot, black.' },
     'sep-thick',
 
     // Section: Cold
@@ -609,8 +613,8 @@
       en: padR('PURE · STRAIGHT UP'),
       size: 'sm', color: 'dim' },
     { type: 'desc',
-      es: 'Solo café. 24 horas de extracción fría. Intenso.',
-      en: 'Just coffee. 24-hour cold extraction. Bold.' },
+      es: 'Cold brew puro, sin mezclar. Extracción en frío durante 24 horas. Sabor concentrado, intenso, sin acidez. Se sirve frío, solo.',
+      en: 'Pure cold brew, unmixed. 24-hour cold extraction. Concentrated, bold flavor, zero acidity. Served cold, straight.' },
     'sep',
 
     // Analog
@@ -619,8 +623,8 @@
       en: padR('COLD BREW + MILK'),
       size: 'sm', color: 'dim' },
     { type: 'desc',
-      es: 'Suave y profundo. Elegí tu leche y syrup.',
-      en: 'Smooth and deep. Pick your milk and syrup.' },
+      es: 'Cold brew 24h mezclado con leche a tu elección (entera, almendras o avena) y syrup opcional. Suave, cremoso, refrescante.',
+      en: 'Cold brew 24h blended with your choice of milk (whole, almond, or oat) and optional syrup. Smooth, creamy, refreshing.' },
     'sep',
 
     // Frequency
@@ -629,8 +633,8 @@
       en: padR('COLD BREW + TONIC WATER'),
       size: 'sm', color: 'dim' },
     { type: 'desc',
-      es: 'Burbujas y cafeína. Brillante y eléctrico.',
-      en: 'Bubbles and caffeine. Bright and electric.' },
+      es: 'Cold brew 24h con agua tónica premium y hielo. Efervescente, cítrico, con cuerpo cafeinado. El trago del festival.',
+      en: 'Cold brew 24h with premium tonic water and ice. Effervescent, citrusy, with caffeinated body. The festival drink.' },
     'sep-thick',
 
     // Footer

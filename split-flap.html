@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAFÉ NÓMADA — Salentino x Ritvales · Split-Flap Menu</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap');
+
+  :root {
+    --black: #020102;
+    --board: #0a0a0a;
+    --cell-top: #1a1a1a;
+    --cell-bot: #111111;
+    --cell-border: rgba(255,255,255,0.06);
+    --split: rgba(0,0,0,0.55);
+    --green: #82FD47;
+    --cobalt: #224FD1;
+    --orange: #E87722;
+    --steel: #AEE1F6;
+    --white: #EFFFFE;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Inter', -apple-system, sans-serif;
+
+    --cw: clamp(10px, 2.7vw, 32px);
+    --gap: clamp(1px, 0.25vw, 2px);
+    --row-gap: clamp(2px, 0.4vh, 5px);
+    --sep-gap: clamp(4px, 1vh, 14px);
+
+    --h-lg: clamp(24px, 5.2vh, 64px);
+    --h-md: clamp(20px, 4vh, 50px);
+    --h-sm: clamp(16px, 3.2vh, 40px);
+
+    --f-lg: clamp(12px, 2.8vh, 30px);
+    --f-md: clamp(10px, 2.2vh, 22px);
+    --f-sm: clamp(8px, 1.8vh, 18px);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--black);
+    font-family: var(--mono);
+    color: var(--white);
+  }
+
+  /* ─── BOARD ─── */
+  .board {
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(8px, 2vw, 32px);
+  }
+
+  .board-frame {
+    background: var(--board);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-top-color: rgba(255,255,255,0.08);
+    border-bottom-color: rgba(0,0,0,0.4);
+    border-radius: 6px;
+    padding: clamp(12px, 2.5vw, 30px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.03),
+      0 0 80px rgba(0,0,0,0.6),
+      0 0 120px rgba(130,253,71,0.01);
+    display: flex;
+    flex-direction: column;
+    gap: var(--row-gap);
+  }
+
+  /* ─── FLAP ROWS ─── */
+  .flap-row {
+    display: flex;
+    gap: var(--gap);
+    justify-content: center;
+    --tc: var(--green);
+    --tc-bot: rgba(130,253,71,0.75);
+    perspective: 600px;
+  }
+
+  .flap-row.color-hot { --tc: var(--orange); --tc-bot: rgba(232,119,34,0.75); }
+  .flap-row.color-cold { --tc: var(--steel); --tc-bot: rgba(174,225,246,0.75); }
+  .flap-row.color-dim { --tc: rgba(130,253,71,0.45); --tc-bot: rgba(130,253,71,0.35); }
+  .flap-row.color-white { --tc: var(--white); --tc-bot: rgba(239,255,254,0.75); }
+
+  /* Size tiers */
+  .flap-row.row-lg .fc { height: var(--h-lg); }
+  .flap-row.row-lg .fc span { font-size: var(--f-lg); font-weight: 700; }
+
+  .flap-row.row-md .fc { height: var(--h-md); }
+  .flap-row.row-md .fc span { font-size: var(--f-md); font-weight: 700; }
+
+  .flap-row.row-sm .fc { height: var(--h-sm); }
+  .flap-row.row-sm .fc span { font-size: var(--f-sm); font-weight: 400; }
+
+  /* ─── FLAP CELL ─── */
+  .fc {
+    width: var(--cw);
+    position: relative;
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .fc-top, .fc-bot {
+    position: absolute;
+    left: 0; right: 0;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    backface-visibility: hidden;
+  }
+
+  .fc-top {
+    top: 0;
+    background: var(--cell-top);
+    border: 1px solid var(--cell-border);
+    border-bottom: none;
+    border-radius: 2px 2px 0 0;
+    align-items: flex-end;
+  }
+
+  .fc-top span {
+    font-family: var(--mono);
+    color: var(--tc);
+    line-height: 1;
+    transform: translateY(50%);
+    text-shadow: 0 0 8px currentColor;
+  }
+
+  .fc-bot {
+    bottom: 0;
+    background: var(--cell-bot);
+    border: 1px solid var(--cell-border);
+    border-top: none;
+    border-radius: 0 0 2px 2px;
+    align-items: flex-start;
+  }
+
+  .fc-bot span {
+    font-family: var(--mono);
+    color: var(--tc-bot);
+    line-height: 1;
+    transform: translateY(-50%);
+  }
+
+  /* Split line — subtle, not aggressive */
+  .fc::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    height: 1px;
+    background: var(--split);
+    z-index: 5;
+  }
+
+  /* ─── FLIP OVERLAYS ─── */
+  .fc-flip {
+    position: absolute;
+    left: 0; right: 0;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    backface-visibility: hidden;
+    z-index: 10;
+  }
+
+  .fc-flip-top {
+    top: 0;
+    background: var(--cell-top);
+    border: 1px solid var(--cell-border);
+    border-bottom: none;
+    transform-origin: bottom center;
+    border-radius: 2px 2px 0 0;
+  }
+
+  .fc-flip-top span {
+    font-family: var(--mono);
+    color: var(--tc);
+    line-height: 1;
+    transform: translateY(50%);
+    text-shadow: 0 0 8px currentColor;
+  }
+
+  .fc-flip-bot {
+    bottom: 0;
+    background: var(--cell-bot);
+    border: 1px solid var(--cell-border);
+    border-top: none;
+    transform-origin: top center;
+    border-radius: 0 0 2px 2px;
+  }
+
+  .fc-flip-bot span {
+    font-family: var(--mono);
+    color: var(--tc-bot);
+    line-height: 1;
+    transform: translateY(-50%);
+  }
+
+  /* ─── DRINK DESCRIPTION (LED text — not flap cells) ─── */
+  .drink-desc {
+    font-family: var(--sans);
+    font-size: clamp(9px, 1.8vh, 17px);
+    font-weight: 300;
+    color: rgba(239,255,254,0.55);
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+    padding: clamp(2px, 0.4vh, 6px) clamp(4px, 0.8vw, 12px);
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  .drink-desc .lang-en { display: none; }
+  .drink-desc .lang-es { display: inline; }
+  body.en .drink-desc .lang-en { display: inline; }
+  body.en .drink-desc .lang-es { display: none; }
+
+  /* ─── SEPARATORS ─── */
+  .board-sep {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 2%, rgba(130,253,71,0.1) 20%, rgba(130,253,71,0.1) 80%, transparent 98%);
+    margin: var(--row-gap) 0;
+  }
+
+  .board-sep.thick {
+    height: 2px;
+    background: linear-gradient(90deg, transparent 2%, rgba(130,253,71,0.18) 20%, rgba(130,253,71,0.18) 80%, transparent 98%);
+    margin: var(--sep-gap) 0;
+  }
+
+  /* ─── CORNER BRACKETS ─── */
+  .corner {
+    position: fixed;
+    width: 14px; height: 14px;
+    z-index: 45;
+    opacity: 0.2;
+  }
+  .corner-tl { top: 5px; left: 5px; border-top: 1px solid var(--green); border-left: 1px solid var(--green); }
+  .corner-tr { top: 5px; right: 5px; border-top: 1px solid var(--green); border-right: 1px solid var(--green); }
+  .corner-bl { bottom: 5px; left: 5px; border-bottom: 1px solid var(--green); border-left: 1px solid var(--green); }
+  .corner-br { bottom: 5px; right: 5px; border-bottom: 1px solid var(--green); border-right: 1px solid var(--green); }
+
+  /* ─── HUD ─── */
+  .hud-time {
+    position: fixed;
+    top: 6px; right: 10px;
+    z-index: 50;
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: rgba(130,253,71,0.2);
+    text-align: right;
+  }
+
+  .hud-coords {
+    position: fixed;
+    top: 6px; left: 10px;
+    z-index: 50;
+    font-family: var(--mono);
+    font-size: 7px;
+    letter-spacing: 1px;
+    color: rgba(130,253,71,0.15);
+  }
+
+  .hud-lang {
+    position: fixed;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--green);
+    opacity: 0.4;
+  }
+
+  /* ─── OVERLAYS ─── */
+  .scanlines {
+    position: fixed; inset: 0; z-index: 100;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px
+    );
+  }
+
+  .vignette {
+    position: fixed; inset: 0; z-index: 99;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.55) 100%);
+  }
+
+  /* ─── ORIENTATION TOGGLE ─── */
+  .orientation-toggle {
+    position: fixed;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(2,1,2,0.85);
+    border: 1px solid rgba(130,253,71,0.2);
+    border-radius: 6px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .toggle-label {
+    padding: 0 6px;
+    font-family: var(--mono);
+    font-size: 7px;
+    letter-spacing: 1px;
+    color: rgba(130,253,71,0.25);
+  }
+
+  .toggle-divider {
+    width: 1px;
+    height: 14px;
+    background: rgba(130,253,71,0.15);
+  }
+
+  .toggle-btn {
+    padding: 5px 12px;
+    background: transparent;
+    border: none;
+    color: rgba(239,255,254,0.35);
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+
+  .toggle-btn.active {
+    color: var(--green);
+    background: rgba(130,253,71,0.08);
+  }
+
+  .toggle-btn:hover { color: var(--white); }
+
+  /* ═══════════════════════════════════════ */
+  /* ─── HORIZONTAL MODE ─── */
+  /* ═══════════════════════════════════════ */
+  body.horizontal {
+    --cw: clamp(14px, 3.2vw, 36px);
+    --gap: clamp(1px, 0.3vw, 3px);
+    --row-gap: clamp(3px, 0.6vh, 8px);
+    --sep-gap: clamp(6px, 1.2vh, 16px);
+
+    --h-lg: clamp(28px, 7vh, 72px);
+    --h-md: clamp(22px, 5.5vh, 56px);
+    --h-sm: clamp(18px, 4.2vh, 44px);
+
+    --f-lg: clamp(14px, 3.8vh, 34px);
+    --f-md: clamp(11px, 3vh, 26px);
+    --f-sm: clamp(9px, 2.4vh, 20px);
+  }
+
+  body.horizontal .board {
+    padding: clamp(6px, 1.5vw, 24px);
+  }
+
+  body.horizontal .board-frame {
+    padding: clamp(10px, 2vw, 32px) clamp(16px, 3vw, 48px);
+  }
+
+  body.horizontal .drink-desc {
+    font-size: clamp(10px, 2.4vh, 20px);
+  }
+
+  /* ═══════════════════════════════════════ */
+  /* ─── MOBILE RESPONSIVE ─── */
+  /* ═══════════════════════════════════════ */
+  @media (max-width: 420px) {
+    :root {
+      --cw: 9.5px;
+      --gap: 1px;
+      --row-gap: 2px;
+      --sep-gap: 4px;
+
+      --h-lg: 22px;
+      --h-md: 18px;
+      --h-sm: 14px;
+
+      --f-lg: 11px;
+      --f-md: 9px;
+      --f-sm: 7px;
+    }
+
+    .board { padding: 4px; }
+    .board-frame { padding: 6px; }
+
+    .drink-desc {
+      font-size: 9px;
+      padding: 1px 4px;
+    }
+
+    .hud-time { font-size: 6px; top: 4px; right: 6px; }
+    .hud-coords { font-size: 5px; top: 4px; left: 6px; }
+    .hud-lang { font-size: 7px; bottom: 4px; }
+    .corner { width: 10px; height: 10px; }
+
+    .orientation-toggle { top: 4px; }
+    .toggle-btn { padding: 4px 8px; font-size: 7px; }
+    .toggle-label { font-size: 6px; }
+  }
+
+  @media (max-width: 420px) and (max-height: 700px) {
+    :root {
+      --h-lg: 18px;
+      --h-md: 15px;
+      --h-sm: 12px;
+      --f-lg: 9px;
+      --f-md: 7px;
+      --f-sm: 6px;
+    }
+
+    .drink-desc { font-size: 8px; }
+    .board-frame { gap: 1px; }
+  }
+
+  @media (min-width: 421px) and (max-width: 767px) {
+    :root {
+      --cw: clamp(10px, 2.4vw, 16px);
+    }
+
+    .board { padding: 6px; }
+    .board-frame { padding: 10px; }
+
+    .drink-desc { font-size: 10px; }
+  }
+
+  /* Tablet portrait */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    :root {
+      --cw: clamp(14px, 2.5vw, 24px);
+      --h-lg: clamp(28px, 5vh, 52px);
+      --h-md: clamp(22px, 4vh, 42px);
+      --h-sm: clamp(18px, 3.2vh, 34px);
+      --f-lg: clamp(14px, 2.6vh, 24px);
+      --f-md: clamp(11px, 2vh, 18px);
+      --f-sm: clamp(9px, 1.6vh, 14px);
+    }
+
+    .drink-desc { font-size: clamp(11px, 1.8vh, 16px); }
+  }
+
+  /* Large screens / LED panel */
+  @media (min-width: 1025px) {
+    :root {
+      --cw: clamp(18px, 2.7vw, 34px);
+      --h-lg: clamp(36px, 5.5vh, 68px);
+      --h-md: clamp(28px, 4.2vh, 54px);
+      --h-sm: clamp(22px, 3.4vh, 42px);
+      --f-lg: clamp(18px, 3vh, 32px);
+      --f-md: clamp(14px, 2.2vh, 24px);
+      --f-sm: clamp(11px, 1.8vh, 20px);
+    }
+
+    .drink-desc { font-size: clamp(13px, 2vh, 20px); }
+  }
+
+  /* Touch targets */
+  @media (hover: none) and (pointer: coarse) {
+    .toggle-btn {
+      min-height: 36px;
+      min-width: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  /* Short landscape phones */
+  @media (max-height: 500px) {
+    :root {
+      --h-lg: 18px;
+      --h-md: 15px;
+      --h-sm: 12px;
+      --f-lg: 10px;
+      --f-md: 8px;
+      --f-sm: 6px;
+      --row-gap: 1px;
+      --sep-gap: 3px;
+    }
+
+    .drink-desc { font-size: 8px; padding: 1px 3px; }
+    .board { padding: 3px; }
+    .board-frame { padding: 5px 8px; }
+  }
+
+  /* ─── REDUCED MOTION ─── */
+  @media (prefers-reduced-motion: reduce) {
+    .scanlines { display: none; }
+    .drink-desc { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
+<div class="corner corner-bl"></div>
+<div class="corner corner-br"></div>
+<!-- ORIENTATION TOGGLE -->
+<div class="orientation-toggle" id="orientationToggle">
+  <span class="toggle-label">VIEW</span>
+  <div class="toggle-divider"></div>
+  <button class="toggle-btn active" data-mode="vertical" onclick="setOrientation('vertical')">9:16</button>
+  <div class="toggle-divider"></div>
+  <button class="toggle-btn" data-mode="horizontal" onclick="setOrientation('horizontal')">16:9</button>
+</div>
+
+<div class="hud-time" id="hudTime"></div>
+<div class="hud-coords">6.2442° N<br>75.5812° W<br><span style="opacity:0.5">MDE</span></div>
+<div class="hud-lang" id="hudLang">ES</div>
+
+<div class="board">
+  <div class="board-frame" id="boardFrame"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function() {
+
+  var COLS = 30;
+  var CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_·+-/';
+  var frame = document.getElementById('boardFrame');
+  var rowRefs = [];   // { el, cells, data } or null (sep) or { el, type:'desc' }
+  var currentLang = 'es';
+
+  // ── Utilities ──
+  function center(s) {
+    var pad = Math.max(0, COLS - s.length);
+    return ' '.repeat(Math.floor(pad / 2)) + s + ' '.repeat(Math.ceil(pad / 2));
+  }
+
+  function spread(l, r) {
+    return l + ' '.repeat(Math.max(1, COLS - l.length - r.length)) + r;
+  }
+
+  function padR(s) { return s.padEnd(COLS); }
+
+  // ── Board Data ──
+  // Each entry is a flap row, a separator string, or a description object
+  var BOARD = [
+    // Header
+    { text: center('SALENTINO COFFEE LAB'), size: 'sm', color: 'dim' },
+    { text: center('CAFE NOMADA_'), size: 'lg', color: 'white' },
+    { text: center('MENU · RITVALES 2026'), size: 'sm', color: 'dim' },
+    'sep-thick',
+
+    // Section: Hot
+    { es: spread('CAFE CALIENTE', 'POUR OVER V60'),
+      en: spread('HOT COFFEE', 'POUR OVER V60'),
+      size: 'md', color: 'hot' },
+    'sep',
+
+    // Caturra Fleur
+    { text: spread('CATURRA FLEUR_', 'HUILA'), size: 'lg' },
+    { es: padR('LAVADO · PANELA CITRUS CHOC'),
+      en: padR('WASHED · PANELA CITRUS CHOC'),
+      size: 'sm', color: 'dim' },
+    { type: 'desc',
+      es: 'Dulce y limpio. Notas de panela, cítrico y chocolate.',
+      en: 'Sweet and clean. Brown sugar, citrus, and chocolate notes.' },
+    'sep',
+
+    // Caturra Pineapple
+    { text: spread('CATURRA PINEAPPLE_', 'TOLIMA'), size: 'lg' },
+    { es: padR('CO-FERMENTADO · PINA COCO'),
+      en: padR('CO-FERMENTED · PINEAPPLE COCONUT'),
+      size: 'sm', color: 'dim' },
+    { type: 'desc',
+      es: 'Tropical y cremoso. Piña y coco en cada sorbo.',
+      en: 'Tropical and creamy. Pineapple and coconut in every sip.' },
+    'sep-thick',
+
+    // Section: Cold
+    { es: spread('CAFE FRIO', 'COLD BREW 24HR'),
+      en: spread('ICED COFFEE', 'COLD BREW 24HR'),
+      size: 'md', color: 'cold' },
+    'sep',
+
+    // Signal
+    { text: padR('SIGNAL_'), size: 'lg' },
+    { es: padR('PURO · SIN MEZCLA'),
+      en: padR('PURE · STRAIGHT UP'),
+      size: 'sm', color: 'dim' },
+    { type: 'desc',
+      es: 'Solo café. 24 horas de extracción fría. Intenso.',
+      en: 'Just coffee. 24-hour cold extraction. Bold.' },
+    'sep',
+
+    // Analog
+    { text: padR('ANALOG_'), size: 'lg' },
+    { es: padR('COLD BREW + LECHE'),
+      en: padR('COLD BREW + MILK'),
+      size: 'sm', color: 'dim' },
+    { type: 'desc',
+      es: 'Suave y profundo. Elegí tu leche y syrup.',
+      en: 'Smooth and deep. Pick your milk and syrup.' },
+    'sep',
+
+    // Frequency
+    { text: padR('FREQUENCY_'), size: 'lg' },
+    { es: padR('COLD BREW + AGUA TONICA'),
+      en: padR('COLD BREW + TONIC WATER'),
+      size: 'sm', color: 'dim' },
+    { type: 'desc',
+      es: 'Burbujas y cafeína. Brillante y eléctrico.',
+      en: 'Bubbles and caffeine. Bright and electric.' },
+    'sep-thick',
+
+    // Footer
+    { text: center('_FUEL THE RITUAL'), size: 'sm', color: 'dim' },
+  ];
+
+  function getText(row, lang) {
+    if (row.text) return row.text;
+    return (lang === 'en' ? row.en : row.es);
+  }
+
+  // ── Build Board ──
+  function buildBoard() {
+    BOARD.forEach(function(row) {
+      // Separator
+      if (typeof row === 'string') {
+        var sep = document.createElement('div');
+        sep.className = 'board-sep' + (row === 'sep-thick' ? ' thick' : '');
+        frame.appendChild(sep);
+        rowRefs.push(null);
+        return;
+      }
+
+      // Description (LED text, not flap cells)
+      if (row.type === 'desc') {
+        var desc = document.createElement('div');
+        desc.className = 'drink-desc';
+        desc.innerHTML = '<span class="lang-es">' + row.es + '</span>' +
+                         '<span class="lang-en">' + row.en + '</span>';
+        frame.appendChild(desc);
+        rowRefs.push({ el: desc, type: 'desc' });
+        return;
+      }
+
+      // Flap row
+      var rowEl = document.createElement('div');
+      rowEl.className = 'flap-row row-' + (row.size || 'sm');
+      if (row.color) rowEl.classList.add('color-' + row.color);
+
+      var cells = [];
+      for (var i = 0; i < COLS; i++) {
+        var cell = document.createElement('div');
+        cell.className = 'fc';
+        cell.dataset.char = ' ';
+        cell.innerHTML = '<div class="fc-top"><span> </span></div><div class="fc-bot"><span> </span></div>';
+        rowEl.appendChild(cell);
+        cells.push(cell);
+      }
+
+      frame.appendChild(rowEl);
+      rowRefs.push({ el: rowEl, cells: cells, data: row });
+    });
+  }
+
+  // ── Flip Cell ──
+  function flipCell(cell, target, delay, rowRef) {
+    var current = cell.dataset.char;
+    if (current === target) return;
+
+    var steps = (target === ' ') ? 0 : 1 + Math.floor(Math.random() * 2);
+
+    setTimeout(function() {
+      var step = 0;
+      var sz = rowRef.data.size || 'sm';
+      var fVar = sz === 'lg' ? 'var(--f-lg)' : sz === 'md' ? 'var(--f-md)' : 'var(--f-sm)';
+      var fw = sz === 'sm' ? '400' : '700';
+
+      function doFlip() {
+        var isLast = step >= steps;
+        var next = isLast ? target : CHARS[Math.floor(Math.random() * CHARS.length)];
+
+        var topH = cell.querySelector('.fc-top');
+        var botH = cell.querySelector('.fc-bot');
+        var old = cell.dataset.char;
+
+        var ft = document.createElement('div');
+        ft.className = 'fc-flip fc-flip-top';
+        ft.innerHTML = '<span>' + old + '</span>';
+        ft.querySelector('span').style.cssText = 'font-size:' + fVar + ';font-weight:' + fw;
+        cell.appendChild(ft);
+
+        botH.querySelector('span').textContent = next;
+
+        gsap.fromTo(ft, { rotationX: 0 }, {
+          rotationX: -90, duration: 0.06, ease: 'power1.in',
+          onComplete: function() {
+            ft.remove();
+
+            var fb = document.createElement('div');
+            fb.className = 'fc-flip fc-flip-bot';
+            fb.innerHTML = '<span>' + next + '</span>';
+            fb.querySelector('span').style.cssText = 'font-size:' + fVar + ';font-weight:' + fw;
+            cell.appendChild(fb);
+
+            gsap.fromTo(fb, { rotationX: 90 }, {
+              rotationX: 0, duration: 0.05, ease: 'power1.out',
+              onComplete: function() {
+                fb.remove();
+                topH.querySelector('span').textContent = next;
+                cell.dataset.char = next;
+                step++;
+                if (!isLast) setTimeout(doFlip, 35 + Math.random() * 20);
+              }
+            });
+          }
+        });
+      }
+      doFlip();
+    }, delay);
+  }
+
+  // ── Flip Row ──
+  function flipRow(rowRef, text, baseDelay) {
+    var padded = text.substring(0, COLS);
+    while (padded.length < COLS) padded += ' ';
+    rowRef.cells.forEach(function(cell, i) {
+      flipCell(cell, padded[i], baseDelay + i * 22 + Math.random() * 12, rowRef);
+    });
+  }
+
+  // ── Entrance ──
+  function playEntrance() {
+    var delay = 400;
+    rowRefs.forEach(function(ref) {
+      if (!ref) { delay += 60; return; }
+
+      // Description — fade in after its flap rows
+      if (ref.type === 'desc') {
+        gsap.to(ref.el, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: delay / 1000 });
+        delay += 150;
+        return;
+      }
+
+      var text = getText(ref.data, 'es');
+      flipRow(ref, text, delay);
+      delay += ref.data.size === 'lg' ? 450 : ref.data.size === 'md' ? 350 : 250;
+    });
+  }
+
+  // ── Language Toggle ──
+  function toggleLanguage() {
+    var newLang = currentLang === 'es' ? 'en' : 'es';
+    currentLang = newLang;
+    document.getElementById('hudLang').textContent = newLang.toUpperCase();
+
+    // Toggle body class for description text
+    if (newLang === 'en') {
+      document.body.classList.add('en');
+    } else {
+      document.body.classList.remove('en');
+    }
+
+    // Flip translatable flap rows
+    rowRefs.forEach(function(ref) {
+      if (!ref) return;
+      if (ref.type === 'desc') return; // handled by CSS toggle
+      if (!ref.data.es) return; // static
+      var text = getText(ref.data, newLang);
+      flipRow(ref, text, 50 + Math.random() * 150);
+    });
+  }
+
+  // ── Clock ──
+  function updateClock() {
+    var now = new Date();
+    var t = [now.getHours(), now.getMinutes(), now.getSeconds()]
+      .map(function(n) { return String(n).padStart(2, '0'); }).join(':');
+    document.getElementById('hudTime').innerHTML = t +
+      '<br><span style="opacity:0.4">' +
+      now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) +
+      '</span>';
+    requestAnimationFrame(updateClock);
+  }
+
+  // ── Init ──
+  buildBoard();
+  updateClock();
+  setTimeout(playEntrance, 500);
+  setTimeout(function() { setInterval(toggleLanguage, 12000); }, 10000);
+
+})();
+
+// ─── ORIENTATION TOGGLE ───
+function setOrientation(mode) {
+  var btns = document.querySelectorAll('.toggle-btn');
+  btns.forEach(function(b) { b.classList.remove('active'); });
+  document.querySelector('.toggle-btn[data-mode="' + mode + '"]').classList.add('active');
+  if (mode === 'horizontal') {
+    document.body.classList.add('horizontal');
+  } else {
+    document.body.classList.remove('horizontal');
+  }
+}
+</script>
+</body>
+</html>

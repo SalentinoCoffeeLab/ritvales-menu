@@ -779,58 +779,61 @@
     100% { left: 0; }
   }
 
-  /* ─── COLD BREW CARD (HORIZONTAL) ─── */
+  /* ─── COLD BREW CARD (VERTICAL, NO PHOTO) ─── */
   .card-coldbrew {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    justify-content: center;
     position: relative;
+    padding: 20px 24px;
   }
 
   .card-coldbrew .card-photo {
-    width: 32%;
-    height: auto;
-    border-bottom: none;
-    border-right: 1px solid rgba(130,253,71,0.06);
+    display: none;
   }
 
   .card-coldbrew .card-info {
-    padding: 14px 18px;
+    padding: 0;
   }
 
   .card-coldbrew .drink-name {
-    font-size: 22px;
+    font-size: 28px;
+    margin-bottom: 4px;
   }
 
   .drink-type-sub {
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 14px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: rgba(239,255,254,0.35);
-    margin-bottom: 6px;
+    color: rgba(239,255,254,0.55);
+    margin-bottom: 8px;
   }
 
   .drink-desc {
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.5;
-    color: rgba(239,255,254,0.4);
+    color: rgba(239,255,254,0.6);
   }
 
   .drink-desc em {
     display: block;
     font-style: normal;
-    font-size: 12px;
-    color: rgba(239,255,254,0.2);
-    margin-top: 3px;
+    font-size: 14px;
+    color: rgba(239,255,254,0.35);
+    margin-top: 4px;
   }
 
   /* Accent borders */
-  .accent-green { border-left: 3px solid var(--green); }
+  .accent-green { border-left: 4px solid var(--green); }
   .accent-green .drink-name { color: var(--green); }
-  .accent-blue { border-left: 3px solid var(--cobalt); }
+  .accent-green .drink-type-sub { color: rgba(130,253,71,0.6); }
+  .accent-blue { border-left: 4px solid var(--cobalt); }
   .accent-blue .drink-name { color: var(--steel); }
-  .accent-orange { border-left: 3px solid var(--orange); }
+  .accent-blue .drink-type-sub { color: rgba(174,225,246,0.6); }
+  .accent-orange { border-left: 4px solid var(--orange); }
   .accent-orange .drink-name { color: var(--orange); }
+  .accent-orange .drink-type-sub { color: rgba(232,119,34,0.6); }
 
   /* ─── BRAND SLIDE ─── */
   .brand-area {
@@ -1069,18 +1072,15 @@
   }
 
   body.horizontal .card-coldbrew {
-    flex-direction: column;
+    padding: 24px 32px;
   }
 
-  body.horizontal .card-coldbrew .card-photo {
-    width: 100%;
-    height: 40%;
-    border-right: none;
-    border-bottom: 1px solid rgba(130,253,71,0.06);
+  body.horizontal .card-coldbrew .drink-name {
+    font-size: 32px;
   }
 
-  body.horizontal .card-coldbrew .card-info {
-    padding: 16px 18px;
+  body.horizontal .drink-desc {
+    font-size: 18px;
   }
 
   body.horizontal .brand-area {
@@ -1248,26 +1248,26 @@
       padding-bottom: 50px;
     }
 
-    .card-coldbrew .card-info {
-      padding: 10px 14px;
+    .card-coldbrew {
+      padding: 14px 16px;
     }
 
     .card-coldbrew .drink-name {
-      font-size: 18px;
+      font-size: 22px;
     }
 
     .drink-type-sub {
-      font-size: 10px;
+      font-size: 11px;
       margin-bottom: 4px;
     }
 
     .drink-desc {
-      font-size: 11px;
+      font-size: 13px;
       line-height: 1.4;
     }
 
     .drink-desc em {
-      font-size: 10px;
+      font-size: 11px;
     }
 
     /* Brand slide */
@@ -1806,8 +1806,8 @@
           <div class="drink-name">SIGNAL_</div>
           <div class="drink-type-sub">Pure Cold Brew &middot; 18hr Steep</div>
           <div class="drink-desc">
-            Uncut. 18 hours steeped in silence. The purest frequency of the bean — no filter, no noise.
-            <em>Sin cortes. 18 horas en silencio. La frecuencia mas pura del grano.</em>
+            Uncut. No filter, no noise. The purest frequency.
+            <em>Sin cortes. La frecuencia mas pura.</em>
           </div>
         </div>
       </div>
@@ -1821,8 +1821,8 @@
           <div class="drink-name">ANALOG_</div>
           <div class="drink-type-sub">Cold Brew + Milk</div>
           <div class="drink-desc">
-            Smooth like vinyl. Cold brew meets milk in a slow, deep embrace. Warm. Analog. Real.
-            <em>Suave como el vinilo. Cold brew y leche en un abrazo profundo.</em>
+            Smooth like vinyl. Slow, deep, warm.
+            <em>Suave como el vinilo. Profundo y calido.</em>
           </div>
         </div>
       </div>
@@ -1836,8 +1836,8 @@
           <div class="drink-name">FREQUENCY_</div>
           <div class="drink-type-sub">Cold Brew + Tonic Water</div>
           <div class="drink-desc">
-            Carbonation hits like a drop. Cold brew and tonic — bright, alive, electric. Feel the fizz.
-            <em>La efervescencia golpea como un drop. Brillante, vivo, electrico.</em>
+            Carbonation hits like a drop. Bright, alive, electric.
+            <em>La efervescencia como un drop. Brillante y electrico.</em>
           </div>
         </div>
       </div>

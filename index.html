@@ -1667,7 +1667,7 @@
     <span>Caturra Pineapple _ Co-Fermentado</span>
     <span>Huila, Colombia _ 1,750 masl</span>
     <span>V60 Pour Over</span>
-    <span>Cold Brew 18hr Steep</span>
+    <span>Cold Brew 24hr Steep</span>
     <span>Roasted by Thomas Gonzalez</span>
     <span>Signal_ Analog_ Frequency_</span>
     <span>La Energia Es Una Sola</span>
@@ -1678,7 +1678,7 @@
     <span>Caturra Pineapple _ Co-Fermentado</span>
     <span>Huila, Colombia _ 1,750 masl</span>
     <span>V60 Pour Over</span>
-    <span>Cold Brew 18hr Steep</span>
+    <span>Cold Brew 24hr Steep</span>
     <span>Roasted by Thomas Gonzalez</span>
     <span>Signal_ Analog_ Frequency_</span>
     <span>La Energia Es Una Sola</span>
@@ -1693,7 +1693,6 @@
   <div class="progress-dots">
     <div class="p-dot active" id="pd0"><div class="p-dot-fill" id="pf0"></div></div>
     <div class="p-dot" id="pd1"><div class="p-dot-fill" id="pf1"></div></div>
-    <div class="p-dot" id="pd2"><div class="p-dot-fill" id="pf2"></div></div>
   </div>
 </div>
 
@@ -1804,7 +1803,7 @@
         </div>
         <div class="card-info">
           <div class="drink-name">SIGNAL_</div>
-          <div class="drink-type-sub">Pure Cold Brew &middot; 18hr Steep</div>
+          <div class="drink-type-sub">Pure Cold Brew &middot; 24hr Steep</div>
           <div class="drink-desc">
             Uncut. No filter, no noise. The purest frequency.
             <em>Sin cortes. La frecuencia mas pura.</em>
@@ -1844,47 +1843,6 @@
     </div>
   </div>
 
-  <!-- SLIDE 3: BRAND -->
-  <div class="slide" id="slide2">
-    <div style="height: 32px"></div>
-
-    <div class="section-tag">_Curatorial Process</div>
-
-    <div class="salentino-angular salentino-angular-lg">SALENTINO</div>
-    <div class="title-sub" style="margin-top: -2px;">
-      Coffee Lab &middot; Envigado, Colombia
-    </div>
-
-    <div class="brand-area">
-      <div class="brand-quote">
-        La energia<br>es una sola_
-      </div>
-
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">01</div>
-          <div class="step-content">
-            <strong>Select_</strong>
-            <span>Caturra from Huila, Colombia. Scored and cupped before it earns a place.</span>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">02</div>
-          <div class="step-content">
-            <strong>Roast_</strong>
-            <span>Profiles designed by Thomas Gonzalez. Every variable intentional.</span>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">03</div>
-          <div class="step-content">
-            <strong>Brew_</strong>
-            <span>V60 to order. Cold brew steeped 18 hours. Precision is the ritual.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
 </div>
 
@@ -1900,8 +1858,8 @@
   // ─── CONFIG ───
   const SLIDE_MS = 12000;
   const slides = document.querySelectorAll('.slide');
-  const pDots = [document.getElementById('pd0'), document.getElementById('pd1'), document.getElementById('pd2')];
-  const pFills = [document.getElementById('pf0'), document.getElementById('pf1'), document.getElementById('pf2')];
+  const pDots = [document.getElementById('pd0'), document.getElementById('pd1')];
+  const pFills = [document.getElementById('pf0'), document.getElementById('pf1')];
   const glitchCanvas = document.getElementById('glitchCanvas');
   const glitchCtx = glitchCanvas.getContext('2d');
   let current = 0;

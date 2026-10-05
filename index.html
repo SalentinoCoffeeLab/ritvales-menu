@@ -11,13 +11,13 @@
     --black: #020102;
     --green: #82FD47;
     --cobalt: #224FD1;
-    --orange: #E87722;
     --red: #FF4B43;
-    --purple: #7D3BED;
+    --purple: #A855F7;
+    --magenta: #E879F9;
     --steel: #AEE1F6;
-    --white: #EFFFFE;
-    --green-dim: rgba(130, 253, 71, 0.15);
-    --green-glow: rgba(130, 253, 71, 0.4);
+    --white: #F0EEFF;
+    --purple-dim: rgba(168, 85, 247, 0.15);
+    --purple-glow: rgba(168, 85, 247, 0.4);
     --mono: 'Space Mono', monospace;
     --sans: 'Inter', -apple-system, sans-serif;
   }
@@ -74,7 +74,7 @@
     pointer-events: none;
     animation: flicker 0.15s infinite;
     opacity: 0;
-    background: rgba(130, 253, 71, 0.02);
+    background: rgba(168, 85, 247, 0.02);
   }
 
   @keyframes flicker {
@@ -155,20 +155,20 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     padding: 3px 12px;
-    border: 1px solid rgba(130,253,71,0.18);
+    border: 1px solid rgba(168,85,247,0.18);
     border-radius: 100px;
-    color: var(--green);
+    color: var(--purple);
     opacity: 0.8;
     white-space: nowrap;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    background: rgba(130,253,71,0.05);
+    background: rgba(168,85,247,0.05);
     align-self: center;
   }
 
   /* Temperature accent on section labels */
   .section-head-hot .section-label {
-    color: var(--orange);
+    color: var(--magenta);
   }
 
   .section-head-cold .section-label {
@@ -189,8 +189,8 @@
     text-align: center;
     padding: 8px 16px 10px;
     opacity: 0;
-    background: rgba(130,253,71,0.03);
-    border: 1px solid rgba(130,253,71,0.08);
+    background: rgba(168,85,247,0.03);
+    border: 1px solid rgba(168,85,247,0.08);
     border-radius: 14px;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -205,7 +205,7 @@
     position: absolute;
     top: 0; left: -100%; bottom: 0;
     width: 60%;
-    background: linear-gradient(90deg, transparent, rgba(130,253,71,0.04), rgba(255,255,255,0.02), transparent);
+    background: linear-gradient(90deg, transparent, rgba(168,85,247,0.04), rgba(255,255,255,0.02), transparent);
     animation: specularSweep 8s ease-in-out infinite;
     pointer-events: none;
   }
@@ -230,7 +230,7 @@
     font-size: 22px;
     font-weight: 700;
     letter-spacing: 2px;
-    color: var(--green);
+    color: var(--purple);
     line-height: 1.3;
   }
 
@@ -253,7 +253,7 @@
     display: flex;
     gap: 12px;
     padding: 10px 14px;
-    border: 1px solid rgba(130,253,71,0.06);
+    border: 1px solid rgba(168,85,247,0.06);
     border-radius: 12px;
     background: rgba(255,255,255,0.02);
     backdrop-filter: blur(20px);
@@ -283,10 +283,10 @@
 
   /* Glass tint per accent */
   .item-accent-washed { background: rgba(34,79,209,0.03); }
-  .item-accent-cofermented { background: rgba(125,59,237,0.03); }
-  .item-accent-green { background: rgba(130,253,71,0.02); }
+  .item-accent-cofermented { background: rgba(168,85,247,0.03); }
+  .item-accent-purple { background: rgba(168,85,247,0.02); }
   .item-accent-blue { background: rgba(34,79,209,0.03); }
-  .item-accent-orange { background: rgba(232,119,34,0.03); }
+  .item-accent-magenta { background: rgba(232,121,249,0.03); }
 
   /* Animated border glow */
   .menu-item::after {
@@ -297,11 +297,11 @@
     padding: 1px;
     background: conic-gradient(
       from var(--border-angle, 0deg),
-      rgba(130,253,71,0.25),
+      rgba(168,85,247,0.25),
       transparent 40%,
       rgba(34,79,209,0.15),
       transparent 80%,
-      rgba(130,253,71,0.25)
+      rgba(168,85,247,0.25)
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
@@ -340,7 +340,7 @@
     min-width: 90px;
     flex-shrink: 0;
     padding-left: 10px;
-    border-left: 1px solid rgba(130,253,71,0.06);
+    border-left: 1px solid rgba(168,85,247,0.06);
   }
 
   .flavor-bar {
@@ -369,7 +369,7 @@
   .flavor-bar .bar-fill {
     height: 100%;
     border-radius: 2px;
-    background: var(--green);
+    background: var(--purple);
     opacity: 0.6;
     width: 0; /* animate from 0 via GSAP */
   }
@@ -377,9 +377,9 @@
   /* Accent-colored fills */
   .item-accent-washed .bar-fill { background: var(--steel); }
   .item-accent-cofermented .bar-fill { background: var(--purple); }
-  .item-accent-green .bar-fill { background: var(--green); }
+  .item-accent-purple .bar-fill { background: var(--green); }
   .item-accent-blue .bar-fill { background: var(--cobalt); }
-  .item-accent-orange .bar-fill { background: var(--orange); }
+  .item-accent-magenta .bar-fill { background: var(--magenta); }
 
   /* Process badge */
   .process-badge {
@@ -404,8 +404,8 @@
 
   .process-cofermented {
     color: var(--purple);
-    border: 1px solid rgba(125,59,237,0.35);
-    background: rgba(125,59,237,0.08);
+    border: 1px solid rgba(168,85,247,0.35);
+    background: rgba(168,85,247,0.08);
   }
 
   .process-badge::after {
@@ -447,7 +447,7 @@
     font-size: 8px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: rgba(130,253,71,0.4);
+    color: rgba(168,85,247,0.4);
     display: flex;
     align-items: center;
     gap: 5px;
@@ -481,10 +481,10 @@
     font-size: 10px;
     letter-spacing: 1px;
     padding: 3px 10px;
-    border: 1px solid rgba(130,253,71,0.2);
+    border: 1px solid rgba(168,85,247,0.2);
     border-radius: 100px;
-    color: var(--green);
-    background: rgba(130,253,71,0.06);
+    color: var(--purple);
+    background: rgba(168,85,247,0.06);
     opacity: 0;
     transform: translateY(4px);
   }
@@ -510,36 +510,36 @@
   }
 
   /* ─── ACCENT COLOR VARIANTS ─── */
-  .item-accent-green .item-name { color: var(--green); }
-  .item-accent-green .item-type { color: rgba(130,253,71,0.5); }
-  .item-accent-green .option-pill {
-    border-color: rgba(130,253,71,0.2);
-    color: rgba(130,253,71,0.55);
-    background: rgba(130,253,71,0.04);
+  .item-accent-purple .item-name { color: var(--purple); }
+  .item-accent-purple .item-type { color: rgba(168,85,247,0.5); }
+  .item-accent-purple .option-pill {
+    border-color: rgba(168,85,247,0.2);
+    color: rgba(168,85,247,0.55);
+    background: rgba(168,85,247,0.04);
   }
 
   .item-accent-blue .item-name { color: var(--steel); }
   .item-accent-blue .item-type { color: rgba(174,225,246,0.5); }
 
-  .item-accent-orange .item-name { color: var(--orange); }
-  .item-accent-orange .item-type { color: rgba(232,119,34,0.5); }
-  .item-accent-orange .option-pill {
-    border-color: rgba(232,119,34,0.2);
-    color: rgba(232,119,34,0.55);
-    background: rgba(232,119,34,0.04);
+  .item-accent-magenta .item-name { color: var(--magenta); }
+  .item-accent-magenta .item-type { color: rgba(232,121,249,0.5); }
+  .item-accent-magenta .option-pill {
+    border-color: rgba(232,121,249,0.2);
+    color: rgba(232,121,249,0.55);
+    background: rgba(232,121,249,0.04);
   }
 
   .item-accent-washed .item-name { color: var(--steel); }
   .item-accent-washed .item-type { color: rgba(174,225,246,0.5); }
   .item-accent-cofermented .item-name { color: var(--purple); }
-  .item-accent-cofermented .item-type { color: rgba(125,59,237,0.5); }
+  .item-accent-cofermented .item-type { color: rgba(168,85,247,0.5); }
 
   /* Left accent stripe on all items */
   .item-accent-washed { border-left: 3px solid var(--cobalt); }
   .item-accent-cofermented { border-left: 3px solid var(--purple); }
-  .item-accent-green { border-left: 3px solid var(--green); }
+  .item-accent-purple { border-left: 3px solid var(--purple); }
   .item-accent-blue { border-left: 3px solid var(--cobalt); }
-  .item-accent-orange { border-left: 3px solid var(--orange); }
+  .item-accent-magenta { border-left: 3px solid var(--magenta); }
 
   /* ─── BILINGUAL SYSTEM ─── */
   .lang-en { display: none; }
@@ -572,10 +572,10 @@
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--green);
+    color: var(--purple);
     opacity: 0.6;
     padding: 2px 8px;
-    border: 1px solid rgba(130,253,71,0.15);
+    border: 1px solid rgba(168,85,247,0.15);
     border-radius: 3px;
     background: rgba(10,10,10,0.9);
     transition: opacity 0.3s ease;
@@ -590,7 +590,7 @@
     content: '';
     position: absolute;
     top: -10px; left: -10px; right: -10px; bottom: -10px;
-    background: radial-gradient(ellipse at 30% 40%, rgba(232,119,34,0.04) 0%, transparent 65%);
+    background: radial-gradient(ellipse at 30% 40%, rgba(232,121,249,0.04) 0%, transparent 65%);
     pointer-events: none;
     z-index: -1;
     border-radius: 16px;
@@ -624,7 +624,7 @@
   .menu-divider .div-line {
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(130,253,71,0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(168,85,247,0.15), transparent);
   }
 
   .eq-bars {
@@ -637,7 +637,7 @@
 
   .eq-bar {
     width: 2px;
-    background: var(--green);
+    background: var(--purple);
     opacity: 0.5;
     border-radius: 1px;
     height: 4px;
@@ -687,7 +687,7 @@
   .x-divider {
     font-family: var(--mono);
     font-size: 12px;
-    color: var(--green);
+    color: var(--purple);
     opacity: 0.5;
   }
 
@@ -710,19 +710,19 @@
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 2px;
-    color: var(--green);
+    color: var(--purple);
   }
 
   .live-dot {
     width: 5px; height: 5px;
     border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 10px var(--green-glow);
+    background: var(--purple);
+    box-shadow: 0 0 10px var(--purple-glow);
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--green-glow); }
-    50% { opacity: 0.4; box-shadow: 0 0 4px var(--green-glow); }
+    0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--purple-glow); }
+    50% { opacity: 0.4; box-shadow: 0 0 4px var(--purple-glow); }
   }
 
   /* ─── PERSISTENT BOTTOM BAR ─── */
@@ -740,7 +740,7 @@
     font-size: 10px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--green);
+    color: var(--purple);
     opacity: 0.6;
   }
 
@@ -755,7 +755,7 @@
     align-items: center;
     gap: 0;
     background: rgba(2,1,2,0.85);
-    border: 1px solid rgba(130,253,71,0.2);
+    border: 1px solid rgba(168,85,247,0.2);
     border-radius: 6px;
     overflow: hidden;
     backdrop-filter: blur(10px);
@@ -780,8 +780,8 @@
   }
 
   .orientation-toggle .toggle-btn.active {
-    color: var(--green);
-    background: rgba(130,253,71,0.08);
+    color: var(--purple);
+    background: rgba(168,85,247,0.08);
   }
 
   .orientation-toggle .toggle-btn:hover {
@@ -791,7 +791,7 @@
   .toggle-divider {
     width: 1px;
     height: 14px;
-    background: rgba(130,253,71,0.15);
+    background: rgba(168,85,247,0.15);
   }
 
   .toggle-label {
@@ -799,7 +799,7 @@
     font-family: var(--mono);
     font-size: 7px;
     letter-spacing: 1px;
-    color: rgba(130,253,71,0.25);
+    color: rgba(168,85,247,0.25);
   }
 
   /* ─── CORNER DECORATIONS ─── */
@@ -810,10 +810,10 @@
     opacity: 0.25;
   }
 
-  .corner-tl { top: 6px; left: 6px; border-top: 1px solid var(--green); border-left: 1px solid var(--green); }
-  .corner-tr { top: 6px; right: 6px; border-top: 1px solid var(--green); border-right: 1px solid var(--green); }
-  .corner-bl { bottom: 6px; left: 6px; border-bottom: 1px solid var(--green); border-left: 1px solid var(--green); }
-  .corner-br { bottom: 6px; right: 6px; border-bottom: 1px solid var(--green); border-right: 1px solid var(--green); }
+  .corner-tl { top: 6px; left: 6px; border-top: 1px solid var(--purple); border-left: 1px solid var(--purple); }
+  .corner-tr { top: 6px; right: 6px; border-top: 1px solid var(--purple); border-right: 1px solid var(--purple); }
+  .corner-bl { bottom: 6px; left: 6px; border-bottom: 1px solid var(--purple); border-left: 1px solid var(--purple); }
+  .corner-br { bottom: 6px; right: 6px; border-bottom: 1px solid var(--purple); border-right: 1px solid var(--purple); }
 
   /* ─── SPLIT-FLAP DISPLAY ─── */
   .split-flap-display {
@@ -832,7 +832,7 @@
     letter-spacing: 0;
     text-transform: uppercase;
     background: rgba(10,10,10,0.9);
-    border: 1px solid rgba(130,253,71,0.08);
+    border: 1px solid rgba(168,85,247,0.08);
     border-radius: 2px;
     overflow: hidden;
   }
@@ -858,7 +858,7 @@
   .flap-top {
     top: 0;
     background: rgba(15,15,15,0.95);
-    color: var(--green);
+    color: var(--purple);
     align-items: flex-end;
     padding-bottom: 0;
     border-bottom: 1px solid rgba(0,0,0,0.6);
@@ -871,7 +871,7 @@
   .flap-bottom {
     bottom: 0;
     background: rgba(8,8,8,0.95);
-    color: rgba(130,253,71,0.85);
+    color: rgba(168,85,247,0.85);
     align-items: flex-start;
     padding-top: 0;
   }
@@ -907,7 +907,7 @@
   .flap-flip-top {
     top: 0;
     background: rgba(15,15,15,0.95);
-    color: var(--green);
+    color: var(--purple);
     align-items: flex-end;
     transform-origin: bottom center;
     border-bottom: 1px solid rgba(0,0,0,0.6);
@@ -921,7 +921,7 @@
   .flap-flip-bottom {
     bottom: 0;
     background: rgba(8,8,8,0.95);
-    color: rgba(130,253,71,0.85);
+    color: rgba(168,85,247,0.85);
     align-items: flex-start;
     transform-origin: top center;
     border-radius: 0 0 2px 2px;
@@ -936,7 +936,7 @@
     content: '';
     position: absolute;
     inset: -4px -8px;
-    background: radial-gradient(ellipse at center, rgba(130,253,71,0.03) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, rgba(168,85,247,0.03) 0%, transparent 70%);
     pointer-events: none;
     z-index: -1;
   }
@@ -949,7 +949,7 @@
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 1px;
-    color: rgba(130,253,71,0.25);
+    color: rgba(168,85,247,0.25);
     text-align: right;
   }
 
@@ -960,7 +960,7 @@
     font-family: var(--mono);
     font-size: 9px;
     letter-spacing: 1px;
-    color: rgba(130,253,71,0.18);
+    color: rgba(168,85,247,0.18);
   }
 
   /* ═══════════════════════════════════════ */
@@ -1426,7 +1426,7 @@
             <div class="item-name">CATURRA FLEUR_</div>
             <div class="item-type"><span class="lang-es">Café filtrado &middot; Lavado</span><span class="lang-en">Filter coffee &middot; Washed</span></div>
             <div class="item-origin"><span class="lang-es">Huila, Colombia</span><span class="lang-en">Huila, Colombia</span></div>
-            <div class="item-desc"><span class="lang-es">Dulce y limpio. Panela, cítrico y chocolate.</span><span class="lang-en">Sweet and clean. Brown sugar, citrus, chocolate.</span></div>
+            <div class="item-desc"><span class="lang-es">Café filtrado en V60. Grano lavado del Huila con notas a panela, mandarina y chocolate oscuro. Se sirve caliente, negro.</span><span class="lang-en">V60 pour over. Washed Huila bean with notes of brown sugar, tangerine, and dark chocolate. Served hot, black.</span></div>
             <div class="notes-row">
               <span class="note-chip">Panela</span>
               <span class="note-chip">Citrus</span>
@@ -1445,7 +1445,7 @@
             <div class="item-name">CATURRA PINEAPPLE_</div>
             <div class="item-type"><span class="lang-es">Café filtrado &middot; Co-fermentado</span><span class="lang-en">Filter coffee &middot; Co-fermented</span></div>
             <div class="item-origin"><span class="lang-es">Tolima, Colombia</span><span class="lang-en">Tolima, Colombia</span></div>
-            <div class="item-desc"><span class="lang-es">Tropical y cremoso. Piña y coco en cada sorbo.</span><span class="lang-en">Tropical and creamy. Pineapple and coconut.</span></div>
+            <div class="item-desc"><span class="lang-es">Café filtrado en V60. Grano co-fermentado con piña del Tolima. Sabor tropical, cremoso, con fondo a coco. Se sirve caliente, negro.</span><span class="lang-en">V60 pour over. Co-fermented Tolima bean with pineapple. Tropical flavor, creamy, with coconut undertones. Served hot, black.</span></div>
             <div class="notes-row">
               <span class="note-chip">Pineapple</span>
               <span class="note-chip">Coconut</span>
@@ -1486,11 +1486,11 @@
     <div class="menu-section section-cold">
       <div class="menu-items">
 
-        <div class="menu-item item-accent-green" data-anim>
+        <div class="menu-item item-accent-purple" data-anim>
           <div class="item-info">
             <div class="item-name">SIGNAL_</div>
             <div class="item-type"><span class="lang-es">Cold Brew puro &middot; sin mezcla</span><span class="lang-en">Pure Cold Brew &middot; straight up</span></div>
-            <div class="item-desc"><span class="lang-es">Solo café. 24 horas de extracción fría.</span><span class="lang-en">Just coffee. 24-hour cold extraction.</span></div>
+            <div class="item-desc"><span class="lang-es">Cold brew puro, sin mezclar. Extracción en frío durante 24 horas. Sabor concentrado, intenso, sin acidez. Se sirve frío, solo.</span><span class="lang-en">Pure cold brew, unmixed. 24-hour cold extraction. Concentrated, bold flavor, zero acidity. Served cold, straight.</span></div>
           </div>
           <div class="flavor-profile">
             <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Intenso</span><span class="lang-en">Bold</span></span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div></div>
@@ -1503,7 +1503,7 @@
           <div class="item-info">
             <div class="item-name">ANALOG_</div>
             <div class="item-type"><span class="lang-es">Cold Brew + Leche</span><span class="lang-en">Cold Brew + Milk</span></div>
-            <div class="item-desc"><span class="lang-es">Suave y profundo. Elegí tu leche y syrup.</span><span class="lang-en">Smooth and deep. Pick your milk and syrup.</span></div>
+            <div class="item-desc"><span class="lang-es">Cold brew 24h mezclado con leche a tu elección (entera, almendras o avena) y syrup opcional. Suave, cremoso, refrescante.</span><span class="lang-en">Cold brew 24h blended with your choice of milk (whole, almond, or oat) and optional syrup. Smooth, creamy, refreshing.</span></div>
             <div class="drink-options">
               <span class="option-pill"><span class="lang-es">Avena</span><span class="lang-en">Oat</span></span>
               <span class="option-pill"><span class="lang-es">Leche</span><span class="lang-en">Milk</span></span>
@@ -1517,11 +1517,11 @@
           </div>
         </div>
 
-        <div class="menu-item item-accent-orange" data-anim>
+        <div class="menu-item item-accent-magenta" data-anim>
           <div class="item-info">
             <div class="item-name">FREQUENCY_</div>
             <div class="item-type"><span class="lang-es">Cold Brew + Agua Tónica</span><span class="lang-en">Cold Brew + Tonic Water</span></div>
-            <div class="item-desc"><span class="lang-es">Burbujas y cafeína. Brillante y eléctrico.</span><span class="lang-en">Bubbles and caffeine. Bright and electric.</span></div>
+            <div class="item-desc"><span class="lang-es">Cold brew 24h con agua tónica premium y hielo. Efervescente, cítrico, con cuerpo cafeinado. El trago del festival.</span><span class="lang-en">Cold brew 24h with premium tonic water and ice. Effervescent, citrusy, with caffeinated body. The festival drink.</span></div>
           </div>
           <div class="flavor-profile">
             <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Fresco</span><span class="lang-en">Fresh</span></span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div></div>
@@ -1601,7 +1601,7 @@
       const alpha = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse));
       pctx.beginPath();
       pctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      pctx.fillStyle = `rgba(130, 253, 71, ${alpha})`;
+      pctx.fillStyle = `rgba(168, 85, 247, ${alpha})`;
       pctx.fill();
     });
     for (let i = 0; i < particles.length; i++) {
@@ -1613,7 +1613,7 @@
           pctx.beginPath();
           pctx.moveTo(particles[i].x, particles[i].y);
           pctx.lineTo(particles[j].x, particles[j].y);
-          pctx.strokeStyle = `rgba(130, 253, 71, ${0.03 * (1 - dist / 80)})`;
+          pctx.strokeStyle = `rgba(168, 85, 247, ${0.03 * (1 - dist / 80)})`;
           pctx.lineWidth = 0.5;
           pctx.stroke();
         }
@@ -1636,7 +1636,7 @@
       const y = midY + Math.sin(x * 0.008 + time * 1.2) * 6 + Math.sin(x * 0.015 + time * 0.8) * 3 + Math.sin(x * 0.03 + time * 2.0) * 1.5;
       wctx.lineTo(x, y);
     }
-    wctx.strokeStyle = 'rgba(130, 253, 71, 0.10)';
+    wctx.strokeStyle = 'rgba(168, 85, 247, 0.10)';
     wctx.lineWidth = 1;
     wctx.stroke();
     wctx.beginPath();
@@ -1665,7 +1665,7 @@
         const y = Math.random() * h;
         const sliceH = Math.random() * 25 + 2;
         const offsetX = (Math.random() - 0.5) * 30;
-        glitchCtx.fillStyle = `rgba(130, 253, 71, ${Math.random() * 0.05})`;
+        glitchCtx.fillStyle = `rgba(168, 85, 247, ${Math.random() * 0.05})`;
         glitchCtx.fillRect(offsetX, y, w, sliceH);
         if (Math.random() > 0.7) {
           glitchCtx.fillStyle = `rgba(255, 75, 67, ${Math.random() * 0.03})`;
@@ -1740,8 +1740,8 @@
     const items = document.querySelectorAll('.menu-item');
     items.forEach((item, i) => {
       gsap.to(item, {
-        borderColor: 'rgba(130,253,71,0.12)',
-        boxShadow: '0 0 12px rgba(130,253,71,0.03)',
+        borderColor: 'rgba(168,85,247,0.12)',
+        boxShadow: '0 0 12px rgba(168,85,247,0.03)',
         duration: 2.5 + i * 0.4,
         ease: 'sine.inOut',
         yoyo: true,
@@ -1758,7 +1758,7 @@
       if (title) {
         gsap.timeline()
           .to(title, { x: (Math.random()-0.5)*5, textShadow: '-2px 0 #FF4B43, 2px 0 #224FD1', duration: 0.05, ease: 'steps(2)' })
-          .to(title, { x: (Math.random()-0.5)*3, textShadow: '2px 0 #FF4B43, -2px 0 #7D3BED', duration: 0.05, ease: 'steps(2)' })
+          .to(title, { x: (Math.random()-0.5)*3, textShadow: '2px 0 #FF4B43, -2px 0 #A855F7', duration: 0.05, ease: 'steps(2)' })
           .to(title, { x: 0, textShadow: 'none', duration: 0.05, ease: 'steps(1)' });
       }
       if (Math.random() > 0.65) triggerGlitch();
@@ -1778,7 +1778,7 @@
 
   gsap.to('.live-dot', {
     opacity: 0.3,
-    boxShadow: '0 0 4px rgba(130,253,71,0.2)',
+    boxShadow: '0 0 4px rgba(168,85,247,0.2)',
     duration: 0.75,
     ease: 'power1.inOut',
     yoyo: true,

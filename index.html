@@ -399,24 +399,22 @@
     padding-bottom: 60px;
   }
 
-  .filter-card-hero {
-    flex: 6;
+  .filter-card-hero,
+  .filter-card-secondary {
+    flex: 1;
     position: relative;
     border-radius: 16px;
     overflow: hidden;
     opacity: 0;
     transform: translateY(20px);
-    background: linear-gradient(160deg, rgba(34,79,209,0.08) 0%, rgba(2,1,2,0.95) 40%, rgba(130,253,71,0.03) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: linear-gradient(160deg, rgba(34,79,209,0.06) 0%, rgba(2,1,2,0.95) 50%, rgba(130,253,71,0.03) 100%);
   }
 
   .filter-card-secondary {
-    flex: 4;
-    position: relative;
-    border-radius: 16px;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(20px);
-    background: linear-gradient(160deg, rgba(125,59,237,0.08) 0%, rgba(2,1,2,0.95) 40%, rgba(232,119,34,0.03) 100%);
+    background: linear-gradient(160deg, rgba(125,59,237,0.06) 0%, rgba(2,1,2,0.95) 50%, rgba(232,119,34,0.03) 100%);
   }
 
   /* filter card reveal handled by GSAP */
@@ -573,13 +571,12 @@
     pointer-events: none;
   }
 
-  /* ─── CARD OVERLAY INFO ─── */
+  /* ─── CARD INFO (in-flow, not absolute) ─── */
   .filter-info-overlay {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
+    position: relative;
     z-index: 5;
-    padding: 20px 24px;
-    background: linear-gradient(0deg, rgba(2,1,2,0.95) 0%, rgba(2,1,2,0.7) 70%, rgba(2,1,2,0.3) 100%);
+    padding: 16px 22px;
+    margin-top: auto;
   }
 
   /* ─── PROCESS BADGE — BIG & GLOWING ─── */
@@ -1761,21 +1758,13 @@
         <canvas class="steam-canvas" id="steamCanvas1"></canvas>
         <div class="filter-info-overlay">
           <div class="process-badge process-washed">LAVADO</div>
-          <div class="method-pill">V60 Pour Over</div>
           <div class="drink-name">CATURRA FLEUR_</div>
-          <div class="drink-origin">Huila, Colombia</div>
-          <div class="variety-tag"><span>Var_</span> Caturra</div>
-          <div class="drink-meta">
-            <span><strong>Alt_</strong> 1,750 masl</span>
-            <span><strong>Score_</strong> 86+</span>
-          </div>
+          <div class="drink-origin">Huila, Colombia &middot; 1,750 masl</div>
           <div class="notes-row">
             <span class="note-chip">Brown Sugar</span>
             <span class="note-chip">Citrus</span>
             <span class="note-chip">Chocolate</span>
           </div>
-          <div class="altitude-line"></div>
-          <div class="roaster-tag">Roasted by <strong>Thomas Gonzalez</strong></div>
         </div>
       </div>
 
@@ -1788,20 +1777,12 @@
         <canvas class="steam-canvas" id="steamCanvas2"></canvas>
         <div class="filter-info-overlay">
           <div class="process-badge process-cofermented">CO—FERMENTADO</div>
-          <div class="method-pill">V60 Pour Over</div>
           <div class="drink-name">CATURRA PINEAPPLE_</div>
-          <div class="drink-origin">Huila, Colombia</div>
-          <div class="variety-tag"><span>Var_</span> Caturra</div>
-          <div class="drink-meta">
-            <span><strong>Alt_</strong> 1,750 masl</span>
-            <span><strong>Score_</strong> 87+</span>
-          </div>
+          <div class="drink-origin">Huila, Colombia &middot; 1,750 masl</div>
           <div class="notes-row">
             <span class="note-chip">Pineapple</span>
             <span class="note-chip">Coconut</span>
           </div>
-          <div class="altitude-line"></div>
-          <div class="roaster-tag">Roasted by <strong>Thomas Gonzalez</strong></div>
         </div>
       </div>
     </div>

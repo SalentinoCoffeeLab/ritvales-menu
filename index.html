@@ -824,6 +824,38 @@
     margin-top: 4px;
   }
 
+  /* ─── DRINK OPTIONS PILLS ─── */
+  .drink-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .drink-options .option-pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+    border: 1px solid rgba(174,225,246,0.2);
+    color: rgba(239,255,254,0.6);
+    background: rgba(174,225,246,0.04);
+  }
+
+  .accent-green .drink-options .option-pill {
+    border-color: rgba(130,253,71,0.2);
+    color: rgba(130,253,71,0.6);
+    background: rgba(130,253,71,0.04);
+  }
+
+  .accent-orange .drink-options .option-pill {
+    border-color: rgba(232,119,34,0.2);
+    color: rgba(232,119,34,0.6);
+    background: rgba(232,119,34,0.04);
+  }
+
   /* Accent borders */
   .accent-green { border-left: 4px solid var(--green); }
   .accent-green .drink-name { color: var(--green); }
@@ -1822,6 +1854,11 @@
           <div class="drink-desc">
             Smooth like vinyl. Slow, deep, warm.
             <em>Suave como el vinilo. Profundo y calido.</em>
+          </div>
+          <div class="drink-options">
+            <span class="option-pill">Averna</span>
+            <span class="option-pill">Leche</span>
+            <span class="option-pill">+ Syrup</span>
           </div>
         </div>
       </div>

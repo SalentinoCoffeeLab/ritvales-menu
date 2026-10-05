@@ -441,6 +441,24 @@
     color: rgba(239,255,254,0.45);
   }
 
+  /* Origin / location */
+  .item-origin {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(130,253,71,0.4);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .item-origin::before {
+    content: '◉';
+    font-size: 5px;
+    opacity: 0.6;
+  }
+
   /* Description — plain-language, readable at distance */
   .item-desc {
     font-family: var(--sans);
@@ -1407,6 +1425,7 @@
           <div class="item-info">
             <div class="item-name">CATURRA FLEUR_</div>
             <div class="item-type"><span class="lang-es">Café filtrado &middot; Lavado</span><span class="lang-en">Filter coffee &middot; Washed</span></div>
+            <div class="item-origin"><span class="lang-es">Huila, Colombia</span><span class="lang-en">Huila, Colombia</span></div>
             <div class="item-desc"><span class="lang-es">Dulce y limpio. Panela, cítrico y chocolate.</span><span class="lang-en">Sweet and clean. Brown sugar, citrus, chocolate.</span></div>
             <div class="notes-row">
               <span class="note-chip">Panela</span>
@@ -1425,6 +1444,7 @@
           <div class="item-info">
             <div class="item-name">CATURRA PINEAPPLE_</div>
             <div class="item-type"><span class="lang-es">Café filtrado &middot; Co-fermentado</span><span class="lang-en">Filter coffee &middot; Co-fermented</span></div>
+            <div class="item-origin"><span class="lang-es">Tolima, Colombia</span><span class="lang-en">Tolima, Colombia</span></div>
             <div class="item-desc"><span class="lang-es">Tropical y cremoso. Piña y coco en cada sorbo.</span><span class="lang-en">Tropical and creamy. Pineapple and coconut.</span></div>
             <div class="notes-row">
               <span class="note-chip">Pineapple</span>

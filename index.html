@@ -51,7 +51,7 @@
     pointer-events: none;
     background: repeating-linear-gradient(
       0deg, transparent, transparent 2px,
-      rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px
+      rgba(0,0,0,0.10) 2px, rgba(0,0,0,0.10) 4px
     );
     animation: scanScroll 8s linear infinite;
   }
@@ -65,7 +65,7 @@
   .vignette {
     position: fixed; inset: 0; z-index: 92;
     pointer-events: none;
-    background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%);
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.65) 100%);
   }
 
   /* ─── FLICKER ─── */
@@ -87,13 +87,7 @@
   }
 
   /* ─── GPU HINTS ─── */
-  .single-view,
-  .v60-card,
-  .cb-item,
-  .title-main,
-  .section-tag,
-  .open-bar,
-  .note-chip {
+  .menu-view, .menu-item, .section-head, .note-chip {
     will-change: transform, opacity;
   }
 
@@ -105,127 +99,46 @@
     overflow: hidden;
   }
 
-  /* ─── SINGLE VIEW LAYOUT ─── */
-  .single-view {
+  /* ═══════════════════════════════════════ */
+  /* ─── MENU LAYOUT ─── */
+  /* ═══════════════════════════════════════ */
+  .menu-view {
     display: flex;
     flex-direction: column;
-    padding: 52px 24px 70px;
     height: 100%;
-    gap: 0;
+    padding: 48px 20px 56px;
   }
 
-  /* ─── PERSISTENT TOP BAR ─── */
-  .top-bar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 50;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 20px;
-    background: linear-gradient(180deg, rgba(2,1,2,0.9) 0%, transparent 100%);
-  }
-
-  .top-bar-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .ritvales-logo {
-    font-family: var(--mono);
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 5px;
-    color: var(--white);
-  }
-
-  .x-divider {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--green);
-    opacity: 0.5;
-  }
-
-  .salentino-logo {
-    font-family: var(--mono);
-    font-size: 8px;
-    letter-spacing: 2px;
-    color: rgba(239,255,254,0.5);
-    text-transform: uppercase;
-  }
-
-  .live-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--green);
-  }
-
-  .live-dot {
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 10px var(--green-glow);
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--green-glow); }
-    50% { opacity: 0.4; box-shadow: 0 0 4px var(--green-glow); }
-  }
-
-  /* ─── PERSISTENT BOTTOM BAR ─── */
-  .bottom-bar {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    z-index: 50;
-    padding: 14px 20px;
-    background: linear-gradient(0deg, rgba(2,1,2,0.95) 0%, transparent 100%);
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .tagline-bar {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--green);
+  /* ─── MENU HEADER ─── */
+  .menu-header {
     text-align: center;
-    opacity: 0.7;
+    margin-bottom: 10px;
+    opacity: 0;
   }
 
-  /* ─── SECTION HEADER ─── */
-  .section-tag {
+  .menu-header .brand-line {
     font-family: var(--mono);
     font-size: 11px;
-    letter-spacing: 4px;
+    letter-spacing: 5px;
     text-transform: uppercase;
-    color: var(--green);
-    margin-bottom: 4px;
-    opacity: 0;
-    transform: translateY(8px);
+    color: rgba(239,255,254,0.35);
+    margin-bottom: 2px;
   }
 
-  /* ─── TITLE SYSTEM ─── */
-  .title-main {
+  .menu-header .menu-title {
     font-family: var(--mono);
     font-weight: 700;
-    font-size: 36px;
-    line-height: 1.1;
-    margin-bottom: 4px;
-    position: relative;
-    overflow: hidden;
+    font-size: 28px;
+    color: var(--white);
+    letter-spacing: 2px;
+    line-height: 1.2;
   }
 
-  .title-main span { color: var(--green); }
+  .menu-header .menu-title span {
+    color: var(--green);
+  }
 
-  .title-main::after {
+  .menu-header .menu-title::after {
     content: '_';
     color: var(--green);
     animation: blink 1s step-end infinite;
@@ -236,106 +149,109 @@
     50% { opacity: 0; }
   }
 
-  /* ─── OPEN BAR PILL ─── */
-  .open-bar {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 14px;
-    border: 1px solid var(--green-dim);
-    border-radius: 100px;
+  .menu-header .menu-sub {
     font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 2px;
+    font-size: 9px;
+    letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--green);
-    background: rgba(130, 253, 71, 0.04);
+    opacity: 0.5;
+    margin-top: 4px;
+  }
+
+  /* ─── SECTION ─── */
+  .menu-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 8px;
-    position: relative;
-    overflow: hidden;
     opacity: 0;
   }
 
-  .open-bar::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%; bottom: 0;
-    width: 60%;
-    background: linear-gradient(90deg, transparent, rgba(130,253,71,0.08), transparent);
-    animation: shimmer 3s ease-in-out infinite;
+  .section-head .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--green);
+    white-space: nowrap;
   }
 
-  @keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 200%; }
-  }
-
-  /* ─── SECTION DIVIDER ─── */
-  .section-divider {
+  .section-head .section-line {
+    flex: 1;
     height: 1px;
-    margin: 8px 0;
-    background: linear-gradient(90deg, var(--green), rgba(34,79,209,0.3), transparent);
-    opacity: 0.2;
-    position: relative;
+    background: linear-gradient(90deg, var(--green), transparent);
+    opacity: 0.25;
   }
 
-  .section-divider::after {
-    content: '';
-    position: absolute;
-    top: -2px; left: 0;
-    width: 4px; height: 5px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green-glow);
-    animation: altitudeScan 3s ease-in-out infinite;
+  .section-head .section-badge {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border: 1px solid var(--green-dim);
+    border-radius: 100px;
+    color: var(--green);
+    opacity: 0.6;
+    white-space: nowrap;
   }
 
-  @keyframes altitudeScan {
-    0% { left: 0; }
-    50% { left: 70%; }
-    100% { left: 0; }
-  }
-
-  /* ─── V60 SECTION ─── */
-  .v60-row {
+  /* ─── MENU ITEMS LIST ─── */
+  .menu-items {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 8px;
     flex: 1;
     min-height: 0;
   }
 
-  .v60-card {
-    flex: 1;
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
+  /* ─── INDIVIDUAL MENU ITEM ─── */
+  .menu-item {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    gap: 12px;
+    padding: 10px;
+    border: 1px solid rgba(130,253,71,0.06);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.015);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
     opacity: 0;
-    transform: translateY(20px);
-    border: 1px solid rgba(130,253,71,0.12);
+    transform: translateY(15px);
+    flex: 1;
+    min-height: 0;
   }
 
-  .v60-card::before {
+  /* Animated border glow */
+  .menu-item::after {
     content: '';
     position: absolute;
-    inset: -2px;
-    border-radius: 14px;
-    padding: 2px;
+    inset: -1px;
+    border-radius: 12px;
+    padding: 1px;
     background: conic-gradient(
       from var(--border-angle, 0deg),
-      rgba(130,253,71,0.4),
-      rgba(34,79,209,0.3),
-      rgba(130,253,71,0.05),
-      rgba(232,119,34,0.2),
-      rgba(130,253,71,0.4)
+      rgba(130,253,71,0.25),
+      transparent 40%,
+      rgba(34,79,209,0.15),
+      transparent 80%,
+      rgba(130,253,71,0.25)
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    animation: rotateBorder 4s linear infinite;
-    z-index: 1;
+    animation: rotateBorder 6s linear infinite;
+    z-index: -1;
   }
 
   @property --border-angle {
@@ -348,98 +264,110 @@
     to { --border-angle: 360deg; }
   }
 
-  .v60-card.card-washed {
-    background: linear-gradient(160deg, rgba(34,79,209,0.06) 0%, rgba(2,1,2,0.95) 50%, rgba(130,253,71,0.03) 100%);
-  }
-
-  .v60-card.card-cofermented {
-    background: linear-gradient(160deg, rgba(125,59,237,0.06) 0%, rgba(2,1,2,0.95) 50%, rgba(232,119,34,0.03) 100%);
-  }
-
-  /* V60 card photo */
-  .v60-photo {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
+  /* ─── ITEM PHOTO ─── */
+  .item-photo {
+    width: 90px;
+    min-width: 90px;
+    border-radius: 8px;
     overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+    align-self: stretch;
   }
 
-  .v60-photo::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(rgba(130,253,71,0.015) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(130,253,71,0.015) 1px, transparent 1px);
-    background-size: 30px 30px;
-    animation: gridScroll 20s linear infinite;
-  }
-
-  @keyframes gridScroll {
-    0% { background-position: 0 0; }
-    100% { background-position: 30px 60px; }
-  }
-
-  .v60-photo img {
+  .item-photo img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.45;
-    filter: saturate(0.3) brightness(0.5) contrast(1.3);
-    z-index: 0;
+    filter: saturate(0.4) brightness(0.55) contrast(1.2);
   }
 
-  .v60-photo .photo-tint {
+  .item-photo .photo-tint {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(2,1,2,0.3) 0%, rgba(130,253,71,0.03) 50%, rgba(2,1,2,0.8) 100%);
     z-index: 1;
   }
 
-  /* Steam canvas */
-  .steam-canvas {
+  .item-photo .photo-tint-green {
+    background: linear-gradient(180deg, rgba(130,253,71,0.05) 0%, rgba(2,1,2,0.4) 100%);
+  }
+
+  .item-photo .photo-tint-blue {
+    background: linear-gradient(180deg, rgba(34,79,209,0.08) 0%, rgba(2,1,2,0.4) 100%);
+  }
+
+  .item-photo .photo-tint-orange {
+    background: linear-gradient(180deg, rgba(232,119,34,0.08) 0%, rgba(2,1,2,0.4) 100%);
+  }
+
+  .item-photo .photo-tint-purple {
+    background: linear-gradient(180deg, rgba(125,59,237,0.08) 0%, rgba(2,1,2,0.4) 100%);
+  }
+
+  /* Animated grid overlay on photo */
+  .item-photo::before {
+    content: '';
     position: absolute;
     inset: 0;
     z-index: 2;
+    background:
+      linear-gradient(rgba(130,253,71,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(130,253,71,0.02) 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: gridScroll 20s linear infinite;
     pointer-events: none;
   }
 
-  /* V60 card info */
-  .v60-info {
-    position: relative;
-    z-index: 5;
-    padding: 12px 14px;
-    margin-top: auto;
+  @keyframes gridScroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 20px 40px; }
   }
 
+  /* Steam canvas inside photo */
+  .steam-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* ─── ITEM INFO ─── */
+  .item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    gap: 3px;
+  }
+
+  /* Process badge */
   .process-badge {
     display: inline-block;
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 8px;
     font-weight: 700;
     letter-spacing: 3px;
     text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 4px;
-    margin-bottom: 6px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    width: fit-content;
     position: relative;
     overflow: hidden;
   }
 
   .process-washed {
     color: var(--steel);
-    border: 1px solid rgba(34,79,209,0.4);
-    background: rgba(34,79,209,0.1);
-    box-shadow: 0 0 20px rgba(34,79,209,0.15), inset 0 0 15px rgba(34,79,209,0.05);
+    border: 1px solid rgba(34,79,209,0.35);
+    background: rgba(34,79,209,0.08);
   }
 
   .process-cofermented {
     color: var(--purple);
-    border: 1px solid rgba(125,59,237,0.4);
-    background: rgba(125,59,237,0.1);
-    box-shadow: 0 0 20px rgba(125,59,237,0.15), inset 0 0 15px rgba(125,59,237,0.05);
+    border: 1px solid rgba(125,59,237,0.35);
+    background: rgba(125,59,237,0.08);
   }
 
   .process-badge::after {
@@ -447,166 +375,175 @@
     position: absolute;
     top: 0; left: -100%; bottom: 0;
     width: 50%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
     animation: shimmer 3s ease-in-out infinite;
   }
 
-  .drink-name {
+  @keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+
+  /* Drink name */
+  .item-name {
     font-family: var(--mono);
     font-size: 20px;
     font-weight: 700;
     letter-spacing: 1px;
-    margin-bottom: 2px;
     color: var(--white);
-    text-shadow: 0 0 30px rgba(239,255,254,0.1);
+    line-height: 1.2;
   }
 
-  .drink-origin {
+  /* Type / subtitle */
+  .item-type {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--green);
-    opacity: 0.7;
-    margin-bottom: 6px;
+    color: rgba(239,255,254,0.4);
   }
 
+  /* Description */
+  .item-desc {
+    font-size: 12px;
+    line-height: 1.4;
+    color: rgba(239,255,254,0.55);
+    margin-top: 2px;
+  }
+
+  .item-desc em {
+    display: block;
+    font-style: normal;
+    font-size: 10px;
+    color: rgba(239,255,254,0.3);
+    margin-top: 1px;
+  }
+
+  /* Tasting notes */
   .notes-row {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
+    margin-top: 4px;
   }
 
   .note-chip {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 1px;
-    padding: 3px 10px;
+    padding: 2px 8px;
     border: 1px solid rgba(130,253,71,0.15);
     border-radius: 100px;
     color: var(--green);
     background: rgba(130,253,71,0.04);
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(4px);
   }
 
-  /* ─── COLD BREW SECTION ─── */
-  .cb-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    flex: 1;
-    min-height: 0;
-  }
-
-  .cb-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-    padding: 10px 16px;
-    border: 1px solid rgba(130,253,71,0.08);
-    border-radius: 10px;
-    overflow: hidden;
-    background: rgba(255,255,255,0.02);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  .cb-item::after {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: 10px;
-    border: 1px solid transparent;
-    background: linear-gradient(135deg, rgba(130,253,71,0.1), transparent, rgba(34,79,209,0.05)) border-box;
-    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0;
-    animation: borderGlow 6s ease-in-out infinite;
-  }
-
-  @keyframes borderGlow {
-    0%, 100% { opacity: 0; }
-    50% { opacity: 1; }
-  }
-
-  .cb-item .drink-name {
-    font-size: 22px;
-    margin-bottom: 2px;
-  }
-
-  .drink-type-sub {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: rgba(239,255,254,0.55);
-    margin-bottom: 4px;
-  }
-
-  .drink-desc {
-    font-size: 13px;
-    line-height: 1.4;
-    color: rgba(239,255,254,0.6);
-  }
-
-  .drink-desc em {
-    display: block;
-    font-style: normal;
-    font-size: 11px;
-    color: rgba(239,255,254,0.35);
-    margin-top: 2px;
-  }
-
-  /* ─── DRINK OPTIONS PILLS ─── */
+  /* Drink options */
   .drink-options {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 5px;
+    gap: 4px;
+    margin-top: 4px;
   }
 
-  .drink-options .option-pill {
+  .option-pill {
     font-family: var(--mono);
-    font-size: 9px;
+    font-size: 8px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    padding: 3px 10px;
+    padding: 2px 8px;
     border-radius: 100px;
     border: 1px solid rgba(174,225,246,0.2);
-    color: rgba(239,255,254,0.6);
+    color: rgba(239,255,254,0.55);
     background: rgba(174,225,246,0.04);
   }
 
-  .accent-green .drink-options .option-pill {
+  /* ─── ACCENT COLOR VARIANTS ─── */
+  .item-accent-green .item-name { color: var(--green); }
+  .item-accent-green .item-type { color: rgba(130,253,71,0.5); }
+  .item-accent-green .option-pill {
     border-color: rgba(130,253,71,0.2);
-    color: rgba(130,253,71,0.6);
+    color: rgba(130,253,71,0.55);
     background: rgba(130,253,71,0.04);
   }
 
-  .accent-orange .drink-options .option-pill {
+  .item-accent-blue .item-name { color: var(--steel); }
+  .item-accent-blue .item-type { color: rgba(174,225,246,0.5); }
+
+  .item-accent-orange .item-name { color: var(--orange); }
+  .item-accent-orange .item-type { color: rgba(232,119,34,0.5); }
+  .item-accent-orange .option-pill {
     border-color: rgba(232,119,34,0.2);
-    color: rgba(232,119,34,0.6);
+    color: rgba(232,119,34,0.55);
     background: rgba(232,119,34,0.04);
   }
 
-  /* Accent borders */
-  .accent-green { border-left: 4px solid var(--green); }
-  .accent-green .drink-name { color: var(--green); }
-  .accent-green .drink-type-sub { color: rgba(130,253,71,0.6); }
-  .accent-blue { border-left: 4px solid var(--cobalt); }
-  .accent-blue .drink-name { color: var(--steel); }
-  .accent-blue .drink-type-sub { color: rgba(174,225,246,0.6); }
-  .accent-orange { border-left: 4px solid var(--orange); }
-  .accent-orange .drink-name { color: var(--orange); }
-  .accent-orange .drink-type-sub { color: rgba(232,119,34,0.6); }
+  .item-accent-washed .item-name { color: var(--white); }
+  .item-accent-cofermented .item-name { color: var(--white); }
 
-  /* ─── SALENTINO ANGULAR LOGO ─── */
+  /* Left accent stripe on cold brew items */
+  .item-accent-green { border-left: 3px solid var(--green); }
+  .item-accent-blue { border-left: 3px solid var(--cobalt); }
+  .item-accent-orange { border-left: 3px solid var(--orange); }
+
+  /* ─── SECTION DIVIDER ─── */
+  .menu-divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    opacity: 0;
+  }
+
+  .menu-divider .div-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(130,253,71,0.15), transparent);
+  }
+
+  .menu-divider .div-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--green);
+    opacity: 0.4;
+    box-shadow: 0 0 8px var(--green-glow);
+  }
+
+  /* ─── PERSISTENT TOP BAR ─── */
+  .top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: linear-gradient(180deg, rgba(2,1,2,0.92) 0%, transparent 100%);
+  }
+
+  .top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ritvales-logo {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--white);
+  }
+
+  .x-divider {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--green);
+    opacity: 0.5;
+  }
+
   .salentino-angular {
     font-family: var(--mono);
     font-weight: 700;
@@ -615,14 +552,55 @@
   }
 
   .salentino-angular-sm {
-    font-size: 11px;
+    font-size: 10px;
     color: rgba(239,255,254,0.5);
+  }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--green);
+  }
+
+  .live-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green-glow);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--green-glow); }
+    50% { opacity: 0.4; box-shadow: 0 0 4px var(--green-glow); }
+  }
+
+  /* ─── PERSISTENT BOTTOM BAR ─── */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 50;
+    padding: 10px 20px;
+    background: linear-gradient(0deg, rgba(2,1,2,0.95) 0%, transparent 100%);
+    text-align: center;
+  }
+
+  .tagline-bar {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+    opacity: 0.6;
   }
 
   /* ─── ORIENTATION TOGGLE ─── */
   .orientation-toggle {
     position: fixed;
-    top: 12px;
+    top: 10px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 200;
@@ -642,7 +620,7 @@
   }
 
   .orientation-toggle .toggle-btn {
-    padding: 6px 14px;
+    padding: 5px 12px;
     background: transparent;
     border: none;
     color: rgba(239,255,254,0.35);
@@ -665,444 +643,47 @@
 
   .toggle-divider {
     width: 1px;
-    height: 16px;
+    height: 14px;
     background: rgba(130,253,71,0.15);
   }
 
   .toggle-label {
-    padding: 0 8px;
+    padding: 0 6px;
     font-family: var(--mono);
     font-size: 7px;
     letter-spacing: 1px;
     color: rgba(130,253,71,0.25);
   }
 
-  /* ─── HORIZONTAL MODE ─── */
-  body.horizontal .single-view {
-    padding: 52px 40px 70px;
-  }
-
-  body.horizontal .title-main {
-    font-size: 42px;
-  }
-
-  body.horizontal .v60-row {
-    gap: 14px;
-  }
-
-  body.horizontal .drink-name {
-    font-size: 24px;
-  }
-
-  body.horizontal .v60-info {
-    padding: 16px 20px;
-  }
-
-  body.horizontal .cb-list {
-    flex-direction: row;
-    gap: 12px;
-  }
-
-  body.horizontal .cb-item {
-    padding: 16px 20px;
-  }
-
-  body.horizontal .cb-item .drink-name {
-    font-size: 26px;
-  }
-
-  body.horizontal .drink-desc {
-    font-size: 15px;
-  }
-
-  body.horizontal .top-bar {
-    padding: 12px 32px;
-  }
-
-  body.horizontal .hud-coords {
-    top: 40px; left: 32px;
-  }
-
-  body.horizontal .hud-time {
-    top: 40px; right: 32px;
-  }
-
-  body.horizontal .process-badge {
-    font-size: 13px;
-    padding: 5px 14px;
-  }
-
-  body.horizontal .note-chip {
-    font-size: 12px;
-    padding: 4px 12px;
-  }
-
-  /* ═══════════════════════════════════════ */
-  /* ─── MOBILE RESPONSIVE ─── */
-  /* ═══════════════════════════════════════ */
-
-  /* Small phones (375px and below) */
-  @media (max-width: 420px) {
-    .single-view {
-      padding: 46px 14px 60px;
-    }
-
-    .title-main {
-      font-size: 28px;
-      margin-bottom: 2px;
-    }
-
-    .section-tag {
-      font-size: 9px;
-      letter-spacing: 3px;
-      margin-bottom: 3px;
-    }
-
-    .open-bar {
-      font-size: 8px;
-      padding: 4px 10px;
-      margin-bottom: 6px;
-      letter-spacing: 1.5px;
-    }
-
-    .top-bar {
-      padding: 8px 12px;
-    }
-
-    .ritvales-logo {
-      font-size: 12px;
-      letter-spacing: 3px;
-    }
-
-    .salentino-angular-sm {
-      font-size: 9px;
-    }
-
-    .live-badge {
-      font-size: 9px;
-    }
-
-    .hud-time {
-      font-size: 7px;
-      top: 32px; right: 12px;
-    }
-
-    .hud-coords {
-      font-size: 7px;
-      top: 32px; left: 12px;
-    }
-
-    .v60-row {
-      gap: 6px;
-    }
-
-    .v60-info {
-      padding: 8px 10px;
-    }
-
-    .process-badge {
-      font-size: 9px;
-      padding: 3px 8px;
-      letter-spacing: 2px;
-      margin-bottom: 4px;
-    }
-
-    .drink-name {
-      font-size: 16px;
-    }
-
-    .drink-origin {
-      font-size: 8px;
-      margin-bottom: 4px;
-    }
-
-    .notes-row {
-      gap: 3px;
-    }
-
-    .note-chip {
-      font-size: 8px;
-      padding: 2px 6px;
-    }
-
-    .cb-list {
-      gap: 4px;
-    }
-
-    .cb-item {
-      padding: 8px 12px;
-    }
-
-    .cb-item .drink-name {
-      font-size: 18px;
-    }
-
-    .drink-type-sub {
-      font-size: 9px;
-      margin-bottom: 2px;
-    }
-
-    .drink-desc {
-      font-size: 11px;
-      line-height: 1.3;
-    }
-
-    .drink-desc em {
-      font-size: 9px;
-    }
-
-    .drink-options .option-pill {
-      font-size: 7px;
-      padding: 2px 7px;
-    }
-
-    .bottom-bar {
-      padding: 8px 14px;
-    }
-
-    .tagline-bar {
-      font-size: 7px;
-      letter-spacing: 2px;
-    }
-
-    .data-ticker {
-      bottom: 34px;
-      height: 14px;
-    }
-
-    .ticker-track {
-      font-size: 7px;
-    }
-
-    .orientation-toggle {
-      top: 8px;
-    }
-
-    .toggle-btn {
-      padding: 4px 10px;
-      font-size: 7px;
-    }
-
-    .corner {
-      width: 14px; height: 14px;
-    }
-
-    .section-divider {
-      margin: 5px 0;
-    }
-  }
-
-  /* Standard phones (421-767px) */
-  @media (min-width: 421px) and (max-width: 767px) {
-    .single-view {
-      padding: 48px 18px 65px;
-    }
-
-    .title-main {
-      font-size: 32px;
-    }
-
-    .v60-row {
-      gap: 8px;
-    }
-
-    .v60-info {
-      padding: 10px 12px;
-    }
-
-    .process-badge {
-      font-size: 10px;
-      padding: 4px 10px;
-    }
-
-    .drink-name {
-      font-size: 18px;
-    }
-
-    .cb-item .drink-name {
-      font-size: 20px;
-    }
-
-    .drink-desc {
-      font-size: 12px;
-    }
-
-    .bottom-bar {
-      padding: 10px 16px;
-    }
-  }
-
-  /* Tablets (768-1024px) */
-  @media (min-width: 768px) and (max-width: 1024px) {
-    .single-view {
-      padding: 52px 28px 70px;
-    }
-
-    .title-main {
-      font-size: 44px;
-    }
-
-    .process-badge {
-      font-size: 14px;
-      padding: 5px 14px;
-    }
-
-    .drink-name {
-      font-size: 24px;
-    }
-
-    .cb-item .drink-name {
-      font-size: 28px;
-    }
-
-    .note-chip {
-      font-size: 12px;
-      padding: 4px 12px;
-    }
-  }
-
-  /* Large screens (1025px+) */
-  @media (min-width: 1025px) {
-    .single-view {
-      padding: 56px 36px 75px;
-    }
-
-    .title-main {
-      font-size: 52px;
-    }
-
-    .drink-name {
-      font-size: 28px;
-    }
-
-    .cb-item .drink-name {
-      font-size: 32px;
-    }
-
-    .process-badge {
-      font-size: 16px;
-      padding: 6px 16px;
-    }
-
-    .note-chip {
-      font-size: 13px;
-      padding: 5px 14px;
-    }
-
-    .v60-info {
-      padding: 16px 22px;
-    }
-
-    .cb-item {
-      padding: 16px 24px;
-    }
-
-    .drink-desc {
-      font-size: 16px;
-    }
-  }
-
-  /* Ensure touch targets are large enough on mobile */
-  @media (hover: none) and (pointer: coarse) {
-    .toggle-btn {
-      min-height: 36px;
-      min-width: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  }
-
-  /* Landscape phone (short viewport) */
-  @media (max-height: 500px) {
-    .single-view {
-      padding: 40px 16px 50px;
-    }
-
-    .title-main {
-      font-size: 22px;
-      margin-bottom: 2px;
-    }
-
-    .open-bar {
-      margin-bottom: 4px;
-      padding: 3px 8px;
-      font-size: 7px;
-    }
-
-    .section-tag {
-      font-size: 8px;
-      margin-bottom: 2px;
-    }
-
-    .v60-info {
-      padding: 6px 8px;
-    }
-
-    .process-badge {
-      font-size: 7px;
-      padding: 2px 6px;
-      margin-bottom: 3px;
-    }
-
-    .drink-name {
-      font-size: 14px;
-    }
-
-    .cb-item {
-      padding: 6px 10px;
-    }
-
-    .cb-item .drink-name {
-      font-size: 16px;
-    }
-
-    .drink-desc {
-      font-size: 10px;
-    }
-
-    .bottom-bar {
-      padding: 6px 12px;
-    }
-
-    .data-ticker {
-      bottom: 30px;
-    }
-
-    .section-divider {
-      margin: 4px 0;
-    }
-  }
-
   /* ─── CORNER DECORATIONS ─── */
   .corner {
     position: fixed;
-    width: 20px; height: 20px;
+    width: 18px; height: 18px;
     z-index: 45;
     opacity: 0.25;
   }
 
-  .corner-tl { top: 8px; left: 8px; border-top: 1px solid var(--green); border-left: 1px solid var(--green); }
-  .corner-tr { top: 8px; right: 8px; border-top: 1px solid var(--green); border-right: 1px solid var(--green); }
-  .corner-bl { bottom: 8px; left: 8px; border-bottom: 1px solid var(--green); border-left: 1px solid var(--green); }
-  .corner-br { bottom: 8px; right: 8px; border-bottom: 1px solid var(--green); border-right: 1px solid var(--green); }
+  .corner-tl { top: 6px; left: 6px; border-top: 1px solid var(--green); border-left: 1px solid var(--green); }
+  .corner-tr { top: 6px; right: 6px; border-top: 1px solid var(--green); border-right: 1px solid var(--green); }
+  .corner-bl { bottom: 6px; left: 6px; border-bottom: 1px solid var(--green); border-left: 1px solid var(--green); }
+  .corner-br { bottom: 6px; right: 6px; border-bottom: 1px solid var(--green); border-right: 1px solid var(--green); }
 
   /* ─── HORIZONTAL DATA TICKER ─── */
   .data-ticker {
     position: fixed;
-    bottom: 42px;
+    bottom: 34px;
     left: 0; right: 0;
     z-index: 48;
     overflow: hidden;
-    height: 16px;
-    opacity: 0.25;
+    height: 14px;
+    opacity: 0.2;
   }
 
   .ticker-track {
     display: flex;
     white-space: nowrap;
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 9px;
     letter-spacing: 2px;
     color: var(--green);
     text-transform: uppercase;
@@ -1122,23 +703,361 @@
   /* ─── HUD ELEMENTS ─── */
   .hud-time {
     position: fixed;
-    top: 40px; right: 20px;
+    top: 36px; right: 20px;
     z-index: 45;
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 10px;
     letter-spacing: 1px;
-    color: rgba(130,253,71,0.3);
+    color: rgba(130,253,71,0.25);
     text-align: right;
   }
 
   .hud-coords {
     position: fixed;
-    top: 40px; left: 20px;
+    top: 36px; left: 20px;
     z-index: 45;
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 9px;
     letter-spacing: 1px;
-    color: rgba(130,253,71,0.2);
+    color: rgba(130,253,71,0.18);
+  }
+
+  /* ═══════════════════════════════════════ */
+  /* ─── HORIZONTAL MODE ─── */
+  /* ═══════════════════════════════════════ */
+  body.horizontal .menu-view {
+    padding: 48px 36px 56px;
+  }
+
+  body.horizontal .menu-header .menu-title {
+    font-size: 34px;
+  }
+
+  body.horizontal .menu-items {
+    gap: 10px;
+  }
+
+  body.horizontal .item-photo {
+    width: 120px;
+    min-width: 120px;
+  }
+
+  body.horizontal .item-name {
+    font-size: 24px;
+  }
+
+  body.horizontal .item-desc {
+    font-size: 14px;
+  }
+
+  body.horizontal .note-chip {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+
+  body.horizontal .process-badge {
+    font-size: 10px;
+    padding: 3px 10px;
+  }
+
+  body.horizontal .top-bar {
+    padding: 10px 32px;
+  }
+
+  body.horizontal .hud-coords {
+    top: 36px; left: 32px;
+  }
+
+  body.horizontal .hud-time {
+    top: 36px; right: 32px;
+  }
+
+  /* ═══════════════════════════════════════ */
+  /* ─── MOBILE RESPONSIVE ─── */
+  /* ═══════════════════════════════════════ */
+
+  @media (max-width: 420px) {
+    .menu-view {
+      padding: 42px 12px 50px;
+    }
+
+    .menu-header .menu-title {
+      font-size: 22px;
+    }
+
+    .menu-header .brand-line {
+      font-size: 8px;
+      letter-spacing: 3px;
+    }
+
+    .menu-header .menu-sub {
+      font-size: 7px;
+    }
+
+    .section-head .section-label {
+      font-size: 8px;
+      letter-spacing: 3px;
+    }
+
+    .section-head .section-badge {
+      font-size: 7px;
+      padding: 2px 7px;
+    }
+
+    .menu-items {
+      gap: 6px;
+    }
+
+    .menu-item {
+      padding: 8px;
+      gap: 10px;
+    }
+
+    .item-photo {
+      width: 72px;
+      min-width: 72px;
+    }
+
+    .item-name {
+      font-size: 16px;
+    }
+
+    .item-type {
+      font-size: 8px;
+    }
+
+    .item-desc {
+      font-size: 10px;
+    }
+
+    .item-desc em {
+      font-size: 8px;
+    }
+
+    .process-badge {
+      font-size: 7px;
+      padding: 2px 6px;
+      letter-spacing: 2px;
+    }
+
+    .note-chip {
+      font-size: 7px;
+      padding: 2px 6px;
+    }
+
+    .notes-row {
+      gap: 3px;
+      margin-top: 3px;
+    }
+
+    .option-pill {
+      font-size: 7px;
+      padding: 2px 6px;
+    }
+
+    .top-bar {
+      padding: 8px 12px;
+    }
+
+    .ritvales-logo {
+      font-size: 11px;
+      letter-spacing: 3px;
+    }
+
+    .salentino-angular-sm {
+      font-size: 8px;
+    }
+
+    .live-badge {
+      font-size: 8px;
+    }
+
+    .hud-time {
+      font-size: 7px;
+      top: 30px; right: 12px;
+    }
+
+    .hud-coords {
+      font-size: 7px;
+      top: 30px; left: 12px;
+    }
+
+    .bottom-bar {
+      padding: 6px 12px;
+    }
+
+    .tagline-bar {
+      font-size: 7px;
+      letter-spacing: 2px;
+    }
+
+    .data-ticker {
+      bottom: 28px;
+      height: 12px;
+    }
+
+    .ticker-track {
+      font-size: 7px;
+    }
+
+    .corner {
+      width: 12px; height: 12px;
+    }
+
+    .menu-divider {
+      margin: 6px 0;
+    }
+
+    .orientation-toggle {
+      top: 6px;
+    }
+  }
+
+  @media (min-width: 421px) and (max-width: 767px) {
+    .menu-view {
+      padding: 44px 16px 52px;
+    }
+
+    .menu-header .menu-title {
+      font-size: 26px;
+    }
+
+    .item-photo {
+      width: 82px;
+      min-width: 82px;
+    }
+
+    .item-name {
+      font-size: 18px;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .menu-view {
+      padding: 50px 24px 60px;
+    }
+
+    .menu-header .menu-title {
+      font-size: 32px;
+    }
+
+    .item-photo {
+      width: 110px;
+      min-width: 110px;
+    }
+
+    .item-name {
+      font-size: 24px;
+    }
+
+    .item-desc {
+      font-size: 14px;
+    }
+
+    .process-badge {
+      font-size: 10px;
+      padding: 3px 10px;
+    }
+
+    .note-chip {
+      font-size: 11px;
+      padding: 3px 10px;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .menu-view {
+      padding: 52px 32px 64px;
+    }
+
+    .menu-header .menu-title {
+      font-size: 38px;
+    }
+
+    .item-photo {
+      width: 130px;
+      min-width: 130px;
+    }
+
+    .item-name {
+      font-size: 28px;
+    }
+
+    .item-desc {
+      font-size: 16px;
+    }
+
+    .process-badge {
+      font-size: 12px;
+      padding: 4px 12px;
+    }
+
+    .note-chip {
+      font-size: 12px;
+      padding: 4px 12px;
+    }
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    .toggle-btn {
+      min-height: 36px;
+      min-width: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  @media (max-height: 500px) {
+    .menu-view {
+      padding: 36px 14px 44px;
+    }
+
+    .menu-header {
+      margin-bottom: 6px;
+    }
+
+    .menu-header .menu-title {
+      font-size: 18px;
+    }
+
+    .menu-items {
+      gap: 4px;
+    }
+
+    .menu-item {
+      padding: 6px;
+      gap: 8px;
+    }
+
+    .item-photo {
+      width: 60px;
+      min-width: 60px;
+    }
+
+    .item-name {
+      font-size: 14px;
+    }
+
+    .item-desc {
+      font-size: 9px;
+    }
+
+    .section-head {
+      margin-bottom: 4px;
+    }
+
+    .menu-divider {
+      margin: 4px 0;
+    }
+
+    .bottom-bar {
+      padding: 4px 10px;
+    }
+
+    .data-ticker {
+      bottom: 24px;
+    }
   }
 </style>
 </head>
@@ -1164,7 +1083,7 @@
 <div class="hud-time" id="hudTime"></div>
 <div class="hud-coords">6.2442° N<br>75.5812° W<br><span style="opacity:0.5">MDE / COL</span></div>
 
-<!-- ORIENTATION TOGGLE (for client preview) -->
+<!-- ORIENTATION TOGGLE -->
 <div class="orientation-toggle" id="orientationToggle">
   <span class="toggle-label">VIEW</span>
   <div class="toggle-divider"></div>
@@ -1199,7 +1118,6 @@
     <span>La Energia Es Una Sola</span>
     <span>Ritvales x Salentino Coffee Lab</span>
     <span>Breakfast Live _ Medellin 2026</span>
-    <!-- Duplicate for seamless loop -->
     <span>Caturra Fleur _ Lavado</span>
     <span>Caturra Pineapple _ Co-Fermentado</span>
     <span>Huila, Colombia _ 1,750 masl</span>
@@ -1215,101 +1133,142 @@
 
 <!-- BOTTOM BAR -->
 <div class="bottom-bar">
-  <div class="tagline-bar">_La energia es una sola</div>
+  <div class="tagline-bar">_fuel the ritual</div>
 </div>
 
 <!-- ══════════════════════════════════════ -->
-<!-- CONTAINER — SINGLE VIEW              -->
+<!-- CONTAINER — MENU LAYOUT              -->
 <!-- ══════════════════════════════════════ -->
 <div class="container">
-  <div class="single-view">
+  <div class="menu-view">
 
-    <!-- V60 SECTION -->
-    <div class="section-tag" data-anim>_Pour Over &middot; V60</div>
-    <div class="title-main" data-anim data-text="Caturra">
-      Caturra <span>Huila</span>
-    </div>
-    <div class="open-bar" data-anim>
-      <div class="live-dot" style="width:4px;height:4px;"></div>
-      _fuel the ritual
+    <!-- MENU HEADER -->
+    <div class="menu-header" data-anim>
+      <div class="brand-line">Breakfast Live &middot; Medellín 2026</div>
+      <div class="menu-title">Caturra <span>Huila</span></div>
+      <div class="menu-sub">Open Bar &middot; All Drinks Included</div>
     </div>
 
-    <div class="v60-row">
-      <!-- CATURRA FLEUR (Lavado) -->
-      <div class="v60-card card-washed" data-anim>
-        <div class="v60-photo">
-          <img src="https://images.unsplash.com/photo-1559496417-e7f25cb247f3?w=800&q=80" alt="V60 Pour Over — Caturra Fleur" loading="eager">
-          <div class="photo-tint"></div>
-        </div>
-        <canvas class="steam-canvas" id="steamCanvas1"></canvas>
-        <div class="v60-info">
-          <div class="process-badge process-washed">LAVADO</div>
-          <div class="drink-name">CATURRA FLEUR_</div>
-          <div class="drink-origin">Huila, Colombia &middot; 1,750 masl</div>
-          <div class="notes-row">
-            <span class="note-chip">Brown Sugar</span>
-            <span class="note-chip">Citrus</span>
-            <span class="note-chip">Chocolate</span>
+    <!-- ── V60 POUR OVER SECTION ── -->
+    <div class="section-head" data-anim>
+      <span class="section-label">_Pour Over</span>
+      <div class="section-line"></div>
+      <span class="section-badge">V60</span>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-items">
+
+        <!-- CATURRA FLEUR — Lavado -->
+        <div class="menu-item item-accent-washed" data-anim>
+          <div class="item-photo">
+            <img src="https://images.unsplash.com/photo-1559496417-e7f25cb247f3?w=600&q=80" alt="Caturra Fleur — V60" loading="eager">
+            <div class="photo-tint photo-tint-blue"></div>
+            <canvas class="steam-canvas" id="steamCanvas1"></canvas>
+          </div>
+          <div class="item-info">
+            <div class="process-badge process-washed">LAVADO</div>
+            <div class="item-name">CATURRA FLEUR_</div>
+            <div class="item-type">Huila, Colombia &middot; 1,750 masl</div>
+            <div class="notes-row">
+              <span class="note-chip">Brown Sugar</span>
+              <span class="note-chip">Citrus</span>
+              <span class="note-chip">Chocolate</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- CATURRA PINEAPPLE (Co-Fermentado) -->
-      <div class="v60-card card-cofermented" data-anim>
-        <div class="v60-photo">
-          <img src="https://images.unsplash.com/photo-1507133750040-4a8f57021571?w=800&q=80" alt="V60 Pour Over — Caturra Pineapple" loading="eager">
-          <div class="photo-tint"></div>
-        </div>
-        <canvas class="steam-canvas" id="steamCanvas2"></canvas>
-        <div class="v60-info">
-          <div class="process-badge process-cofermented">CO—FERMENTADO</div>
-          <div class="drink-name">CATURRA PINEAPPLE_</div>
-          <div class="drink-origin">Huila, Colombia &middot; 1,750 masl</div>
-          <div class="notes-row">
-            <span class="note-chip">Pineapple</span>
-            <span class="note-chip">Coconut</span>
+        <!-- CATURRA PINEAPPLE — Co-Fermentado -->
+        <div class="menu-item item-accent-cofermented" data-anim>
+          <div class="item-photo">
+            <img src="https://images.unsplash.com/photo-1507133750040-4a8f57021571?w=600&q=80" alt="Caturra Pineapple — V60" loading="eager">
+            <div class="photo-tint photo-tint-purple"></div>
+            <canvas class="steam-canvas" id="steamCanvas2"></canvas>
+          </div>
+          <div class="item-info">
+            <div class="process-badge process-cofermented">CO—FERMENTADO</div>
+            <div class="item-name">CATURRA PINEAPPLE_</div>
+            <div class="item-type">Huila, Colombia &middot; 1,750 masl</div>
+            <div class="notes-row">
+              <span class="note-chip">Pineapple</span>
+              <span class="note-chip">Coconut</span>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
 
-    <!-- DIVIDER -->
-    <div class="section-divider" data-anim></div>
+    <!-- ── DIVIDER ── -->
+    <div class="menu-divider" data-anim>
+      <div class="div-line"></div>
+      <div class="div-dot"></div>
+      <div class="div-line"></div>
+    </div>
 
-    <!-- COLD BREW SECTION -->
-    <div class="section-tag" data-anim>_Cold Brew &middot; 24hr</div>
+    <!-- ── COLD BREW SECTION ── -->
+    <div class="section-head" data-anim>
+      <span class="section-label">_Cold Brew</span>
+      <div class="section-line"></div>
+      <span class="section-badge">24hr</span>
+    </div>
 
-    <div class="cb-list">
-      <div class="cb-item accent-green" data-anim>
-        <div class="drink-name">SIGNAL_</div>
-        <div class="drink-type-sub">Pure Cold Brew &middot; 24hr Steep</div>
-        <div class="drink-desc">
-          Uncut. No filter, no noise. The purest frequency.
-          <em>Sin cortes. La frecuencia mas pura.</em>
-        </div>
-      </div>
+    <div class="menu-section">
+      <div class="menu-items">
 
-      <div class="cb-item accent-blue" data-anim>
-        <div class="drink-name">ANALOG_</div>
-        <div class="drink-type-sub">Cold Brew + Milk</div>
-        <div class="drink-desc">
-          Smooth like vinyl. Slow, deep, warm.
-          <em>Suave como el vinilo. Profundo y calido.</em>
+        <!-- SIGNAL_ -->
+        <div class="menu-item item-accent-green" data-anim>
+          <div class="item-photo">
+            <img src="https://images.unsplash.com/photo-1531835207745-506a1bc035d8?w=600&q=80" alt="SIGNAL — Pure Cold Brew" loading="lazy">
+            <div class="photo-tint photo-tint-green"></div>
+          </div>
+          <div class="item-info">
+            <div class="item-name">SIGNAL_</div>
+            <div class="item-type">Pure Cold Brew &middot; 24hr Steep</div>
+            <div class="item-desc">
+              Uncut. No filter, no noise.
+              <em>La frecuencia mas pura.</em>
+            </div>
+          </div>
         </div>
-        <div class="drink-options">
-          <span class="option-pill">Averna</span>
-          <span class="option-pill">Leche</span>
-          <span class="option-pill">+ Syrup</span>
-        </div>
-      </div>
 
-      <div class="cb-item accent-orange" data-anim>
-        <div class="drink-name">FREQUENCY_</div>
-        <div class="drink-type-sub">Cold Brew + Tonic Water</div>
-        <div class="drink-desc">
-          Carbonation hits like a drop. Bright, alive, electric.
-          <em>La efervescencia como un drop. Brillante y electrico.</em>
+        <!-- ANALOG_ -->
+        <div class="menu-item item-accent-blue" data-anim>
+          <div class="item-photo">
+            <img src="https://images.unsplash.com/photo-1562447457-579fc34967fb?w=600&q=80" alt="ANALOG — Cold Brew + Milk" loading="lazy">
+            <div class="photo-tint photo-tint-blue"></div>
+          </div>
+          <div class="item-info">
+            <div class="item-name">ANALOG_</div>
+            <div class="item-type">Cold Brew + Milk</div>
+            <div class="item-desc">
+              Smooth like vinyl. Deep, warm.
+              <em>Suave como el vinilo.</em>
+            </div>
+            <div class="drink-options">
+              <span class="option-pill">Averna</span>
+              <span class="option-pill">Leche</span>
+              <span class="option-pill">+ Syrup</span>
+            </div>
+          </div>
         </div>
+
+        <!-- FREQUENCY_ -->
+        <div class="menu-item item-accent-orange" data-anim>
+          <div class="item-photo">
+            <img src="https://images.unsplash.com/photo-1760304737368-7d8376bde94c?w=600&q=80" alt="FREQUENCY — Cold Brew + Tonic" loading="lazy">
+            <div class="photo-tint photo-tint-orange"></div>
+          </div>
+          <div class="item-info">
+            <div class="item-name">FREQUENCY_</div>
+            <div class="item-type">Cold Brew + Tonic Water</div>
+            <div class="item-desc">
+              Carbonation hits like a drop.
+              <em>Brillante y electrico.</em>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -1320,7 +1279,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
 <!-- ══════════════════════════════════════ -->
-<!-- ENGINE (GSAP-powered — single view)  -->
+<!-- ENGINE                                -->
 <!-- ══════════════════════════════════════ -->
 <script>
 (function() {
@@ -1328,7 +1287,6 @@
   const glitchCanvas = document.getElementById('glitchCanvas');
   const glitchCtx = glitchCanvas.getContext('2d');
 
-  // ─── GSAP DEFAULTS ───
   gsap.defaults({ overwrite: 'auto' });
 
   // ─── HUD CLOCK ───
@@ -1348,7 +1306,7 @@
     if (!sc) return;
     const sctx = sc.getContext('2d');
     const steamParticles = [];
-    const MAX = 35;
+    const MAX = 20;
 
     function resizeSteam() {
       const rect = sc.parentElement.getBoundingClientRect();
@@ -1362,13 +1320,13 @@
       if (steamParticles.length < MAX) {
         steamParticles.push({
           x: sc.width * 0.3 + Math.random() * sc.width * 0.4,
-          y: sc.height * 0.55 + Math.random() * 20,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: -(0.3 + Math.random() * 0.6),
-          size: Math.random() * 3 + 1,
-          alpha: Math.random() * 0.15 + 0.05,
+          y: sc.height * 0.6 + Math.random() * 15,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: -(0.2 + Math.random() * 0.5),
+          size: Math.random() * 2.5 + 0.8,
+          alpha: Math.random() * 0.12 + 0.04,
           life: 1,
-          decay: 0.003 + Math.random() * 0.005,
+          decay: 0.004 + Math.random() * 0.006,
           wobble: Math.random() * Math.PI * 2,
           wobbleSpeed: 0.02 + Math.random() * 0.03
         });
@@ -1380,10 +1338,10 @@
       for (let i = steamParticles.length - 1; i >= 0; i--) {
         const p = steamParticles[i];
         p.wobble += p.wobbleSpeed;
-        p.x += p.vx + Math.sin(p.wobble) * 0.3;
+        p.x += p.vx + Math.sin(p.wobble) * 0.25;
         p.y += p.vy;
         p.life -= p.decay;
-        p.size += 0.02;
+        p.size += 0.015;
         if (p.life <= 0) { steamParticles.splice(i, 1); continue; }
         const a = p.alpha * p.life;
         sctx.beginPath();
@@ -1391,8 +1349,8 @@
         sctx.fillStyle = `rgba(130, 253, 71, ${a})`;
         sctx.fill();
         sctx.beginPath();
-        sctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
-        sctx.fillStyle = `rgba(130, 253, 71, ${a * 0.15})`;
+        sctx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2);
+        sctx.fillStyle = `rgba(130, 253, 71, ${a * 0.12})`;
         sctx.fill();
       }
       spawnSteam();
@@ -1418,15 +1376,15 @@
 
   function initParticles() {
     particles = [];
-    const count = Math.floor((pc.width * pc.height) / 12000);
+    const count = Math.floor((pc.width * pc.height) / 14000);
     for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * pc.width,
         y: Math.random() * pc.height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        size: Math.random() * 1.5 + 0.5,
-        alpha: Math.random() * 0.3 + 0.05,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        size: Math.random() * 1.2 + 0.4,
+        alpha: Math.random() * 0.25 + 0.04,
         pulse: Math.random() * Math.PI * 2
       });
     }
@@ -1455,7 +1413,7 @@
           pctx.beginPath();
           pctx.moveTo(particles[i].x, particles[i].y);
           pctx.lineTo(particles[j].x, particles[j].y);
-          pctx.strokeStyle = `rgba(130, 253, 71, ${0.04 * (1 - dist / 80)})`;
+          pctx.strokeStyle = `rgba(130, 253, 71, ${0.03 * (1 - dist / 80)})`;
           pctx.lineWidth = 0.5;
           pctx.stroke();
         }
@@ -1471,23 +1429,23 @@
   function drawWave() {
     wctx.clearRect(0, 0, wc.width, wc.height);
     const time = Date.now() * 0.001;
-    const midY = wc.height * 0.85;
+    const midY = wc.height * 0.88;
     wctx.beginPath();
     wctx.moveTo(0, midY);
     for (let x = 0; x < wc.width; x += 2) {
-      const y = midY + Math.sin(x * 0.008 + time * 1.2) * 8 + Math.sin(x * 0.015 + time * 0.8) * 4 + Math.sin(x * 0.03 + time * 2.0) * 2;
+      const y = midY + Math.sin(x * 0.008 + time * 1.2) * 6 + Math.sin(x * 0.015 + time * 0.8) * 3 + Math.sin(x * 0.03 + time * 2.0) * 1.5;
       wctx.lineTo(x, y);
     }
-    wctx.strokeStyle = 'rgba(130, 253, 71, 0.12)';
+    wctx.strokeStyle = 'rgba(130, 253, 71, 0.10)';
     wctx.lineWidth = 1;
     wctx.stroke();
     wctx.beginPath();
     wctx.moveTo(0, midY);
     for (let x = 0; x < wc.width; x += 2) {
-      const y = midY + Math.sin(x * 0.01 + time * 0.6 + 1) * 12 + Math.sin(x * 0.02 + time * 1.5) * 3;
+      const y = midY + Math.sin(x * 0.01 + time * 0.6 + 1) * 10 + Math.sin(x * 0.02 + time * 1.5) * 2;
       wctx.lineTo(x, y);
     }
-    wctx.strokeStyle = 'rgba(34, 79, 209, 0.08)';
+    wctx.strokeStyle = 'rgba(34, 79, 209, 0.06)';
     wctx.lineWidth = 0.8;
     wctx.stroke();
     requestAnimationFrame(drawWave);
@@ -1497,25 +1455,21 @@
   function triggerGlitch() {
     gsap.to(glitchCanvas, { opacity: 1, duration: 0.05 });
     const w = glitchCanvas.width, h = glitchCanvas.height;
-    const slices = 15 + Math.floor(Math.random() * 20);
+    const slices = 12 + Math.floor(Math.random() * 15);
     let frame = 0;
-    const maxFrames = 8;
+    const maxFrames = 6;
 
     function drawGlitchFrame() {
       glitchCtx.clearRect(0, 0, w, h);
       for (let i = 0; i < slices; i++) {
         const y = Math.random() * h;
-        const sliceH = Math.random() * 30 + 2;
-        const offsetX = (Math.random() - 0.5) * 40;
-        glitchCtx.fillStyle = `rgba(130, 253, 71, ${Math.random() * 0.06})`;
+        const sliceH = Math.random() * 25 + 2;
+        const offsetX = (Math.random() - 0.5) * 30;
+        glitchCtx.fillStyle = `rgba(130, 253, 71, ${Math.random() * 0.05})`;
         glitchCtx.fillRect(offsetX, y, w, sliceH);
         if (Math.random() > 0.7) {
-          glitchCtx.fillStyle = `rgba(255, 75, 67, ${Math.random() * 0.04})`;
+          glitchCtx.fillStyle = `rgba(255, 75, 67, ${Math.random() * 0.03})`;
           glitchCtx.fillRect(offsetX + 3, y, w, sliceH * 0.5);
-        }
-        if (Math.random() > 0.8) {
-          glitchCtx.fillStyle = `rgba(34, 79, 209, ${Math.random() * 0.04})`;
-          glitchCtx.fillRect(offsetX - 3, y + 1, w, sliceH * 0.3);
         }
       }
       frame++;
@@ -1530,76 +1484,72 @@
   }
 
   // ═══════════════════════════════════════
-  // SINGLE VIEW ENTRANCE ANIMATION
+  // ENTRANCE ANIMATION
   // ═══════════════════════════════════════
-
   function playEntrance() {
     const tl = gsap.timeline();
 
-    const tags = document.querySelectorAll('.section-tag');
-    const title = document.querySelector('.title-main');
-    const bar = document.querySelector('.open-bar');
-    const v60Cards = document.querySelectorAll('.v60-card');
+    const header = document.querySelector('.menu-header');
+    const sectionHeads = document.querySelectorAll('.section-head');
+    const items = document.querySelectorAll('.menu-item');
     const chips = document.querySelectorAll('.note-chip');
-    const divider = document.querySelector('.section-divider');
-    const cbItems = document.querySelectorAll('.cb-item');
+    const divider = document.querySelector('.menu-divider');
 
-    // Phase 1: Header
-    tl.fromTo(tags[0], { opacity: 0, y: 8 }, { opacity: 0.7, y: 0, duration: 0.4, ease: 'power2.out' }, 0.1);
-    tl.fromTo(title, { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }, 0.15);
-    tl.fromTo(bar, { opacity: 0, y: 6 }, { opacity: 0.7, y: 0, duration: 0.4, ease: 'power2.out' }, 0.3);
+    // Header fade in
+    tl.fromTo(header, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0.1);
 
-    // Phase 2: V60 cards
-    tl.fromTo(v60Cards, { opacity: 0, y: 30, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, stagger: 0.15, ease: 'power3.out' }, 0.35);
+    // V60 section head
+    tl.fromTo(sectionHeads[0], { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, 0.3);
 
-    // Phase 3: Tasting notes
+    // V60 items stagger
+    tl.fromTo([items[0], items[1]], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.15, ease: 'power3.out' }, 0.45);
+
+    // Tasting notes typing
     if (chips.length) {
-      tl.fromTo(chips, { opacity: 0, y: 6 }, { opacity: 0.8, y: 0, duration: 0.35, stagger: 0.12, ease: 'power2.out' }, 0.9);
+      tl.fromTo(chips, { opacity: 0, y: 4 }, { opacity: 0.8, y: 0, duration: 0.3, stagger: 0.1, ease: 'power2.out' }, 0.9);
     }
 
-    // Phase 4: Divider
+    // Divider
     if (divider) {
-      tl.fromTo(divider, { opacity: 0, scaleX: 0 }, { opacity: 0.2, scaleX: 1, duration: 0.5, ease: 'power2.out', transformOrigin: 'left center' }, 1.1);
+      tl.fromTo(divider, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out' }, 1.1);
     }
 
-    // Phase 5: Cold brew section tag + items
-    if (tags[1]) {
-      tl.fromTo(tags[1], { opacity: 0, y: 8 }, { opacity: 0.7, y: 0, duration: 0.4, ease: 'power2.out' }, 1.2);
+    // Cold brew section head
+    if (sectionHeads[1]) {
+      tl.fromTo(sectionHeads[1], { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, 1.2);
     }
-    tl.fromTo(cbItems, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out' }, 1.3);
+
+    // Cold brew items stagger
+    tl.fromTo([items[2], items[3], items[4]], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: 'power3.out' }, 1.3);
 
     return tl;
   }
 
-  // ─── GSAP MICRO-GLITCH LOOP ───
+  // ─── MICRO-GLITCH LOOP ───
   function startGlitchLoop() {
     function doGlitch() {
-      const title = document.querySelector('.title-main');
+      const title = document.querySelector('.menu-title');
       if (title) {
         gsap.timeline()
-          .to(title, { x: (Math.random()-0.5)*6, textShadow: '-2px 0 #FF4B43, 2px 0 #224FD1', duration: 0.05, ease: 'steps(2)' })
-          .to(title, { x: (Math.random()-0.5)*4, textShadow: '2px 0 #FF4B43, -2px 0 #7D3BED', duration: 0.05, ease: 'steps(2)' })
+          .to(title, { x: (Math.random()-0.5)*5, textShadow: '-2px 0 #FF4B43, 2px 0 #224FD1', duration: 0.05, ease: 'steps(2)' })
+          .to(title, { x: (Math.random()-0.5)*3, textShadow: '2px 0 #FF4B43, -2px 0 #7D3BED', duration: 0.05, ease: 'steps(2)' })
           .to(title, { x: 0, textShadow: 'none', duration: 0.05, ease: 'steps(1)' });
       }
-      // Occasional full glitch flash
-      if (Math.random() > 0.6) {
-        triggerGlitch();
-      }
-      gsap.delayedCall(3 + Math.random() * 5, doGlitch);
+      if (Math.random() > 0.65) triggerGlitch();
+      gsap.delayedCall(4 + Math.random() * 6, doGlitch);
     }
     gsap.delayedCall(3, doGlitch);
   }
 
-  // ─── GSAP TAGLINE PULSE ───
+  // ─── AMBIENT LOOPS ───
   gsap.to('.tagline-bar', {
-    opacity: 0.35,
+    opacity: 0.3,
     duration: 2,
     ease: 'power1.inOut',
     yoyo: true,
     repeat: -1
   });
 
-  // ─── GSAP LIVE DOT PULSE ───
   gsap.to('.live-dot', {
     opacity: 0.3,
     boxShadow: '0 0 4px rgba(130,253,71,0.2)',
@@ -1609,7 +1559,6 @@
     repeat: -1
   });
 
-  // ─── GSAP TICKER ───
   const ticker = document.querySelector('.ticker-track');
   if (ticker) {
     gsap.to(ticker, {
@@ -1627,8 +1576,6 @@
   drawParticles();
   drawWave();
   startGlitchLoop();
-
-  // Boot entrance animation
   playEntrance();
 
 })();
@@ -1638,7 +1585,6 @@ function setOrientation(mode) {
   const btns = document.querySelectorAll('.toggle-btn');
   btns.forEach(b => b.classList.remove('active'));
   document.querySelector(`.toggle-btn[data-mode="${mode}"]`).classList.add('active');
-
   if (mode === 'horizontal') {
     document.body.classList.add('horizontal');
   } else {

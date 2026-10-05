@@ -466,6 +466,41 @@
   .item-accent-blue { border-left: 3px solid var(--cobalt); }
   .item-accent-orange { border-left: 3px solid var(--orange); }
 
+  /* ─── BILINGUAL SYSTEM ─── */
+  .lang-en { display: none; }
+  .lang-es { display: inline; }
+  body.en .lang-en { display: inline; }
+  body.en .lang-es { display: none; }
+
+  /* Block-level bilingual for descriptions */
+  .item-desc .lang-en,
+  .item-desc .lang-es { display: block; }
+  body.en .item-desc .lang-es { display: none; }
+  body:not(.en) .item-desc .lang-en { display: none; }
+
+  /* Language indicator pill */
+  .lang-indicator {
+    position: fixed;
+    bottom: 52px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 49;
+    font-family: var(--mono);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+    opacity: 0.5;
+    padding: 2px 10px;
+    border: 1px solid rgba(130,253,71,0.15);
+    border-radius: 100px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(130,253,71,0.03);
+    transition: opacity 0.3s ease;
+  }
+
   /* ─── SECTION DIVIDER ─── */
   .menu-divider {
     display: flex;
@@ -977,6 +1012,12 @@
     .orientation-toggle {
       top: 6px;
     }
+
+    .lang-indicator {
+      bottom: 44px;
+      font-size: 7px;
+      padding: 2px 8px;
+    }
   }
 
   @media (min-width: 421px) and (max-width: 767px) {
@@ -1167,12 +1208,15 @@
   </div>
 </div>
 
+<!-- LANGUAGE INDICATOR -->
+<div class="lang-indicator" id="langIndicator">ES</div>
+
 <!-- SPLIT-FLAP DISPLAY -->
 <div class="split-flap-display" id="splitFlap"></div>
 
 <!-- BOTTOM BAR -->
 <div class="bottom-bar">
-  <div class="tagline-bar">_fuel the ritual</div>
+  <div class="tagline-bar"><span class="lang-es">_fuel the ritual</span><span class="lang-en">_fuel the ritual</span></div>
 </div>
 
 <!-- ══════════════════════════════════════ -->
@@ -1190,7 +1234,7 @@
 
     <!-- ══ CAFÉ CALIENTE ══ -->
     <div class="section-head" data-anim>
-      <span class="section-label">_Café Caliente</span>
+      <span class="section-label"><span class="lang-es">_Café Caliente</span><span class="lang-en">_Hot Coffee</span></span>
       <div class="section-line"></div>
       <span class="section-badge">Pour Over &middot; V60</span>
     </div>
@@ -1202,8 +1246,13 @@
           <div class="item-info">
             <div class="process-badge process-washed">LAVADO</div>
             <div class="item-name">CATURRA FLEUR_</div>
-            <div class="item-type">Café filtrado &middot; Caturra Huila</div>
-            <div class="item-desc">Dulce y limpio. Notas de panela, cítrico y chocolate.<em>Sweet, clean. Brown sugar, citrus, chocolate.</em></div>
+            <div class="item-type"><span class="lang-es">Café filtrado &middot; Caturra Huila</span><span class="lang-en">Filter coffee &middot; Caturra Huila</span></div>
+            <div class="item-desc"><span class="lang-es">Dulce y limpio. Panela, cítrico y chocolate.</span><span class="lang-en">Sweet and clean. Brown sugar, citrus, chocolate.</span></div>
+            <div class="notes-row">
+              <span class="note-chip">Panela</span>
+              <span class="note-chip">Citrus</span>
+              <span class="note-chip">Chocolate</span>
+            </div>
           </div>
         </div>
 
@@ -1211,8 +1260,12 @@
           <div class="item-info">
             <div class="process-badge process-cofermented">CO—FERMENTADO</div>
             <div class="item-name">CATURRA PINEAPPLE_</div>
-            <div class="item-type">Café filtrado &middot; Caturra Huila</div>
-            <div class="item-desc">Tropical y cremoso. Piña y coco en cada sorbo.<em>Tropical, creamy. Pineapple &amp; coconut in every sip.</em></div>
+            <div class="item-type"><span class="lang-es">Café filtrado &middot; Caturra Huila</span><span class="lang-en">Filter coffee &middot; Caturra Huila</span></div>
+            <div class="item-desc"><span class="lang-es">Tropical y cremoso. Piña y coco en cada sorbo.</span><span class="lang-en">Tropical and creamy. Pineapple and coconut.</span></div>
+            <div class="notes-row">
+              <span class="note-chip">Pineapple</span>
+              <span class="note-chip">Coconut</span>
+            </div>
           </div>
         </div>
 
@@ -1228,7 +1281,7 @@
 
     <!-- ══ CAFÉ FRÍO ══ -->
     <div class="section-head" data-anim>
-      <span class="section-label">_Café Frío</span>
+      <span class="section-label"><span class="lang-es">_Café Frío</span><span class="lang-en">_Iced Coffee</span></span>
       <div class="section-line"></div>
       <span class="section-badge">Cold Brew &middot; 24hr</span>
     </div>
@@ -1239,19 +1292,19 @@
         <div class="menu-item item-accent-green" data-anim>
           <div class="item-info">
             <div class="item-name">SIGNAL_</div>
-            <div class="item-type">Cold Brew puro &middot; sin mezcla</div>
-            <div class="item-desc">Solo café, 24 horas de extracción fría.<em>Pure cold brew. No filter, no noise.</em></div>
+            <div class="item-type"><span class="lang-es">Cold Brew puro &middot; sin mezcla</span><span class="lang-en">Pure Cold Brew &middot; straight up</span></div>
+            <div class="item-desc"><span class="lang-es">Solo café. 24 horas de extracción fría.</span><span class="lang-en">Just coffee. 24-hour cold extraction.</span></div>
           </div>
         </div>
 
         <div class="menu-item item-accent-blue" data-anim>
           <div class="item-info">
             <div class="item-name">ANALOG_</div>
-            <div class="item-type">Cold Brew + Leche</div>
-            <div class="item-desc">Suave y profundo. Elegí tu leche y syrup.<em>Smooth &amp; warm. Pick your milk and syrup.</em></div>
+            <div class="item-type"><span class="lang-es">Cold Brew + Leche</span><span class="lang-en">Cold Brew + Milk</span></div>
+            <div class="item-desc"><span class="lang-es">Suave y profundo. Elegí tu leche y syrup.</span><span class="lang-en">Smooth and deep. Pick your milk and syrup.</span></div>
             <div class="drink-options">
-              <span class="option-pill">Avena</span>
-              <span class="option-pill">Leche</span>
+              <span class="option-pill"><span class="lang-es">Avena</span><span class="lang-en">Oat</span></span>
+              <span class="option-pill"><span class="lang-es">Leche</span><span class="lang-en">Milk</span></span>
               <span class="option-pill">+ Syrup</span>
             </div>
           </div>
@@ -1260,8 +1313,8 @@
         <div class="menu-item item-accent-orange" data-anim>
           <div class="item-info">
             <div class="item-name">FREQUENCY_</div>
-            <div class="item-type">Cold Brew + Agua Tónica</div>
-            <div class="item-desc">Burbujas y cafeína. Brillante y eléctrico.<em>Sparkling caffeine. Bright &amp; electric.</em></div>
+            <div class="item-type"><span class="lang-es">Cold Brew + Agua Tónica</span><span class="lang-en">Cold Brew + Tonic Water</span></div>
+            <div class="item-desc"><span class="lang-es">Burbujas y cafeína. Brillante y eléctrico.</span><span class="lang-en">Bubbles and caffeine. Bright and electric.</span></div>
           </div>
         </div>
 
@@ -1496,19 +1549,69 @@
     repeat: -1
   });
 
+  // ─── LANGUAGE ROTATION ───
+  const LANG_INTERVAL = 10000; // 10 seconds per language
+  let currentLang = 'es';
+  const langIndicator = document.getElementById('langIndicator');
+
+  function toggleLanguage() {
+    const menuView = document.querySelector('.menu-view');
+    const newLang = currentLang === 'es' ? 'en' : 'es';
+
+    // Crossfade: fade out content, swap, fade in
+    gsap.to(menuView, {
+      opacity: 0.4,
+      duration: 0.3,
+      ease: 'power2.in',
+      onComplete: () => {
+        if (newLang === 'en') {
+          document.body.classList.add('en');
+        } else {
+          document.body.classList.remove('en');
+        }
+        currentLang = newLang;
+        langIndicator.textContent = newLang.toUpperCase();
+
+        gsap.to(menuView, {
+          opacity: 1,
+          duration: 0.4,
+          ease: 'power2.out'
+        });
+      }
+    });
+  }
+
+  // Start language rotation after entrance
+  gsap.delayedCall(3, () => {
+    setInterval(toggleLanguage, LANG_INTERVAL);
+  });
+
   // ─── SPLIT-FLAP DISPLAY ───
-  const FLAP_MESSAGES = [
+  const FLAP_MESSAGES_ES = [
     'CAFE CALIENTE _ POUR OVER V60',
     'CAFE FRIO _ COLD BREW 24HR',
     'CATURRA FLEUR _ DULCE Y LIMPIO',
     'CATURRA PINEAPPLE _ TROPICAL',
     'SIGNAL_ PURO _ SIN MEZCLA',
-    'ANALOG_ CON LECHE _ CON SYRUP',
+    'ANALOG_ CON LECHE Y SYRUP',
     'FREQUENCY_ CON AGUA TONICA',
     'TOSTADO POR THOMAS GONZALEZ',
     'RITVALES X SALENTINO',
     'BREAKFAST LIVE _ MDE 2026',
   ];
+  const FLAP_MESSAGES_EN = [
+    'HOT COFFEE _ POUR OVER V60',
+    'ICED COFFEE _ COLD BREW 24HR',
+    'CATURRA FLEUR _ SWEET N CLEAN',
+    'CATURRA PINEAPPLE _ TROPICAL',
+    'SIGNAL_ PURE _ STRAIGHT UP',
+    'ANALOG_ WITH MILK AND SYRUP',
+    'FREQUENCY_ WITH TONIC WATER',
+    'ROASTED BY THOMAS GONZALEZ',
+    'RITVALES X SALENTINO',
+    'BREAKFAST LIVE _ MDE 2026',
+  ];
+  const FLAP_MESSAGES = FLAP_MESSAGES_ES;
   const FLAP_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.-·';
   const FLAP_COLS = 28;
   const FLAP_INTERVAL = 4500;
@@ -1617,10 +1720,11 @@
     flapTo(FLAP_MESSAGES[0]);
   });
 
-  // Cycle messages
+  // Cycle messages (language-aware)
   setInterval(() => {
-    flapIndex = (flapIndex + 1) % FLAP_MESSAGES.length;
-    flapTo(FLAP_MESSAGES[flapIndex]);
+    const msgs = currentLang === 'en' ? FLAP_MESSAGES_EN : FLAP_MESSAGES_ES;
+    flapIndex = (flapIndex + 1) % msgs.length;
+    flapTo(msgs[flapIndex]);
   }, FLAP_INTERVAL);
 
   // ─── INIT ───

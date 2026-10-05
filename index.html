@@ -362,7 +362,7 @@
   /* Drink name */
   .item-name {
     font-family: var(--mono);
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     letter-spacing: 1px;
     color: var(--white);
@@ -375,24 +375,16 @@
     font-size: 9px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: rgba(239,255,254,0.5);
+    color: rgba(239,255,254,0.45);
   }
 
-  /* Description — plain-language sell */
+  /* Description — plain-language, readable at distance */
   .item-desc {
     font-family: var(--sans);
-    font-size: 11px;
-    line-height: 1.4;
-    color: rgba(239,255,254,0.6);
-    margin-top: 2px;
-  }
-
-  .item-desc em {
-    display: block;
-    font-style: italic;
-    font-size: 10px;
-    color: rgba(239,255,254,0.35);
-    margin-top: 1px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(239,255,254,0.75);
+    margin-top: 3px;
   }
 
   /* Tasting notes */
@@ -405,13 +397,13 @@
 
   .note-chip {
     font-family: var(--mono);
-    font-size: 9px;
+    font-size: 10px;
     letter-spacing: 1px;
-    padding: 2px 8px;
-    border: 1px solid rgba(130,253,71,0.15);
+    padding: 3px 10px;
+    border: 1px solid rgba(130,253,71,0.2);
     border-radius: 100px;
     color: var(--green);
-    background: rgba(130,253,71,0.04);
+    background: rgba(130,253,71,0.06);
     opacity: 0;
     transform: translateY(4px);
   }
@@ -426,14 +418,14 @@
 
   .option-pill {
     font-family: var(--mono);
-    font-size: 8px;
+    font-size: 10px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    padding: 2px 8px;
+    padding: 3px 10px;
     border-radius: 100px;
-    border: 1px solid rgba(174,225,246,0.2);
-    color: rgba(239,255,254,0.55);
-    background: rgba(174,225,246,0.04);
+    border: 1px solid rgba(174,225,246,0.25);
+    color: rgba(239,255,254,0.7);
+    background: rgba(174,225,246,0.06);
   }
 
   /* ─── ACCENT COLOR VARIANTS ─── */
@@ -461,7 +453,9 @@
   .item-accent-cofermented .item-name { color: var(--purple); }
   .item-accent-cofermented .item-type { color: rgba(125,59,237,0.5); }
 
-  /* Left accent stripe on cold brew items */
+  /* Left accent stripe on all items */
+  .item-accent-washed { border-left: 3px solid var(--cobalt); }
+  .item-accent-cofermented { border-left: 3px solid var(--purple); }
   .item-accent-green { border-left: 3px solid var(--green); }
   .item-accent-blue { border-left: 3px solid var(--cobalt); }
   .item-accent-orange { border-left: 3px solid var(--orange); }
@@ -922,22 +916,17 @@
     }
 
     .item-desc {
-      font-size: 10px;
-    }
-
-    .item-desc em {
-      font-size: 8px;
-    }
-
-    .process-badge {
-      font-size: 7px;
-      padding: 2px 6px;
-      letter-spacing: 2px;
+      font-size: 11px;
     }
 
     .note-chip {
-      font-size: 7px;
-      padding: 2px 6px;
+      font-size: 8px;
+      padding: 2px 7px;
+    }
+
+    .option-pill {
+      font-size: 8px;
+      padding: 2px 7px;
     }
 
     .notes-row {
@@ -1036,21 +1025,21 @@
     }
 
     .item-name {
-      font-size: 24px;
+      font-size: 22px;
     }
 
     .item-desc {
-      font-size: 14px;
-    }
-
-    .process-badge {
-      font-size: 10px;
-      padding: 3px 10px;
+      font-size: 15px;
     }
 
     .note-chip {
       font-size: 11px;
-      padding: 3px 10px;
+      padding: 3px 12px;
+    }
+
+    .option-pill {
+      font-size: 11px;
+      padding: 3px 12px;
     }
   }
 
@@ -1064,21 +1053,21 @@
     }
 
     .item-name {
-      font-size: 28px;
+      font-size: 26px;
     }
 
     .item-desc {
       font-size: 16px;
     }
 
-    .process-badge {
-      font-size: 12px;
-      padding: 4px 12px;
-    }
-
     .note-chip {
       font-size: 12px;
-      padding: 4px 12px;
+      padding: 4px 14px;
+    }
+
+    .option-pill {
+      font-size: 12px;
+      padding: 4px 14px;
     }
   }
 
@@ -1244,9 +1233,8 @@
 
         <div class="menu-item item-accent-washed" data-anim>
           <div class="item-info">
-            <div class="process-badge process-washed">LAVADO</div>
             <div class="item-name">CATURRA FLEUR_</div>
-            <div class="item-type"><span class="lang-es">Café filtrado &middot; Caturra Huila</span><span class="lang-en">Filter coffee &middot; Caturra Huila</span></div>
+            <div class="item-type"><span class="lang-es">Café filtrado &middot; Lavado</span><span class="lang-en">Filter coffee &middot; Washed</span></div>
             <div class="item-desc"><span class="lang-es">Dulce y limpio. Panela, cítrico y chocolate.</span><span class="lang-en">Sweet and clean. Brown sugar, citrus, chocolate.</span></div>
             <div class="notes-row">
               <span class="note-chip">Panela</span>
@@ -1258,9 +1246,8 @@
 
         <div class="menu-item item-accent-cofermented" data-anim>
           <div class="item-info">
-            <div class="process-badge process-cofermented">CO—FERMENTADO</div>
             <div class="item-name">CATURRA PINEAPPLE_</div>
-            <div class="item-type"><span class="lang-es">Café filtrado &middot; Caturra Huila</span><span class="lang-en">Filter coffee &middot; Caturra Huila</span></div>
+            <div class="item-type"><span class="lang-es">Café filtrado &middot; Co-fermentado</span><span class="lang-en">Filter coffee &middot; Co-fermented</span></div>
             <div class="item-desc"><span class="lang-es">Tropical y cremoso. Piña y coco en cada sorbo.</span><span class="lang-en">Tropical and creamy. Pineapple and coconut.</span></div>
             <div class="notes-row">
               <span class="note-chip">Pineapple</span>

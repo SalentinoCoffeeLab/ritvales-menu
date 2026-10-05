@@ -668,36 +668,135 @@
   .corner-bl { bottom: 6px; left: 6px; border-bottom: 1px solid var(--green); border-left: 1px solid var(--green); }
   .corner-br { bottom: 6px; right: 6px; border-bottom: 1px solid var(--green); border-right: 1px solid var(--green); }
 
-  /* ─── HORIZONTAL DATA TICKER ─── */
-  .data-ticker {
+  /* ─── SPLIT-FLAP DISPLAY ─── */
+  .split-flap-display {
     position: fixed;
-    bottom: 34px;
-    left: 0; right: 0;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 48;
-    overflow: hidden;
-    height: 14px;
-    opacity: 0.2;
-  }
-
-  .ticker-track {
     display: flex;
-    white-space: nowrap;
+    gap: 2px;
+    perspective: 400px;
+  }
+
+  .flap-cell {
+    width: 14px;
+    height: 20px;
+    position: relative;
     font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: var(--green);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0;
     text-transform: uppercase;
+    background: rgba(10,10,10,0.9);
+    border: 1px solid rgba(130,253,71,0.08);
+    border-radius: 2px;
+    overflow: hidden;
   }
 
-  .ticker-track span {
-    margin-right: 40px;
-    opacity: 0.5;
+  .flap-cell.space-cell {
+    background: transparent;
+    border-color: transparent;
+    width: 7px;
   }
 
-  .ticker-track span::before {
-    content: '//';
-    margin-right: 8px;
-    opacity: 0.3;
+  /* Top and bottom halves */
+  .flap-top, .flap-bottom {
+    position: absolute;
+    left: 0; right: 0;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    backface-visibility: hidden;
+  }
+
+  .flap-top {
+    top: 0;
+    background: rgba(15,15,15,0.95);
+    color: var(--green);
+    align-items: flex-end;
+    padding-bottom: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.6);
+  }
+
+  .flap-top span {
+    transform: translateY(50%);
+  }
+
+  .flap-bottom {
+    bottom: 0;
+    background: rgba(8,8,8,0.95);
+    color: rgba(130,253,71,0.85);
+    align-items: flex-start;
+    padding-top: 0;
+  }
+
+  .flap-bottom span {
+    transform: translateY(-50%);
+  }
+
+  /* Center line (mechanical split) */
+  .flap-cell::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    height: 1px;
+    background: rgba(0,0,0,0.7);
+    z-index: 5;
+  }
+
+  /* Flipping flap overlay */
+  .flap-flip {
+    position: absolute;
+    left: 0; right: 0;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    backface-visibility: hidden;
+    z-index: 10;
+  }
+
+  .flap-flip-top {
+    top: 0;
+    background: rgba(15,15,15,0.95);
+    color: var(--green);
+    align-items: flex-end;
+    transform-origin: bottom center;
+    border-bottom: 1px solid rgba(0,0,0,0.6);
+    border-radius: 2px 2px 0 0;
+  }
+
+  .flap-flip-top span {
+    transform: translateY(50%);
+  }
+
+  .flap-flip-bottom {
+    bottom: 0;
+    background: rgba(8,8,8,0.95);
+    color: rgba(130,253,71,0.85);
+    align-items: flex-start;
+    transform-origin: top center;
+    border-radius: 0 0 2px 2px;
+  }
+
+  .flap-flip-bottom span {
+    transform: translateY(-50%);
+  }
+
+  /* Subtle glow on the whole display */
+  .split-flap-display::before {
+    content: '';
+    position: absolute;
+    inset: -4px -8px;
+    background: radial-gradient(ellipse at center, rgba(130,253,71,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
   }
 
   /* ─── HUD ELEMENTS ─── */
@@ -891,13 +990,19 @@
       letter-spacing: 2px;
     }
 
-    .data-ticker {
-      bottom: 28px;
-      height: 12px;
+    .split-flap-display {
+      bottom: 26px;
+      gap: 1px;
     }
 
-    .ticker-track {
-      font-size: 7px;
+    .flap-cell {
+      width: 10px;
+      height: 15px;
+      font-size: 9px;
+    }
+
+    .flap-cell.space-cell {
+      width: 5px;
     }
 
     .corner {
@@ -1055,8 +1160,19 @@
       padding: 4px 10px;
     }
 
-    .data-ticker {
-      bottom: 24px;
+    .split-flap-display {
+      bottom: 22px;
+      gap: 1px;
+    }
+
+    .flap-cell {
+      width: 9px;
+      height: 13px;
+      font-size: 8px;
+    }
+
+    .flap-cell.space-cell {
+      width: 4px;
     }
   }
 </style>
@@ -1105,31 +1221,8 @@
   </div>
 </div>
 
-<!-- DATA TICKER -->
-<div class="data-ticker">
-  <div class="ticker-track">
-    <span>Caturra Fleur _ Lavado</span>
-    <span>Caturra Pineapple _ Co-Fermentado</span>
-    <span>Huila, Colombia _ 1,750 masl</span>
-    <span>V60 Pour Over</span>
-    <span>Cold Brew 24hr Steep</span>
-    <span>Roasted by Thomas Gonzalez</span>
-    <span>Signal_ Analog_ Frequency_</span>
-    <span>La Energia Es Una Sola</span>
-    <span>Ritvales x Salentino Coffee Lab</span>
-    <span>Breakfast Live _ Medellin 2026</span>
-    <span>Caturra Fleur _ Lavado</span>
-    <span>Caturra Pineapple _ Co-Fermentado</span>
-    <span>Huila, Colombia _ 1,750 masl</span>
-    <span>V60 Pour Over</span>
-    <span>Cold Brew 24hr Steep</span>
-    <span>Roasted by Thomas Gonzalez</span>
-    <span>Signal_ Analog_ Frequency_</span>
-    <span>La Energia Es Una Sola</span>
-    <span>Ritvales x Salentino Coffee Lab</span>
-    <span>Breakfast Live _ Medellin 2026</span>
-  </div>
-</div>
+<!-- SPLIT-FLAP DISPLAY -->
+<div class="split-flap-display" id="splitFlap"></div>
 
 <!-- BOTTOM BAR -->
 <div class="bottom-bar">
@@ -1559,16 +1652,132 @@
     repeat: -1
   });
 
-  const ticker = document.querySelector('.ticker-track');
-  if (ticker) {
-    gsap.to(ticker, {
-      xPercent: -50,
-      duration: 30,
-      ease: 'none',
-      repeat: -1
-    });
-    ticker.style.animation = 'none';
+  // ─── SPLIT-FLAP DISPLAY ───
+  const FLAP_MESSAGES = [
+    'CATURRA FLEUR _ LAVADO',
+    'CATURRA PINEAPPLE _ CO-FERMENTADO',
+    'HUILA COLOMBIA _ 1750 MASL',
+    'V60 POUR OVER _ BREWED LIVE',
+    'COLD BREW 24HR STEEP',
+    'ROASTED BY THOMAS GONZALEZ',
+    'SIGNAL_ ANALOG_ FREQUENCY_',
+    'LA ENERGIA ES UNA SOLA',
+    'RITVALES X SALENTINO',
+    'BREAKFAST LIVE _ MDE 2026',
+  ];
+  const FLAP_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.-·';
+  const FLAP_COLS = 28;
+  const FLAP_INTERVAL = 4500;
+  let flapIndex = 0;
+  const flapContainer = document.getElementById('splitFlap');
+
+  // Build cells
+  function buildFlapCells() {
+    flapContainer.innerHTML = '';
+    for (let i = 0; i < FLAP_COLS; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'flap-cell';
+      cell.innerHTML = '<div class="flap-top"><span> </span></div><div class="flap-bottom"><span> </span></div>';
+      cell.dataset.char = ' ';
+      flapContainer.appendChild(cell);
+    }
   }
+
+  function flapTo(message) {
+    const padded = message.padEnd(FLAP_COLS, ' ').substring(0, FLAP_COLS);
+    const cells = flapContainer.querySelectorAll('.flap-cell');
+
+    cells.forEach((cell, i) => {
+      const target = padded[i];
+      const current = cell.dataset.char || ' ';
+
+      if (target === current) return;
+
+      // Determine flip steps (random intermediate chars)
+      const isSpace = target === ' ';
+      const steps = isSpace ? 1 : 2 + Math.floor(Math.random() * 4);
+      const delay = i * 40 + Math.random() * 60;
+
+      let step = 0;
+      function flipNext() {
+        step++;
+        const isLast = step > steps;
+        const nextChar = isLast ? target : FLAP_CHARS[Math.floor(Math.random() * FLAP_CHARS.length)];
+
+        // Update space class
+        if (nextChar === ' ') {
+          cell.classList.add('space-cell');
+        } else {
+          cell.classList.remove('space-cell');
+        }
+
+        // Animate: top flap falls down revealing new char
+        const topHalf = cell.querySelector('.flap-top');
+        const bottomHalf = cell.querySelector('.flap-bottom');
+        const oldChar = cell.dataset.char;
+
+        // Create falling top flap (old char)
+        const flipTop = document.createElement('div');
+        flipTop.className = 'flap-flip flap-flip-top';
+        flipTop.innerHTML = '<span>' + oldChar + '</span>';
+        cell.appendChild(flipTop);
+
+        // Update bottom half immediately to new char (hidden behind falling flap)
+        bottomHalf.querySelector('span').textContent = nextChar;
+
+        // Animate top flap falling
+        gsap.fromTo(flipTop, {
+          rotationX: 0
+        }, {
+          rotationX: -90,
+          duration: 0.08,
+          ease: 'power1.in',
+          onComplete: () => {
+            flipTop.remove();
+
+            // Create rising bottom flap (new char)
+            const flipBottom = document.createElement('div');
+            flipBottom.className = 'flap-flip flap-flip-bottom';
+            flipBottom.innerHTML = '<span>' + nextChar + '</span>';
+            cell.appendChild(flipBottom);
+
+            gsap.fromTo(flipBottom, {
+              rotationX: 90
+            }, {
+              rotationX: 0,
+              duration: 0.06,
+              ease: 'power1.out',
+              onComplete: () => {
+                flipBottom.remove();
+                // Update static display
+                topHalf.querySelector('span').textContent = nextChar;
+                cell.dataset.char = nextChar;
+
+                if (!isLast) {
+                  setTimeout(flipNext, 50 + Math.random() * 30);
+                }
+              }
+            });
+          }
+        });
+      }
+
+      setTimeout(flipNext, delay);
+    });
+  }
+
+  buildFlapCells();
+
+  // Initial message after entrance
+  gsap.delayedCall(1.8, () => {
+    flapTo(FLAP_MESSAGES[0]);
+  });
+
+  // Cycle messages
+  setInterval(() => {
+    flapIndex = (flapIndex + 1) % FLAP_MESSAGES.length;
+    flapTo(FLAP_MESSAGES[flapIndex]);
+  }, FLAP_INTERVAL);
 
   // ─── INIT ───
   window.addEventListener('resize', resizeCanvases);

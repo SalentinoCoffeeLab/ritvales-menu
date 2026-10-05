@@ -210,17 +210,22 @@
     transform: translateY(-50%);
   }
 
-  /* ─── DRINK DESCRIPTION (LED text — not flap cells) ─── */
+  /* ─── DRINK DESCRIPTION ─── */
   .drink-desc {
-    font-family: var(--sans);
-    font-size: clamp(9px, 1.8vh, 17px);
-    font-weight: 300;
-    color: rgba(239,255,254,0.55);
+    font-family: var(--mono);
+    font-size: clamp(7px, 1.5vh, 14px);
+    font-weight: 400;
+    color: rgba(239,238,255,0.45);
     letter-spacing: 0.5px;
-    line-height: 1.4;
-    padding: clamp(2px, 0.4vh, 6px) clamp(4px, 0.8vw, 12px);
+    line-height: 1.35;
+    /* Match flap-row width: 30 cells × (cw + gap), centered */
+    width: calc(30 * (var(--cw) + var(--gap)));
+    max-width: 100%;
+    margin: 0 auto;
+    padding: clamp(1px, 0.3vh, 4px) 0;
     opacity: 0;
     transform: translateY(4px);
+    text-transform: uppercase;
   }
 
   .drink-desc .lang-en { display: none; }
@@ -388,7 +393,7 @@
   }
 
   body.horizontal .drink-desc {
-    font-size: clamp(10px, 2.4vh, 20px);
+    font-size: clamp(8px, 2vh, 16px);
   }
 
   /* ═══════════════════════════════════════ */
@@ -414,8 +419,8 @@
     .board-frame { padding: 6px; }
 
     .drink-desc {
-      font-size: 9px;
-      padding: 1px 4px;
+      font-size: 7px;
+      padding: 1px 0;
     }
 
     .hud-time { font-size: 6px; top: 4px; right: 6px; }
@@ -438,7 +443,7 @@
       --f-sm: 6px;
     }
 
-    .drink-desc { font-size: 8px; }
+    .drink-desc { font-size: 6.5px; }
     .board-frame { gap: 1px; }
   }
 
@@ -450,7 +455,7 @@
     .board { padding: 6px; }
     .board-frame { padding: 10px; }
 
-    .drink-desc { font-size: 10px; }
+    .drink-desc { font-size: 8px; }
   }
 
   /* Tablet portrait */
@@ -465,7 +470,7 @@
       --f-sm: clamp(9px, 1.6vh, 14px);
     }
 
-    .drink-desc { font-size: clamp(11px, 1.8vh, 16px); }
+    .drink-desc { font-size: clamp(9px, 1.5vh, 13px); }
   }
 
   /* Large screens / LED panel */
@@ -480,7 +485,7 @@
       --f-sm: clamp(11px, 1.8vh, 20px);
     }
 
-    .drink-desc { font-size: clamp(13px, 2vh, 20px); }
+    .drink-desc { font-size: clamp(10px, 1.6vh, 16px); }
   }
 
   /* Touch targets */
@@ -507,7 +512,7 @@
       --sep-gap: 3px;
     }
 
-    .drink-desc { font-size: 8px; padding: 1px 3px; }
+    .drink-desc { font-size: 6.5px; padding: 1px 0; }
     .board { padding: 3px; }
     .board-frame { padding: 5px 8px; }
   }

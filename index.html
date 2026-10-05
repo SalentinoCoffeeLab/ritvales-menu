@@ -318,6 +318,57 @@
     gap: 3px;
   }
 
+  /* ─── FLAVOR PROFILE BARS ─── */
+  .flavor-profile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    width: 90px;
+    min-width: 90px;
+    flex-shrink: 0;
+    padding-left: 10px;
+    border-left: 1px solid rgba(130,253,71,0.06);
+  }
+
+  .flavor-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .flavor-bar .bar-label {
+    font-family: var(--mono);
+    font-size: 7px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(239,255,254,0.3);
+    line-height: 1;
+  }
+
+  .flavor-bar .bar-track {
+    width: 100%;
+    height: 3px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .flavor-bar .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--green);
+    opacity: 0.6;
+    transition: width 0.8s ease-out;
+  }
+
+  /* Accent-colored fills */
+  .item-accent-washed .bar-fill { background: var(--steel); }
+  .item-accent-cofermented .bar-fill { background: var(--purple); }
+  .item-accent-green .bar-fill { background: var(--green); }
+  .item-accent-blue .bar-fill { background: var(--cobalt); }
+  .item-accent-orange .bar-fill { background: var(--orange); }
+
   /* Process badge */
   .process-badge {
     display: inline-block;
@@ -852,9 +903,18 @@
     padding: 3px 10px;
   }
 
-  body.horizontal .process-badge {
-    font-size: 10px;
-    padding: 3px 10px;
+  body.horizontal .flavor-profile {
+    width: 120px;
+    min-width: 120px;
+    gap: 8px;
+  }
+
+  body.horizontal .bar-label {
+    font-size: 8px;
+  }
+
+  body.horizontal .bar-track {
+    height: 4px;
   }
 
   body.horizontal .top-bar {
@@ -934,9 +994,20 @@
       margin-top: 3px;
     }
 
-    .option-pill {
-      font-size: 7px;
-      padding: 2px 6px;
+    .flavor-profile {
+      width: 65px;
+      min-width: 65px;
+      gap: 4px;
+      padding-left: 8px;
+    }
+
+    .flavor-bar .bar-label {
+      font-size: 6px;
+      letter-spacing: 1px;
+    }
+
+    .flavor-bar .bar-track {
+      height: 2px;
     }
 
     .top-bar {
@@ -1092,8 +1163,18 @@
 
     .menu-item {
       padding: 6px;
-      gap: 8px;
+      gap: 6px;
     }
+
+    .flavor-profile {
+      width: 55px;
+      min-width: 55px;
+      gap: 3px;
+      padding-left: 6px;
+    }
+
+    .flavor-bar .bar-label { font-size: 5px; }
+    .flavor-bar .bar-track { height: 2px; }
 
     .menu-header .concept-name {
       font-size: 16px;
@@ -1242,6 +1323,11 @@
               <span class="note-chip">Chocolate</span>
             </div>
           </div>
+          <div class="flavor-profile">
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Dulzura</span><span class="lang-en">Sweet</span></span><div class="bar-track"><div class="bar-fill" style="width:80%"></div></div></div>
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Acidez</span><span class="lang-en">Acidity</span></span><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div></div>
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Cuerpo</span><span class="lang-en">Body</span></span><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div></div>
+          </div>
         </div>
 
         <div class="menu-item item-accent-cofermented" data-anim>
@@ -1253,6 +1339,11 @@
               <span class="note-chip">Pineapple</span>
               <span class="note-chip">Coconut</span>
             </div>
+          </div>
+          <div class="flavor-profile">
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Dulzura</span><span class="lang-en">Sweet</span></span><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div></div>
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Acidez</span><span class="lang-en">Acidity</span></span><div class="bar-track"><div class="bar-fill" style="width:75%"></div></div></div>
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Cuerpo</span><span class="lang-en">Body</span></span><div class="bar-track"><div class="bar-fill" style="width:55%"></div></div></div>
           </div>
         </div>
 
@@ -1282,6 +1373,11 @@
             <div class="item-type"><span class="lang-es">Cold Brew puro &middot; sin mezcla</span><span class="lang-en">Pure Cold Brew &middot; straight up</span></div>
             <div class="item-desc"><span class="lang-es">Solo café. 24 horas de extracción fría.</span><span class="lang-en">Just coffee. 24-hour cold extraction.</span></div>
           </div>
+          <div class="flavor-profile">
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Intenso</span><span class="lang-en">Bold</span></span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div></div>
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Dulzura</span><span class="lang-en">Sweet</span></span><div class="bar-track"><div class="bar-fill" style="width:40%"></div></div></div>
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Cuerpo</span><span class="lang-en">Body</span></span><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div></div>
+          </div>
         </div>
 
         <div class="menu-item item-accent-blue" data-anim>
@@ -1295,6 +1391,11 @@
               <span class="option-pill">+ Syrup</span>
             </div>
           </div>
+          <div class="flavor-profile">
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Suave</span><span class="lang-en">Smooth</span></span><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div></div>
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Dulzura</span><span class="lang-en">Sweet</span></span><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div></div>
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Cuerpo</span><span class="lang-en">Body</span></span><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div></div>
+          </div>
         </div>
 
         <div class="menu-item item-accent-orange" data-anim>
@@ -1302,6 +1403,11 @@
             <div class="item-name">FREQUENCY_</div>
             <div class="item-type"><span class="lang-es">Cold Brew + Agua Tónica</span><span class="lang-en">Cold Brew + Tonic Water</span></div>
             <div class="item-desc"><span class="lang-es">Burbujas y cafeína. Brillante y eléctrico.</span><span class="lang-en">Bubbles and caffeine. Bright and electric.</span></div>
+          </div>
+          <div class="flavor-profile">
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Fresco</span><span class="lang-en">Fresh</span></span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div></div>
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Acidez</span><span class="lang-en">Acidity</span></span><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div></div>
+            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Burbujas</span><span class="lang-en">Fizz</span></span><div class="bar-track"><div class="bar-fill" style="width:95%"></div></div></div>
           </div>
         </div>
 

@@ -87,17 +87,12 @@
   }
 
   /* ─── GPU HINTS ─── */
-  .slide,
-  .filter-card-hero,
-  .filter-card-secondary,
-  .card,
+  .single-view,
+  .v60-card,
+  .cb-item,
   .title-main,
   .section-tag,
-  .title-sub,
   .open-bar,
-  .brand-quote,
-  .brand-text,
-  .step,
   .note-chip {
     will-change: transform, opacity;
   }
@@ -110,24 +105,14 @@
     overflow: hidden;
   }
 
-  /* ─── SLIDE SYSTEM ─── */
-  .slide {
-    position: absolute;
-    inset: 0;
+  /* ─── SINGLE VIEW LAYOUT ─── */
+  .single-view {
     display: flex;
     flex-direction: column;
-    padding: 40px 28px 28px;
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(1);
+    padding: 52px 24px 70px;
+    height: 100%;
+    gap: 0;
   }
-
-  .slide.active {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  /* Slide transitions handled by GSAP — no CSS keyframes needed */
 
   /* ─── PERSISTENT TOP BAR ─── */
   .top-bar {
@@ -198,11 +183,11 @@
     position: fixed;
     bottom: 0; left: 0; right: 0;
     z-index: 50;
-    padding: 16px 20px;
+    padding: 14px 20px;
     background: linear-gradient(0deg, rgba(2,1,2,0.95) 0%, transparent 100%);
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 6px;
   }
 
   .tagline-bar {
@@ -213,76 +198,33 @@
     color: var(--green);
     text-align: center;
     opacity: 0.7;
-    animation: taglinePulse 4s ease-in-out infinite;
   }
 
-  @keyframes taglinePulse {
-    0%, 100% { opacity: 0.7; }
-    50% { opacity: 0.35; }
-  }
-
-  /* PROGRESS DOTS */
-  .progress-dots {
-    display: flex;
-    justify-content: center;
-    gap: 6px;
-  }
-
-  .p-dot {
-    height: 3px;
-    border-radius: 2px;
-    background: rgba(130, 253, 71, 0.15);
-    transition: all 0.5s ease;
-    flex: 1;
-    max-width: 60px;
-  }
-
-  .p-dot.active {
-    background: var(--green);
-    box-shadow: 0 0 12px var(--green-glow);
-  }
-
-  .p-dot.active .p-dot-fill {
-    display: block;
-  }
-
-  .p-dot-fill {
-    display: none;
-    height: 100%;
-    background: var(--green);
-    border-radius: 2px;
-    box-shadow: 0 0 8px var(--green-glow);
-    width: 0%;
-  }
-
-  /* ─── SECTION HEADER ANIM ─── */
+  /* ─── SECTION HEADER ─── */
   .section-tag {
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 11px;
     letter-spacing: 4px;
     text-transform: uppercase;
     color: var(--green);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     opacity: 0;
     transform: translateY(8px);
   }
-
-  /* section-tag entrance handled by GSAP */
 
   /* ─── TITLE SYSTEM ─── */
   .title-main {
     font-family: var(--mono);
     font-weight: 700;
-    font-size: 52px;
+    font-size: 36px;
     line-height: 1.1;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     position: relative;
     overflow: hidden;
   }
 
   .title-main span { color: var(--green); }
 
-  /* TYPING CURSOR */
   .title-main::after {
     content: '_';
     color: var(--green);
@@ -294,41 +236,25 @@
     50% { opacity: 0; }
   }
 
-  /* Title glitch handled by GSAP */
-
-  .title-sub {
-    font-size: 16px;
-    color: rgba(239,255,254,0.4);
-    margin-bottom: 20px;
-    font-weight: 300;
-    line-height: 1.5;
-    opacity: 0;
-    transform: translateY(6px);
-  }
-
-  /* title-sub entrance handled by GSAP */
-
   /* ─── OPEN BAR PILL ─── */
   .open-bar {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 20px;
+    gap: 6px;
+    padding: 5px 14px;
     border: 1px solid var(--green-dim);
     border-radius: 100px;
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--green);
     background: rgba(130, 253, 71, 0.04);
-    margin-bottom: 20px;
+    margin-bottom: 8px;
     position: relative;
     overflow: hidden;
     opacity: 0;
   }
-
-  /* open-bar entrance handled by GSAP */
 
   .open-bar::before {
     content: '';
@@ -344,94 +270,58 @@
     100% { left: 200%; }
   }
 
-  /* ─── CARD SYSTEM ─── */
-  .cards-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    min-height: 0;
-    padding-bottom: 60px;
-  }
-
-  .card {
-    flex: 1;
-    border: 1px solid rgba(130,253,71,0.08);
-    border-radius: 14px;
-    overflow: hidden;
+  /* ─── SECTION DIVIDER ─── */
+  .section-divider {
+    height: 1px;
+    margin: 8px 0;
+    background: linear-gradient(90deg, var(--green), rgba(34,79,209,0.3), transparent);
+    opacity: 0.2;
     position: relative;
-    background: rgba(255,255,255,0.02);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    opacity: 0;
-    transform: translateY(20px);
   }
 
-  /* card reveal stagger handled by GSAP */
-
-  /* Card hover glow */
-  .card::after {
+  .section-divider::after {
     content: '';
     position: absolute;
-    inset: -1px;
-    border-radius: 14px;
-    border: 1px solid transparent;
-    background: linear-gradient(135deg, rgba(130,253,71,0.1), transparent, rgba(34,79,209,0.05)) border-box;
-    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0;
-    animation: borderGlow 6s ease-in-out infinite;
+    top: -2px; left: 0;
+    width: 4px; height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green-glow);
+    animation: altitudeScan 3s ease-in-out infinite;
   }
 
-  @keyframes borderGlow {
-    0%, 100% { opacity: 0; }
-    50% { opacity: 1; }
+  @keyframes altitudeScan {
+    0% { left: 0; }
+    50% { left: 70%; }
+    100% { left: 0; }
   }
 
-  /* ─── FILTER CARDS — HERO LAYOUT ─── */
-  .filter-cards-area {
-    flex: 1;
+  /* ─── V60 SECTION ─── */
+  .v60-row {
     display: flex;
-    flex-direction: column;
     gap: 10px;
+    flex: 1;
     min-height: 0;
-    padding-bottom: 60px;
   }
 
-  .filter-card-hero,
-  .filter-card-secondary {
+  .v60-card {
     flex: 1;
     position: relative;
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
-    opacity: 0;
-    transform: translateY(20px);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    background: linear-gradient(160deg, rgba(34,79,209,0.06) 0%, rgba(2,1,2,0.95) 50%, rgba(130,253,71,0.03) 100%);
-  }
-
-  .filter-card-secondary {
-    background: linear-gradient(160deg, rgba(125,59,237,0.06) 0%, rgba(2,1,2,0.95) 50%, rgba(232,119,34,0.03) 100%);
-  }
-
-  /* filter card reveal handled by GSAP */
-
-  /* ─── ANIMATED GRADIENT BORDER ─── */
-  .filter-card-hero,
-  .filter-card-secondary {
+    opacity: 0;
+    transform: translateY(20px);
     border: 1px solid rgba(130,253,71,0.12);
-    position: relative;
   }
 
-  .filter-card-hero::before,
-  .filter-card-secondary::before {
+  .v60-card::before {
     content: '';
     position: absolute;
     inset: -2px;
-    border-radius: 18px;
+    border-radius: 14px;
     padding: 2px;
     background: conic-gradient(
       from var(--border-angle, 0deg),
@@ -458,16 +348,23 @@
     to { --border-angle: 360deg; }
   }
 
-  /* ─── FULL-BLEED PHOTO AREA ─── */
-  .filter-photo {
+  .v60-card.card-washed {
+    background: linear-gradient(160deg, rgba(34,79,209,0.06) 0%, rgba(2,1,2,0.95) 50%, rgba(130,253,71,0.03) 100%);
+  }
+
+  .v60-card.card-cofermented {
+    background: linear-gradient(160deg, rgba(125,59,237,0.06) 0%, rgba(2,1,2,0.95) 50%, rgba(232,119,34,0.03) 100%);
+  }
+
+  /* V60 card photo */
+  .v60-photo {
     position: absolute;
     inset: 0;
     z-index: 0;
     overflow: hidden;
   }
 
-  /* Animated grid */
-  .filter-photo::before {
+  .v60-photo::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -483,87 +380,25 @@
     100% { background-position: 30px 60px; }
   }
 
-  /* Photo placeholder centered icon */
-  .filter-photo-inner {
+  .v60-photo img {
     position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    opacity: 0.25;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.45;
+    filter: saturate(0.3) brightness(0.5) contrast(1.3);
+    z-index: 0;
   }
 
-  .photo-ring-lg {
-    width: 64px; height: 64px;
-    border: 1.5px solid rgba(130,253,71,0.2);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: rgba(130,253,71,0.5);
-    letter-spacing: 2px;
-    position: relative;
-  }
-
-  .photo-ring-lg::before {
-    content: '';
+  .v60-photo .photo-tint {
     position: absolute;
-    inset: -6px;
-    border: 1px solid rgba(130,253,71,0.08);
-    border-radius: 50%;
-    animation: ringExpand 3s ease-in-out infinite;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(2,1,2,0.3) 0%, rgba(130,253,71,0.03) 50%, rgba(2,1,2,0.8) 100%);
+    z-index: 1;
   }
 
-  .photo-ring-lg::after {
-    content: '';
-    position: absolute;
-    inset: -14px;
-    border: 1px solid rgba(130,253,71,0.04);
-    border-radius: 50%;
-    animation: ringExpand 3s 0.5s ease-in-out infinite;
-  }
-
-  @keyframes ringExpand {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.4); opacity: 0; }
-  }
-
-  .photo-ring-sm {
-    width: 44px; height: 44px;
-    border: 1.5px solid rgba(130,253,71,0.15);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--mono);
-    font-size: 9px;
-    color: rgba(130,253,71,0.4);
-    letter-spacing: 1px;
-    position: relative;
-  }
-
-  .photo-ring-sm::before {
-    content: '';
-    position: absolute;
-    inset: -5px;
-    border: 1px solid rgba(130,253,71,0.05);
-    border-radius: 50%;
-    animation: ringExpand 4s ease-in-out infinite;
-  }
-
-  .photo-hint {
-    font-family: var(--mono);
-    font-size: 7px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(239,255,254,0.15);
-  }
-
-  /* ─── STEAM CANVAS (per card) ─── */
+  /* Steam canvas */
   .steam-canvas {
     position: absolute;
     inset: 0;
@@ -571,25 +406,24 @@
     pointer-events: none;
   }
 
-  /* ─── CARD INFO (in-flow, not absolute) ─── */
-  .filter-info-overlay {
+  /* V60 card info */
+  .v60-info {
     position: relative;
     z-index: 5;
-    padding: 16px 22px;
+    padding: 12px 14px;
     margin-top: auto;
   }
 
-  /* ─── PROCESS BADGE — BIG & GLOWING ─── */
   .process-badge {
     display: inline-block;
     font-family: var(--mono);
-    font-size: 16px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    padding: 6px 16px;
+    padding: 4px 10px;
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     position: relative;
     overflow: hidden;
   }
@@ -608,7 +442,6 @@
     box-shadow: 0 0 20px rgba(125,59,237,0.15), inset 0 0 15px rgba(125,59,237,0.05);
   }
 
-  /* Shimmer across badge */
   .process-badge::after {
     content: '';
     position: absolute;
@@ -618,84 +451,9 @@
     animation: shimmer 3s ease-in-out infinite;
   }
 
-  /* ─── V60 METHOD TAG ─── */
-  .method-pill {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border: 1px solid rgba(130,253,71,0.2);
-    border-radius: 3px;
-    color: var(--green);
-    background: rgba(130,253,71,0.04);
-    margin-bottom: 6px;
-    width: fit-content;
-  }
-
-  /* ─── VARIETY & ROASTER TAGS ─── */
-  .variety-tag {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: rgba(239,255,254,0.3);
-    margin-bottom: 2px;
-  }
-
-  .variety-tag span {
-    color: rgba(239,255,254,0.55);
-  }
-
-  .roaster-tag {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 1px;
-    color: rgba(130,253,71,0.35);
-    margin-top: 4px;
-  }
-
-  .roaster-tag strong {
-    color: rgba(130,253,71,0.55);
-    font-weight: 500;
-  }
-
-  /* ─── SALENTINO ANGULAR LOGO ─── */
-  .salentino-angular {
-    font-family: var(--mono);
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    position: relative;
-  }
-
-  .salentino-angular-sm {
-    font-size: 11px;
-    color: rgba(239,255,254,0.5);
-  }
-
-  .salentino-angular-lg {
-    font-size: 38px;
-    color: var(--green);
-    text-shadow: 0 0 40px rgba(130,253,71,0.15);
-    margin-bottom: 8px;
-    display: inline-block;
-  }
-
-  .salentino-angular-lg::before,
-  .salentino-angular-lg::after {
-    content: '__';
-    opacity: 0.4;
-  }
-
-  .salentino-angular-lg {
-    will-change: transform, opacity;
-  }
-
   .drink-name {
     font-family: var(--mono);
-    font-size: 28px;
+    font-size: 20px;
     font-weight: 700;
     letter-spacing: 1px;
     margin-bottom: 2px;
@@ -705,40 +463,25 @@
 
   .drink-origin {
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--green);
     opacity: 0.7;
-    margin-bottom: 8px;
-  }
-
-  .drink-meta {
-    display: flex;
-    gap: 16px;
-    font-size: 14px;
-    color: rgba(239,255,254,0.35);
     margin-bottom: 6px;
   }
 
-  .drink-meta strong {
-    color: rgba(239,255,254,0.55);
-    font-weight: 500;
-  }
-
-  /* ─── TYPING TASTING NOTES ─── */
   .notes-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 8px;
+    gap: 4px;
   }
 
   .note-chip {
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 10px;
     letter-spacing: 1px;
-    padding: 5px 14px;
+    padding: 3px 10px;
     border: 1px solid rgba(130,253,71,0.15);
     border-radius: 100px;
     color: var(--green);
@@ -747,93 +490,93 @@
     transform: translateY(6px);
   }
 
-  /* note-chip typing stagger handled by GSAP */
-
-  /* ─── ALTITUDE GLOW LINE ─── */
-  .altitude-line {
-    height: 1px;
-    margin-top: 8px;
-    background: linear-gradient(90deg, var(--green), rgba(34,79,209,0.3), transparent);
-    opacity: 0.2;
-    position: relative;
+  /* ─── COLD BREW SECTION ─── */
+  .cb-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-height: 0;
   }
 
-  .altitude-line::after {
-    content: '';
-    position: absolute;
-    top: -2px; left: 0;
-    width: 4px; height: 5px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green-glow);
-    animation: altitudeScan 3s ease-in-out infinite;
-  }
-
-  @keyframes altitudeScan {
-    0% { left: 0; }
-    50% { left: 70%; }
-    100% { left: 0; }
-  }
-
-  /* ─── COLD BREW CARD (VERTICAL, NO PHOTO) ─── */
-  .card-coldbrew {
+  .cb-item {
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     position: relative;
-    padding: 20px 24px;
+    padding: 10px 16px;
+    border: 1px solid rgba(130,253,71,0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    opacity: 0;
+    transform: translateY(20px);
   }
 
-  .card-coldbrew .card-photo {
-    display: none;
+  .cb-item::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: linear-gradient(135deg, rgba(130,253,71,0.1), transparent, rgba(34,79,209,0.05)) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    animation: borderGlow 6s ease-in-out infinite;
   }
 
-  .card-coldbrew .card-info {
-    padding: 0;
+  @keyframes borderGlow {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
   }
 
-  .card-coldbrew .drink-name {
-    font-size: 28px;
-    margin-bottom: 4px;
+  .cb-item .drink-name {
+    font-size: 22px;
+    margin-bottom: 2px;
   }
 
   .drink-type-sub {
     font-family: var(--mono);
-    font-size: 14px;
+    font-size: 11px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: rgba(239,255,254,0.55);
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
 
   .drink-desc {
-    font-size: 16px;
-    line-height: 1.5;
+    font-size: 13px;
+    line-height: 1.4;
     color: rgba(239,255,254,0.6);
   }
 
   .drink-desc em {
     display: block;
     font-style: normal;
-    font-size: 14px;
+    font-size: 11px;
     color: rgba(239,255,254,0.35);
-    margin-top: 4px;
+    margin-top: 2px;
   }
 
   /* ─── DRINK OPTIONS PILLS ─── */
   .drink-options {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 8px;
+    gap: 5px;
+    margin-top: 5px;
   }
 
   .drink-options .option-pill {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 9px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    padding: 4px 12px;
+    padding: 3px 10px;
     border-radius: 100px;
     border: 1px solid rgba(174,225,246,0.2);
     color: rgba(239,255,254,0.6);
@@ -863,138 +606,17 @@
   .accent-orange .drink-name { color: var(--orange); }
   .accent-orange .drink-type-sub { color: rgba(232,119,34,0.6); }
 
-  /* ─── BRAND SLIDE ─── */
-  .brand-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 24px;
-    padding-bottom: 60px;
-  }
-
-  .brand-quote {
+  /* ─── SALENTINO ANGULAR LOGO ─── */
+  .salentino-angular {
     font-family: var(--mono);
-    font-size: 40px;
     font-weight: 700;
-    line-height: 1.3;
-    color: var(--green);
-    position: relative;
-    padding-left: 18px;
-    border-left: 3px solid var(--green);
-    box-shadow: -8px 0 30px rgba(130,253,71,0.06);
-    opacity: 0;
-    transform: translateX(-10px);
+    letter-spacing: 3px;
+    text-transform: uppercase;
   }
 
-  /* brand-quote reveal handled by GSAP */
-
-  .brand-text {
-    font-size: 17px;
-    line-height: 1.7;
-    color: rgba(239,255,254,0.45);
-    font-weight: 300;
-    opacity: 0;
-  }
-
-  /* brand-text entrance handled by GSAP */
-
-  .brand-text strong {
-    color: var(--white);
-    font-weight: 500;
-  }
-
-  /* CURATORIAL STEPS */
-  .steps {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .step {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 16px;
-    border: 1px solid rgba(130,253,71,0.06);
-    border-radius: 10px;
-    background: rgba(255,255,255,0.015);
-    position: relative;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateX(-15px);
-  }
-
-  /* step reveal stagger handled by GSAP */
-
-  /* Animated line inside step */
-  .step::before {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 100%; height: 1px;
-    background: linear-gradient(90deg, var(--green), transparent);
-    opacity: 0.15;
-    animation: lineSlide 4s ease-in-out infinite;
-  }
-
-  @keyframes lineSlide {
-    0% { transform: translateX(-100%); }
-    50% { transform: translateX(0); }
-    100% { transform: translateX(100%); }
-  }
-
-  .step-num {
-    font-family: var(--mono);
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--green);
-    min-width: 42px;
-    text-shadow: 0 0 20px rgba(130,253,71,0.3);
-  }
-
-  .step-content strong {
-    display: block;
-    font-family: var(--mono);
-    font-size: 17px;
-    color: var(--white);
-    letter-spacing: 1px;
-    margin-bottom: 3px;
-  }
-
-  .step-content span {
-    font-size: 14px;
-    color: rgba(239,255,254,0.35);
-    line-height: 1.5;
-  }
-
-  /* ─── PHOTO IMAGES (replacing placeholders) ─── */
-  .filter-photo img,
-  .card-photo img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.45;
-    filter: saturate(0.3) brightness(0.5) contrast(1.3);
-    transition: opacity 0.6s ease;
-    z-index: 0;
-  }
-
-  .filter-photo:hover img,
-  .card-photo:hover img {
-    opacity: 0.7;
-  }
-
-  /* Green tint overlay on photos */
-  .filter-photo .photo-tint,
-  .card-photo .photo-tint {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(2,1,2,0.3) 0%, rgba(130,253,71,0.03) 50%, rgba(2,1,2,0.8) 100%);
-    z-index: 1;
-    mix-blend-mode: normal;
+  .salentino-angular-sm {
+    font-size: 11px;
+    color: rgba(239,255,254,0.5);
   }
 
   /* ─── ORIENTATION TOGGLE ─── */
@@ -1030,13 +652,11 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     transition: all 0.3s ease;
-    position: relative;
   }
 
   .orientation-toggle .toggle-btn.active {
     color: var(--green);
     background: rgba(130,253,71,0.08);
-    box-shadow: inset 0 0 12px rgba(130,253,71,0.05);
   }
 
   .orientation-toggle .toggle-btn:hover {
@@ -1058,75 +678,41 @@
   }
 
   /* ─── HORIZONTAL MODE ─── */
-  body.horizontal .container,
-  body.horizontal .screen {
-    width: 100vw;
-    height: 100vh;
-  }
-
-  body.horizontal .slide {
-    padding: 36px 48px 28px;
+  body.horizontal .single-view {
+    padding: 52px 40px 70px;
   }
 
   body.horizontal .title-main {
-    font-size: 56px;
+    font-size: 42px;
   }
 
-  body.horizontal .salentino-angular-lg {
-    font-size: 44px;
-  }
-
-  body.horizontal .filter-cards-area {
-    flex-direction: row;
+  body.horizontal .v60-row {
     gap: 14px;
-  }
-
-  body.horizontal .filter-card-hero,
-  body.horizontal .filter-card-secondary {
-    flex: 1;
-  }
-
-  body.horizontal .filter-info-overlay {
-    padding: 20px 24px;
   }
 
   body.horizontal .drink-name {
-    font-size: 30px;
+    font-size: 24px;
   }
 
-  body.horizontal .cards-area {
+  body.horizontal .v60-info {
+    padding: 16px 20px;
+  }
+
+  body.horizontal .cb-list {
     flex-direction: row;
-    gap: 14px;
+    gap: 12px;
   }
 
-  body.horizontal .card-coldbrew {
-    padding: 24px 32px;
+  body.horizontal .cb-item {
+    padding: 16px 20px;
   }
 
-  body.horizontal .card-coldbrew .drink-name {
-    font-size: 32px;
+  body.horizontal .cb-item .drink-name {
+    font-size: 26px;
   }
 
   body.horizontal .drink-desc {
-    font-size: 18px;
-  }
-
-  body.horizontal .brand-area {
-    flex-direction: row;
-    gap: 32px;
-    align-items: flex-start;
-  }
-
-  body.horizontal .brand-area > * {
-    flex: 1;
-  }
-
-  body.horizontal .steps {
-    flex: 1.2;
-  }
-
-  body.horizontal .brand-quote {
-    font-size: 44px;
+    font-size: 15px;
   }
 
   body.horizontal .top-bar {
@@ -1142,17 +728,13 @@
   }
 
   body.horizontal .process-badge {
-    font-size: 18px;
-    padding: 8px 22px;
-  }
-
-  body.horizontal .notes-row {
-    gap: 8px;
+    font-size: 13px;
+    padding: 5px 14px;
   }
 
   body.horizontal .note-chip {
-    font-size: 14px;
-    padding: 6px 14px;
+    font-size: 12px;
+    padding: 4px 12px;
   }
 
   /* ═══════════════════════════════════════ */
@@ -1161,35 +743,28 @@
 
   /* Small phones (375px and below) */
   @media (max-width: 420px) {
-    .slide {
-      padding: 36px 16px 20px;
+    .single-view {
+      padding: 46px 14px 60px;
     }
 
     .title-main {
-      font-size: 36px;
-      margin-bottom: 4px;
-    }
-
-    .title-sub {
-      font-size: 13px;
-      margin-bottom: 14px;
-      line-height: 1.4;
+      font-size: 28px;
+      margin-bottom: 2px;
     }
 
     .section-tag {
-      font-size: 11px;
+      font-size: 9px;
       letter-spacing: 3px;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .open-bar {
-      font-size: 10px;
-      padding: 6px 14px;
-      margin-bottom: 14px;
+      font-size: 8px;
+      padding: 4px 10px;
+      margin-bottom: 6px;
       letter-spacing: 1.5px;
     }
 
-    /* Top bar */
     .top-bar {
       padding: 8px 12px;
     }
@@ -1207,7 +782,6 @@
       font-size: 9px;
     }
 
-    /* HUD */
     .hud-time {
       font-size: 7px;
       top: 32px; right: 12px;
@@ -1218,127 +792,72 @@
       top: 32px; left: 12px;
     }
 
-    /* Filter cards */
-    .filter-cards-area {
-      gap: 8px;
-      padding-bottom: 50px;
+    .v60-row {
+      gap: 6px;
     }
 
-    .filter-info-overlay {
-      padding: 12px 14px;
+    .v60-info {
+      padding: 8px 10px;
     }
 
     .process-badge {
-      font-size: 12px;
-      padding: 5px 12px;
-      letter-spacing: 3px;
-      margin-bottom: 6px;
-    }
-
-    .method-pill {
       font-size: 9px;
       padding: 3px 8px;
+      letter-spacing: 2px;
       margin-bottom: 4px;
     }
 
     .drink-name {
-      font-size: 20px;
+      font-size: 16px;
     }
 
     .drink-origin {
-      font-size: 10px;
-      margin-bottom: 4px;
-    }
-
-    .drink-meta {
-      font-size: 10px;
-      gap: 10px;
+      font-size: 8px;
       margin-bottom: 4px;
     }
 
     .notes-row {
-      gap: 4px;
-      margin-top: 4px;
+      gap: 3px;
     }
 
     .note-chip {
-      font-size: 10px;
-      padding: 3px 8px;
+      font-size: 8px;
+      padding: 2px 6px;
     }
 
-    .altitude-line {
-      margin-top: 6px;
+    .cb-list {
+      gap: 4px;
     }
 
-    /* Cold brew cards */
-    .cards-area {
-      gap: 8px;
-      padding-bottom: 50px;
+    .cb-item {
+      padding: 8px 12px;
     }
 
-    .card-coldbrew {
-      padding: 14px 16px;
-    }
-
-    .card-coldbrew .drink-name {
-      font-size: 22px;
+    .cb-item .drink-name {
+      font-size: 18px;
     }
 
     .drink-type-sub {
-      font-size: 11px;
-      margin-bottom: 4px;
+      font-size: 9px;
+      margin-bottom: 2px;
     }
 
     .drink-desc {
-      font-size: 13px;
-      line-height: 1.4;
+      font-size: 11px;
+      line-height: 1.3;
     }
 
     .drink-desc em {
-      font-size: 11px;
+      font-size: 9px;
     }
 
-    /* Brand slide */
-    .brand-area {
-      gap: 16px;
-      padding-bottom: 50px;
+    .drink-options .option-pill {
+      font-size: 7px;
+      padding: 2px 7px;
     }
 
-    .brand-quote {
-      font-size: 28px;
-      padding-left: 14px;
-    }
-
-    .salentino-angular-lg {
-      font-size: 26px;
-    }
-
-    .steps {
-      gap: 6px;
-    }
-
-    .step {
-      padding: 10px 12px;
-      gap: 10px;
-    }
-
-    .step-num {
-      font-size: 24px;
-      min-width: 32px;
-    }
-
-    .step-content strong {
-      font-size: 14px;
-    }
-
-    .step-content span {
-      font-size: 11px;
-    }
-
-    /* Bottom bar */
     .bottom-bar {
-      padding: 10px 16px;
-      gap: 6px;
+      padding: 8px 14px;
     }
 
     .tagline-bar {
@@ -1347,7 +866,7 @@
     }
 
     .data-ticker {
-      bottom: 40px;
+      bottom: 34px;
       height: 14px;
     }
 
@@ -1355,7 +874,6 @@
       font-size: 7px;
     }
 
-    /* Toggle */
     .orientation-toggle {
       top: 8px;
     }
@@ -1365,34 +883,63 @@
       font-size: 7px;
     }
 
-    /* Corners */
     .corner {
       width: 14px; height: 14px;
+    }
+
+    .section-divider {
+      margin: 5px 0;
     }
   }
 
   /* Standard phones (421-767px) */
   @media (min-width: 421px) and (max-width: 767px) {
-    .slide {
-      padding: 38px 20px 24px;
+    .single-view {
+      padding: 48px 18px 65px;
     }
 
     .title-main {
-      font-size: 42px;
+      font-size: 32px;
     }
 
-    .title-sub {
-      font-size: 14px;
-      margin-bottom: 16px;
+    .v60-row {
+      gap: 8px;
     }
 
-    .filter-cards-area {
-      gap: 10px;
-      padding-bottom: 55px;
+    .v60-info {
+      padding: 10px 12px;
     }
 
-    .filter-info-overlay {
-      padding: 14px 16px;
+    .process-badge {
+      font-size: 10px;
+      padding: 4px 10px;
+    }
+
+    .drink-name {
+      font-size: 18px;
+    }
+
+    .cb-item .drink-name {
+      font-size: 20px;
+    }
+
+    .drink-desc {
+      font-size: 12px;
+    }
+
+    .bottom-bar {
+      padding: 10px 16px;
+    }
+  }
+
+  /* Tablets (768-1024px) */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .single-view {
+      padding: 52px 28px 70px;
+    }
+
+    .title-main {
+      font-size: 44px;
     }
 
     .process-badge {
@@ -1404,78 +951,54 @@
       font-size: 24px;
     }
 
-    .cards-area {
-      gap: 10px;
-      padding-bottom: 55px;
-    }
-
-    .card-coldbrew .card-info {
-      padding: 12px 16px;
-    }
-
-    .drink-desc {
-      font-size: 12px;
-    }
-
-    .brand-quote {
-      font-size: 32px;
-    }
-
-    .salentino-angular-lg {
-      font-size: 30px;
-    }
-
-    .step {
-      padding: 12px 14px;
-    }
-
-    .step-num {
-      font-size: 26px;
-    }
-
-    .step-content strong {
-      font-size: 15px;
-    }
-
-    .step-content span {
-      font-size: 12px;
-    }
-
-    .bottom-bar {
-      padding: 12px 18px;
-    }
-  }
-
-  /* Tablets (768-1024px) */
-  @media (min-width: 768px) and (max-width: 1024px) {
-    .slide {
-      padding: 44px 32px 28px;
-    }
-
-    .title-main {
-      font-size: 56px;
-    }
-
-    .process-badge {
-      font-size: 18px;
-      padding: 8px 20px;
-    }
-
-    .drink-name {
-      font-size: 32px;
+    .cb-item .drink-name {
+      font-size: 28px;
     }
 
     .note-chip {
-      font-size: 14px;
-      padding: 6px 14px;
+      font-size: 12px;
+      padding: 4px 12px;
+    }
+  }
+
+  /* Large screens (1025px+) */
+  @media (min-width: 1025px) {
+    .single-view {
+      padding: 56px 36px 75px;
     }
 
-    .brand-quote {
-      font-size: 44px;
+    .title-main {
+      font-size: 52px;
     }
 
-    .salentino-angular-lg {
-      font-size: 42px;
+    .drink-name {
+      font-size: 28px;
+    }
+
+    .cb-item .drink-name {
+      font-size: 32px;
+    }
+
+    .process-badge {
+      font-size: 16px;
+      padding: 6px 16px;
+    }
+
+    .note-chip {
+      font-size: 13px;
+      padding: 5px 14px;
+    }
+
+    .v60-info {
+      padding: 16px 22px;
+    }
+
+    .cb-item {
+      padding: 16px 24px;
+    }
+
+    .drink-desc {
+      font-size: 16px;
     }
   }
 
@@ -1492,81 +1015,62 @@
 
   /* Landscape phone (short viewport) */
   @media (max-height: 500px) {
-    .slide {
-      padding: 28px 20px 16px;
-    }
-
-    div[style="height: 32px"] {
-      height: 20px !important;
+    .single-view {
+      padding: 40px 16px 50px;
     }
 
     .title-main {
-      font-size: 24px;
+      font-size: 22px;
       margin-bottom: 2px;
     }
 
-    .title-sub {
-      font-size: 10px;
-      margin-bottom: 10px;
-    }
-
     .open-bar {
-      margin-bottom: 10px;
-      padding: 4px 10px;
+      margin-bottom: 4px;
+      padding: 3px 8px;
+      font-size: 7px;
     }
 
-    .filter-cards-area,
-    .cards-area {
-      padding-bottom: 40px;
+    .section-tag {
+      font-size: 8px;
+      margin-bottom: 2px;
     }
 
-    .filter-info-overlay {
-      padding: 10px 12px;
+    .v60-info {
+      padding: 6px 8px;
     }
 
     .process-badge {
-      font-size: 8px;
-      padding: 3px 10px;
-      margin-bottom: 4px;
+      font-size: 7px;
+      padding: 2px 6px;
+      margin-bottom: 3px;
     }
 
-    .brand-area {
-      gap: 12px;
-      padding-bottom: 40px;
+    .drink-name {
+      font-size: 14px;
     }
 
-    .brand-quote {
-      font-size: 18px;
+    .cb-item {
+      padding: 6px 10px;
     }
 
-    .brand-text {
-      font-size: 10px;
-      line-height: 1.5;
-    }
-
-    .step {
-      padding: 8px 10px;
-    }
-
-    .step-num {
+    .cb-item .drink-name {
       font-size: 16px;
     }
 
-    .step-content strong {
+    .drink-desc {
       font-size: 10px;
     }
 
-    .step-content span {
-      font-size: 9px;
-    }
-
     .bottom-bar {
-      padding: 8px 14px;
-      gap: 4px;
+      padding: 6px 12px;
     }
 
     .data-ticker {
-      bottom: 34px;
+      bottom: 30px;
+    }
+
+    .section-divider {
+      margin: 4px 0;
     }
   }
 
@@ -1586,7 +1090,7 @@
   /* ─── HORIZONTAL DATA TICKER ─── */
   .data-ticker {
     position: fixed;
-    bottom: 52px;
+    bottom: 42px;
     left: 0; right: 0;
     z-index: 48;
     overflow: hidden;
@@ -1597,17 +1101,11 @@
   .ticker-track {
     display: flex;
     white-space: nowrap;
-    animation: tickerScroll 30s linear infinite;
     font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 2px;
     color: var(--green);
     text-transform: uppercase;
-  }
-
-  @keyframes tickerScroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
   }
 
   .ticker-track span {
@@ -1718,45 +1216,33 @@
 <!-- BOTTOM BAR -->
 <div class="bottom-bar">
   <div class="tagline-bar">_La energia es una sola</div>
-  <div class="progress-dots">
-    <div class="p-dot active" id="pd0"><div class="p-dot-fill" id="pf0"></div></div>
-    <div class="p-dot" id="pd1"><div class="p-dot-fill" id="pf1"></div></div>
-  </div>
 </div>
 
 <!-- ══════════════════════════════════════ -->
-<!-- CONTAINER                             -->
+<!-- CONTAINER — SINGLE VIEW              -->
 <!-- ══════════════════════════════════════ -->
 <div class="container">
+  <div class="single-view">
 
-  <!-- SLIDE 1: POUR OVER -->
-  <div class="slide active" id="slide0">
-    <div style="height: 32px"></div>
-
-    <div class="section-tag">_Pour Over &middot; V60</div>
-
-    <div class="title-main" data-text="Caturra">
+    <!-- V60 SECTION -->
+    <div class="section-tag" data-anim>_Pour Over &middot; V60</div>
+    <div class="title-main" data-anim data-text="Caturra">
       Caturra <span>Huila</span>
     </div>
-    <div class="title-sub">
-      One origin. Two processes. Brewed to order on V60.<br>
-      Un origen. Dos procesos. Preparado al momento.
-    </div>
-
-    <div class="open-bar">
+    <div class="open-bar" data-anim>
       <div class="live-dot" style="width:4px;height:4px;"></div>
       _fuel the ritual
     </div>
 
-    <div class="filter-cards-area">
-      <!-- HERO CARD — CATURRA FLEUR (Lavado) -->
-      <div class="filter-card-hero">
-        <div class="filter-photo">
+    <div class="v60-row">
+      <!-- CATURRA FLEUR (Lavado) -->
+      <div class="v60-card card-washed" data-anim>
+        <div class="v60-photo">
           <img src="https://images.unsplash.com/photo-1559496417-e7f25cb247f3?w=800&q=80" alt="V60 Pour Over — Caturra Fleur" loading="eager">
           <div class="photo-tint"></div>
         </div>
         <canvas class="steam-canvas" id="steamCanvas1"></canvas>
-        <div class="filter-info-overlay">
+        <div class="v60-info">
           <div class="process-badge process-washed">LAVADO</div>
           <div class="drink-name">CATURRA FLEUR_</div>
           <div class="drink-origin">Huila, Colombia &middot; 1,750 masl</div>
@@ -1768,14 +1254,14 @@
         </div>
       </div>
 
-      <!-- SECONDARY CARD — CATURRA PINEAPPLE (Co-Fermentado Avanzado) -->
-      <div class="filter-card-secondary">
-        <div class="filter-photo">
+      <!-- CATURRA PINEAPPLE (Co-Fermentado) -->
+      <div class="v60-card card-cofermented" data-anim>
+        <div class="v60-photo">
           <img src="https://images.unsplash.com/photo-1507133750040-4a8f57021571?w=800&q=80" alt="V60 Pour Over — Caturra Pineapple" loading="eager">
           <div class="photo-tint"></div>
         </div>
         <canvas class="steam-canvas" id="steamCanvas2"></canvas>
-        <div class="filter-info-overlay">
+        <div class="v60-info">
           <div class="process-badge process-cofermented">CO—FERMENTADO</div>
           <div class="drink-name">CATURRA PINEAPPLE_</div>
           <div class="drink-origin">Huila, Colombia &middot; 1,750 masl</div>
@@ -1786,103 +1272,61 @@
         </div>
       </div>
     </div>
+
+    <!-- DIVIDER -->
+    <div class="section-divider" data-anim></div>
+
+    <!-- COLD BREW SECTION -->
+    <div class="section-tag" data-anim>_Cold Brew &middot; 24hr</div>
+
+    <div class="cb-list">
+      <div class="cb-item accent-green" data-anim>
+        <div class="drink-name">SIGNAL_</div>
+        <div class="drink-type-sub">Pure Cold Brew &middot; 24hr Steep</div>
+        <div class="drink-desc">
+          Uncut. No filter, no noise. The purest frequency.
+          <em>Sin cortes. La frecuencia mas pura.</em>
+        </div>
+      </div>
+
+      <div class="cb-item accent-blue" data-anim>
+        <div class="drink-name">ANALOG_</div>
+        <div class="drink-type-sub">Cold Brew + Milk</div>
+        <div class="drink-desc">
+          Smooth like vinyl. Slow, deep, warm.
+          <em>Suave como el vinilo. Profundo y calido.</em>
+        </div>
+        <div class="drink-options">
+          <span class="option-pill">Averna</span>
+          <span class="option-pill">Leche</span>
+          <span class="option-pill">+ Syrup</span>
+        </div>
+      </div>
+
+      <div class="cb-item accent-orange" data-anim>
+        <div class="drink-name">FREQUENCY_</div>
+        <div class="drink-type-sub">Cold Brew + Tonic Water</div>
+        <div class="drink-desc">
+          Carbonation hits like a drop. Bright, alive, electric.
+          <em>La efervescencia como un drop. Brillante y electrico.</em>
+        </div>
+      </div>
+    </div>
+
   </div>
-
-  <!-- SLIDE 2: COLD BREW -->
-  <div class="slide" id="slide1">
-    <div style="height: 32px"></div>
-
-    <div class="section-tag">_Cold Brew Series</div>
-
-    <div class="title-main" data-text="Cold Brew">
-      Cold <span>Brew</span>
-    </div>
-    <div class="title-sub">
-      Three frequencies. One ritual.<br>
-      Tres frecuencias. Un ritual.
-    </div>
-
-    <div class="open-bar">
-      <div class="live-dot" style="width:4px;height:4px;"></div>
-      _fuel the ritual
-    </div>
-
-    <div class="cards-area">
-      <div class="card card-coldbrew accent-green">
-        <div class="card-photo">
-          <img src="https://images.unsplash.com/photo-1531835207745-506a1bc035d8?w=600&q=80" alt="SIGNAL — Pure Cold Brew" loading="lazy">
-          <div class="photo-tint"></div>
-        </div>
-        <div class="card-info">
-          <div class="drink-name">SIGNAL_</div>
-          <div class="drink-type-sub">Pure Cold Brew &middot; 24hr Steep</div>
-          <div class="drink-desc">
-            Uncut. No filter, no noise. The purest frequency.
-            <em>Sin cortes. La frecuencia mas pura.</em>
-          </div>
-        </div>
-      </div>
-
-      <div class="card card-coldbrew accent-blue">
-        <div class="card-photo">
-          <img src="https://images.unsplash.com/photo-1562447457-579fc34967fb?w=600&q=80" alt="ANALOG — Cold Brew + Milk" loading="lazy">
-          <div class="photo-tint"></div>
-        </div>
-        <div class="card-info">
-          <div class="drink-name">ANALOG_</div>
-          <div class="drink-type-sub">Cold Brew + Milk</div>
-          <div class="drink-desc">
-            Smooth like vinyl. Slow, deep, warm.
-            <em>Suave como el vinilo. Profundo y calido.</em>
-          </div>
-          <div class="drink-options">
-            <span class="option-pill">Averna</span>
-            <span class="option-pill">Leche</span>
-            <span class="option-pill">+ Syrup</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card card-coldbrew accent-orange">
-        <div class="card-photo">
-          <img src="https://images.unsplash.com/photo-1760304737368-7d8376bde94c?w=600&q=80" alt="FREQUENCY — Cold Brew + Tonic" loading="lazy">
-          <div class="photo-tint"></div>
-        </div>
-        <div class="card-info">
-          <div class="drink-name">FREQUENCY_</div>
-          <div class="drink-type-sub">Cold Brew + Tonic Water</div>
-          <div class="drink-desc">
-            Carbonation hits like a drop. Bright, alive, electric.
-            <em>La efervescencia como un drop. Brillante y electrico.</em>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
 </div>
 
 <!-- GSAP CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
 <!-- ══════════════════════════════════════ -->
-<!-- ENGINE (GSAP-powered)                 -->
+<!-- ENGINE (GSAP-powered — single view)  -->
 <!-- ══════════════════════════════════════ -->
 <script>
 (function() {
 
-  // ─── CONFIG ───
-  const SLIDE_MS = 12000;
-  const slides = document.querySelectorAll('.slide');
-  const pDots = [document.getElementById('pd0'), document.getElementById('pd1')];
-  const pFills = [document.getElementById('pf0'), document.getElementById('pf1')];
   const glitchCanvas = document.getElementById('glitchCanvas');
   const glitchCtx = glitchCanvas.getContext('2d');
-  let current = 0;
-  let transitioning = false;
-  let progressTween = null;
-  let glitchLoop = null;
 
   // ─── GSAP DEFAULTS ───
   gsap.defaults({ overwrite: 'auto' });
@@ -2049,7 +1493,7 @@
     requestAnimationFrame(drawWave);
   }
 
-  // ─── GLITCH FLASH (canvas — stays raw for randomness) ───
+  // ─── GLITCH FLASH ───
   function triggerGlitch() {
     gsap.to(glitchCanvas, { opacity: 1, duration: 0.05 });
     const w = glitchCanvas.width, h = glitchCanvas.height;
@@ -2086,152 +1530,60 @@
   }
 
   // ═══════════════════════════════════════
-  // GSAP SLIDE ENTRANCE TIMELINES
+  // SINGLE VIEW ENTRANCE ANIMATION
   // ═══════════════════════════════════════
 
-  function buildEntranceTL(slide) {
-    const tl = gsap.timeline({ paused: true });
-    const tag = slide.querySelector('.section-tag');
-    const title = slide.querySelector('.title-main');
-    const angularLogo = slide.querySelector('.salentino-angular-lg');
-    const sub = slide.querySelector('.title-sub');
-    const bar = slide.querySelector('.open-bar');
-    const filterHero = slide.querySelector('.filter-card-hero');
-    const filterSec = slide.querySelector('.filter-card-secondary');
-    const cards = slide.querySelectorAll('.card');
-    const chips = slide.querySelectorAll('.note-chip');
-    const quote = slide.querySelector('.brand-quote');
-    const text = slide.querySelector('.brand-text');
-    const steps = slide.querySelectorAll('.step');
+  function playEntrance() {
+    const tl = gsap.timeline();
 
-    // Phase 1: Header elements
-    if (tag) tl.fromTo(tag, { opacity: 0, y: 8 }, { opacity: 0.7, y: 0, duration: 0.4, ease: 'power2.out' }, 0.1);
-    if (title) tl.fromTo(title, { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }, 0.15);
-    if (angularLogo) tl.fromTo(angularLogo, { opacity: 0, x: -15, scale: 0.95 }, { opacity: 1, x: 0, scale: 1, duration: 0.6, ease: 'power3.out' }, 0.15);
-    if (sub) tl.fromTo(sub, { opacity: 0, y: 6 }, { opacity: 0.7, y: 0, duration: 0.4, ease: 'power2.out' }, 0.3);
-    if (bar) tl.fromTo(bar, { opacity: 0, y: 6 }, { opacity: 0.7, y: 0, duration: 0.4, ease: 'power2.out' }, 0.4);
+    const tags = document.querySelectorAll('.section-tag');
+    const title = document.querySelector('.title-main');
+    const bar = document.querySelector('.open-bar');
+    const v60Cards = document.querySelectorAll('.v60-card');
+    const chips = document.querySelectorAll('.note-chip');
+    const divider = document.querySelector('.section-divider');
+    const cbItems = document.querySelectorAll('.cb-item');
 
-    // Phase 2: Cards — filter or cold brew
-    if (filterHero) tl.fromTo(filterHero, { opacity: 0, y: 30, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'power3.out' }, 0.35);
-    if (filterSec) tl.fromTo(filterSec, { opacity: 0, y: 25, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'power3.out' }, 0.5);
+    // Phase 1: Header
+    tl.fromTo(tags[0], { opacity: 0, y: 8 }, { opacity: 0.7, y: 0, duration: 0.4, ease: 'power2.out' }, 0.1);
+    tl.fromTo(title, { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }, 0.15);
+    tl.fromTo(bar, { opacity: 0, y: 6 }, { opacity: 0.7, y: 0, duration: 0.4, ease: 'power2.out' }, 0.3);
 
-    if (cards.length) {
-      tl.fromTo(cards, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out' }, 0.35);
-    }
+    // Phase 2: V60 cards
+    tl.fromTo(v60Cards, { opacity: 0, y: 30, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, stagger: 0.15, ease: 'power3.out' }, 0.35);
 
-    // Phase 3: Tasting notes (typing stagger)
+    // Phase 3: Tasting notes
     if (chips.length) {
-      tl.fromTo(chips, { opacity: 0, y: 6 }, { opacity: 0.8, y: 0, duration: 0.35, stagger: 0.2, ease: 'power2.out' }, 0.9);
+      tl.fromTo(chips, { opacity: 0, y: 6 }, { opacity: 0.8, y: 0, duration: 0.35, stagger: 0.12, ease: 'power2.out' }, 0.9);
     }
 
-    // Phase 3: Brand slide elements
-    if (quote) tl.fromTo(quote, { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0.3);
-    if (text) tl.fromTo(text, { opacity: 0, y: 8 }, { opacity: 0.7, y: 0, duration: 0.5, ease: 'power2.out' }, 0.5);
-    if (steps.length) {
-      tl.fromTo(steps, { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.5, stagger: 0.12, ease: 'power3.out' }, 0.6);
+    // Phase 4: Divider
+    if (divider) {
+      tl.fromTo(divider, { opacity: 0, scaleX: 0 }, { opacity: 0.2, scaleX: 1, duration: 0.5, ease: 'power2.out', transformOrigin: 'left center' }, 1.1);
     }
 
+    // Phase 5: Cold brew section tag + items
+    if (tags[1]) {
+      tl.fromTo(tags[1], { opacity: 0, y: 8 }, { opacity: 0.7, y: 0, duration: 0.4, ease: 'power2.out' }, 1.2);
+    }
+    tl.fromTo(cbItems, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out' }, 1.3);
+
     return tl;
-  }
-
-  // ─── SLIDE EXIT TIMELINE ───
-  function buildExitTL(slide) {
-    const tl = gsap.timeline({ paused: true });
-    tl.to(slide, {
-      opacity: 0,
-      x: 10,
-      skewX: 1,
-      duration: 0.15,
-      ease: 'steps(3)'
-    })
-    .to(slide, {
-      x: -12,
-      skewX: -2,
-      opacity: 0.3,
-      duration: 0.1,
-      ease: 'steps(2)'
-    })
-    .to(slide, {
-      x: 5,
-      opacity: 0,
-      skewX: 0,
-      duration: 0.15,
-      ease: 'steps(3)',
-      onComplete: () => {
-        gsap.set(slide, { visibility: 'hidden', opacity: 0, x: 0, skewX: 0 });
-      }
-    });
-    return tl;
-  }
-
-  // ─── SLIDE TRANSITION ───
-  function goTo(index) {
-    if (transitioning || index === current) return;
-    transitioning = true;
-
-    const outgoing = slides[current];
-    const incoming = slides[index];
-
-    triggerGlitch();
-
-    outgoing.classList.remove('active');
-    const exitTL = buildExitTL(outgoing);
-    exitTL.play();
-
-    // After exit, enter new slide
-    gsap.delayedCall(0.45, () => {
-      // Reset outgoing children
-      gsap.set(outgoing.querySelectorAll('.section-tag, .title-main, .salentino-angular-lg, .title-sub, .open-bar, .card, .filter-card-hero, .filter-card-secondary, .note-chip, .brand-quote, .brand-text, .step'), {
-        opacity: 0, x: 0, y: 0, scale: 1, skewX: 0
-      });
-
-      // Show incoming
-      gsap.set(incoming, { visibility: 'visible', opacity: 1, x: 0, skewX: 0 });
-      incoming.classList.add('active');
-
-      const enterTL = buildEntranceTL(incoming);
-      enterTL.play().then(() => { transitioning = false; });
-    });
-
-    // Update dots
-    pDots[current].classList.remove('active');
-    pDots[index].classList.add('active');
-
-    current = index;
-    startProgress();
-  }
-
-  // ─── PROGRESS (GSAP tween) ───
-  function startProgress() {
-    if (progressTween) progressTween.kill();
-    gsap.set(pFills[current], { width: '0%' });
-    progressTween = gsap.to(pFills[current], {
-      width: '100%',
-      duration: SLIDE_MS / 1000,
-      ease: 'none'
-    });
-  }
-
-  // ─── AUTO ADVANCE ───
-  function tick() {
-    const prev = current;
-    const next = (current + 1) % slides.length;
-    goTo(next);
-    // Reset previous fill
-    gsap.delayedCall(0.6, () => { gsap.set(pFills[prev], { width: '0%' }); });
   }
 
   // ─── GSAP MICRO-GLITCH LOOP ───
   function startGlitchLoop() {
     function doGlitch() {
-      if (!transitioning) {
-        const title = document.querySelector('.slide.active .title-main') || document.querySelector('.slide.active .salentino-angular-lg');
-        if (title) {
-          gsap.timeline()
-            .to(title, { x: (Math.random()-0.5)*6, textShadow: '-2px 0 #FF4B43, 2px 0 #224FD1', duration: 0.05, ease: 'steps(2)' })
-            .to(title, { x: (Math.random()-0.5)*4, textShadow: '2px 0 #FF4B43, -2px 0 #7D3BED', duration: 0.05, ease: 'steps(2)' })
-            .to(title, { x: 0, textShadow: 'none', duration: 0.05, ease: 'steps(1)' });
-        }
+      const title = document.querySelector('.title-main');
+      if (title) {
+        gsap.timeline()
+          .to(title, { x: (Math.random()-0.5)*6, textShadow: '-2px 0 #FF4B43, 2px 0 #224FD1', duration: 0.05, ease: 'steps(2)' })
+          .to(title, { x: (Math.random()-0.5)*4, textShadow: '2px 0 #FF4B43, -2px 0 #7D3BED', duration: 0.05, ease: 'steps(2)' })
+          .to(title, { x: 0, textShadow: 'none', duration: 0.05, ease: 'steps(1)' });
+      }
+      // Occasional full glitch flash
+      if (Math.random() > 0.6) {
+        triggerGlitch();
       }
       gsap.delayedCall(3 + Math.random() * 5, doGlitch);
     }
@@ -2257,7 +1609,7 @@
     repeat: -1
   });
 
-  // ─── GSAP TICKER (replaces CSS animation) ───
+  // ─── GSAP TICKER ───
   const ticker = document.querySelector('.ticker-track');
   if (ticker) {
     gsap.to(ticker, {
@@ -2266,7 +1618,6 @@
       ease: 'none',
       repeat: -1
     });
-    // Remove CSS animation
     ticker.style.animation = 'none';
   }
 
@@ -2277,14 +1628,8 @@
   drawWave();
   startGlitchLoop();
 
-  // Boot first slide
-  gsap.set(slides[0], { opacity: 1, visibility: 'visible' });
-  slides[0].classList.add('active');
-  const firstEntrance = buildEntranceTL(slides[0]);
-  firstEntrance.play();
-  startProgress();
-
-  setInterval(tick, SLIDE_MS);
+  // Boot entrance animation
+  playEntrance();
 
 })();
 

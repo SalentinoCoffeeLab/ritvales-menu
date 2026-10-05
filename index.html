@@ -87,7 +87,7 @@
   }
 
   /* ─── GPU HINTS ─── */
-  .menu-view, .menu-item, .section-head, .note-chip {
+  .menu-view, .menu-item, .menu-header, .section-head, .note-chip {
     will-change: transform, opacity;
   }
 
@@ -109,54 +109,9 @@
     padding: 48px 20px 56px;
   }
 
-  /* ─── MENU HEADER ─── */
-  .menu-header {
-    text-align: center;
-    margin-bottom: 10px;
-    opacity: 0;
-  }
-
-  .menu-header .brand-line {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    color: rgba(239,255,254,0.35);
-    margin-bottom: 2px;
-  }
-
-  .menu-header .menu-title {
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: 28px;
-    color: var(--white);
-    letter-spacing: 2px;
-    line-height: 1.2;
-  }
-
-  .menu-header .menu-title span {
-    color: var(--green);
-  }
-
-  .menu-header .menu-title::after {
-    content: '_';
-    color: var(--green);
-    animation: blink 1s step-end infinite;
-  }
-
   @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
-  }
-
-  .menu-header .menu-sub {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--green);
-    opacity: 0.5;
-    margin-top: 4px;
   }
 
   /* ─── SECTION ─── */
@@ -214,11 +169,50 @@
     min-height: 0;
   }
 
+  /* ─── MENU HEADER ─── */
+  .menu-header {
+    text-align: center;
+    padding: 4px 0 8px;
+    opacity: 0;
+  }
+
+  .menu-header .brand-line {
+    font-family: var(--mono);
+    font-size: 8px;
+    font-weight: 400;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(239,255,254,0.3);
+  }
+
+  .menu-header .concept-name {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--green);
+    line-height: 1.3;
+  }
+
+  .menu-header .concept-name::after {
+    content: '_';
+    animation: blink 1s step-end infinite;
+  }
+
+  .menu-header .sub-line {
+    font-family: var(--mono);
+    font-size: 8px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(239,255,254,0.25);
+  }
+
   /* ─── INDIVIDUAL MENU ITEM ─── */
   .menu-item {
     display: flex;
     gap: 12px;
-    padding: 10px;
+    padding: 10px 14px;
     border: 1px solid rgba(130,253,71,0.06);
     border-radius: 12px;
     background: rgba(255,255,255,0.015);
@@ -262,75 +256,6 @@
 
   @keyframes rotateBorder {
     to { --border-angle: 360deg; }
-  }
-
-  /* ─── ITEM PHOTO ─── */
-  .item-photo {
-    width: 90px;
-    min-width: 90px;
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-    flex-shrink: 0;
-    align-self: stretch;
-  }
-
-  .item-photo img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: saturate(0.4) brightness(0.55) contrast(1.2);
-  }
-
-  .item-photo .photo-tint {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-  }
-
-  .item-photo .photo-tint-green {
-    background: linear-gradient(180deg, rgba(130,253,71,0.05) 0%, rgba(2,1,2,0.4) 100%);
-  }
-
-  .item-photo .photo-tint-blue {
-    background: linear-gradient(180deg, rgba(34,79,209,0.08) 0%, rgba(2,1,2,0.4) 100%);
-  }
-
-  .item-photo .photo-tint-orange {
-    background: linear-gradient(180deg, rgba(232,119,34,0.08) 0%, rgba(2,1,2,0.4) 100%);
-  }
-
-  .item-photo .photo-tint-purple {
-    background: linear-gradient(180deg, rgba(125,59,237,0.08) 0%, rgba(2,1,2,0.4) 100%);
-  }
-
-  /* Animated grid overlay on photo */
-  .item-photo::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    background:
-      linear-gradient(rgba(130,253,71,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(130,253,71,0.02) 1px, transparent 1px);
-    background-size: 20px 20px;
-    animation: gridScroll 20s linear infinite;
-    pointer-events: none;
-  }
-
-  @keyframes gridScroll {
-    0% { background-position: 0 0; }
-    100% { background-position: 20px 40px; }
-  }
-
-  /* Steam canvas inside photo */
-  .steam-canvas {
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    pointer-events: none;
   }
 
   /* ─── ITEM INFO ─── */
@@ -828,17 +753,8 @@
     padding: 48px 36px 56px;
   }
 
-  body.horizontal .menu-header .menu-title {
-    font-size: 34px;
-  }
-
   body.horizontal .menu-items {
     gap: 10px;
-  }
-
-  body.horizontal .item-photo {
-    width: 120px;
-    min-width: 120px;
   }
 
   body.horizontal .item-name {
@@ -880,19 +796,6 @@
       padding: 42px 12px 50px;
     }
 
-    .menu-header .menu-title {
-      font-size: 22px;
-    }
-
-    .menu-header .brand-line {
-      font-size: 8px;
-      letter-spacing: 3px;
-    }
-
-    .menu-header .menu-sub {
-      font-size: 7px;
-    }
-
     .section-head .section-label {
       font-size: 8px;
       letter-spacing: 3px;
@@ -912,9 +815,14 @@
       gap: 10px;
     }
 
-    .item-photo {
-      width: 72px;
-      min-width: 72px;
+    .menu-header .concept-name {
+      font-size: 18px;
+    }
+
+    .menu-header .brand-line,
+    .menu-header .sub-line {
+      font-size: 7px;
+      letter-spacing: 3px;
     }
 
     .item-name {
@@ -1023,15 +931,6 @@
       padding: 44px 16px 52px;
     }
 
-    .menu-header .menu-title {
-      font-size: 26px;
-    }
-
-    .item-photo {
-      width: 82px;
-      min-width: 82px;
-    }
-
     .item-name {
       font-size: 18px;
     }
@@ -1040,15 +939,6 @@
   @media (min-width: 768px) and (max-width: 1024px) {
     .menu-view {
       padding: 50px 24px 60px;
-    }
-
-    .menu-header .menu-title {
-      font-size: 32px;
-    }
-
-    .item-photo {
-      width: 110px;
-      min-width: 110px;
     }
 
     .item-name {
@@ -1075,13 +965,8 @@
       padding: 52px 32px 64px;
     }
 
-    .menu-header .menu-title {
-      font-size: 38px;
-    }
-
-    .item-photo {
-      width: 130px;
-      min-width: 130px;
+    .menu-header .concept-name {
+      font-size: 28px;
     }
 
     .item-name {
@@ -1118,14 +1003,6 @@
       padding: 36px 14px 44px;
     }
 
-    .menu-header {
-      margin-bottom: 6px;
-    }
-
-    .menu-header .menu-title {
-      font-size: 18px;
-    }
-
     .menu-items {
       gap: 4px;
     }
@@ -1135,9 +1012,12 @@
       gap: 8px;
     }
 
-    .item-photo {
-      width: 60px;
-      min-width: 60px;
+    .menu-header .concept-name {
+      font-size: 16px;
+    }
+
+    .menu-header {
+      padding: 2px 0 4px;
     }
 
     .item-name {
@@ -1235,34 +1115,28 @@
 <div class="container">
   <div class="menu-view">
 
-    <!-- MENU HEADER -->
+    <!-- ══ HEADER ══ -->
     <div class="menu-header" data-anim>
-      <div class="brand-line">Breakfast Live &middot; Medellín 2026</div>
-      <div class="menu-title">Caturra <span>Huila</span></div>
-      <div class="menu-sub">Open Bar &middot; All Drinks Included</div>
+      <div class="brand-line">Salentino Coffee Lab</div>
+      <div class="concept-name">SETLIST</div>
+      <div class="sub-line">Ritvales 2026 &middot; Open Bar</div>
     </div>
 
-    <!-- ── V60 POUR OVER SECTION ── -->
+    <!-- ══ POUR OVER ══ -->
     <div class="section-head" data-anim>
       <span class="section-label">_Pour Over</span>
       <div class="section-line"></div>
-      <span class="section-badge">V60</span>
+      <span class="section-badge">V60 &middot; Caturra Huila</span>
     </div>
 
     <div class="menu-section">
       <div class="menu-items">
 
-        <!-- CATURRA FLEUR — Lavado -->
         <div class="menu-item item-accent-washed" data-anim>
-          <div class="item-photo">
-            <img src="https://images.unsplash.com/photo-1559496417-e7f25cb247f3?w=600&q=80" alt="Caturra Fleur — V60" loading="eager">
-            <div class="photo-tint photo-tint-blue"></div>
-            <canvas class="steam-canvas" id="steamCanvas1"></canvas>
-          </div>
           <div class="item-info">
             <div class="process-badge process-washed">LAVADO</div>
             <div class="item-name">CATURRA FLEUR_</div>
-            <div class="item-type">Huila, Colombia &middot; 1,750 masl</div>
+            <div class="item-type">1,750 masl &middot; Huila</div>
             <div class="notes-row">
               <span class="note-chip">Brown Sugar</span>
               <span class="note-chip">Citrus</span>
@@ -1271,17 +1145,11 @@
           </div>
         </div>
 
-        <!-- CATURRA PINEAPPLE — Co-Fermentado -->
         <div class="menu-item item-accent-cofermented" data-anim>
-          <div class="item-photo">
-            <img src="https://images.unsplash.com/photo-1507133750040-4a8f57021571?w=600&q=80" alt="Caturra Pineapple — V60" loading="eager">
-            <div class="photo-tint photo-tint-purple"></div>
-            <canvas class="steam-canvas" id="steamCanvas2"></canvas>
-          </div>
           <div class="item-info">
             <div class="process-badge process-cofermented">CO—FERMENTADO</div>
             <div class="item-name">CATURRA PINEAPPLE_</div>
-            <div class="item-type">Huila, Colombia &middot; 1,750 masl</div>
+            <div class="item-type">1,750 masl &middot; Huila</div>
             <div class="notes-row">
               <span class="note-chip">Pineapple</span>
               <span class="note-chip">Coconut</span>
@@ -1292,52 +1160,36 @@
       </div>
     </div>
 
-    <!-- ── DIVIDER ── -->
+    <!-- ══ DIVIDER ══ -->
     <div class="menu-divider" data-anim>
       <div class="div-line"></div>
       <div class="div-dot"></div>
       <div class="div-line"></div>
     </div>
 
-    <!-- ── COLD BREW SECTION ── -->
+    <!-- ══ COLD BREW ══ -->
     <div class="section-head" data-anim>
       <span class="section-label">_Cold Brew</span>
       <div class="section-line"></div>
-      <span class="section-badge">24hr</span>
+      <span class="section-badge">24hr Steep</span>
     </div>
 
     <div class="menu-section">
       <div class="menu-items">
 
-        <!-- SIGNAL_ -->
         <div class="menu-item item-accent-green" data-anim>
-          <div class="item-photo">
-            <img src="https://images.unsplash.com/photo-1531835207745-506a1bc035d8?w=600&q=80" alt="SIGNAL — Pure Cold Brew" loading="lazy">
-            <div class="photo-tint photo-tint-green"></div>
-          </div>
           <div class="item-info">
             <div class="item-name">SIGNAL_</div>
-            <div class="item-type">Pure Cold Brew &middot; 24hr Steep</div>
-            <div class="item-desc">
-              Uncut. No filter, no noise.
-              <em>La frecuencia mas pura.</em>
-            </div>
+            <div class="item-type">Pure &middot; Sin cortes</div>
+            <div class="item-desc">No filter, no noise. La frecuencia más pura.</div>
           </div>
         </div>
 
-        <!-- ANALOG_ -->
         <div class="menu-item item-accent-blue" data-anim>
-          <div class="item-photo">
-            <img src="https://images.unsplash.com/photo-1562447457-579fc34967fb?w=600&q=80" alt="ANALOG — Cold Brew + Milk" loading="lazy">
-            <div class="photo-tint photo-tint-blue"></div>
-          </div>
           <div class="item-info">
             <div class="item-name">ANALOG_</div>
             <div class="item-type">Cold Brew + Milk</div>
-            <div class="item-desc">
-              Smooth like vinyl. Deep, warm.
-              <em>Suave como el vinilo.</em>
-            </div>
+            <div class="item-desc">Smooth like vinyl. Profundo y cálido.</div>
             <div class="drink-options">
               <span class="option-pill">Averna</span>
               <span class="option-pill">Leche</span>
@@ -1346,19 +1198,11 @@
           </div>
         </div>
 
-        <!-- FREQUENCY_ -->
         <div class="menu-item item-accent-orange" data-anim>
-          <div class="item-photo">
-            <img src="https://images.unsplash.com/photo-1760304737368-7d8376bde94c?w=600&q=80" alt="FREQUENCY — Cold Brew + Tonic" loading="lazy">
-            <div class="photo-tint photo-tint-orange"></div>
-          </div>
           <div class="item-info">
             <div class="item-name">FREQUENCY_</div>
             <div class="item-type">Cold Brew + Tonic Water</div>
-            <div class="item-desc">
-              Carbonation hits like a drop.
-              <em>Brillante y electrico.</em>
-            </div>
+            <div class="item-desc">Carbonation hits like a drop. Brillante y eléctrico.</div>
           </div>
         </div>
 
@@ -1392,67 +1236,6 @@
     requestAnimationFrame(updateClock);
   }
   updateClock();
-
-  // ─── STEAM PARTICLE SYSTEM ───
-  function initSteam(canvasId) {
-    const sc = document.getElementById(canvasId);
-    if (!sc) return;
-    const sctx = sc.getContext('2d');
-    const steamParticles = [];
-    const MAX = 20;
-
-    function resizeSteam() {
-      const rect = sc.parentElement.getBoundingClientRect();
-      sc.width = rect.width;
-      sc.height = rect.height;
-    }
-    resizeSteam();
-    window.addEventListener('resize', resizeSteam);
-
-    function spawnSteam() {
-      if (steamParticles.length < MAX) {
-        steamParticles.push({
-          x: sc.width * 0.3 + Math.random() * sc.width * 0.4,
-          y: sc.height * 0.6 + Math.random() * 15,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: -(0.2 + Math.random() * 0.5),
-          size: Math.random() * 2.5 + 0.8,
-          alpha: Math.random() * 0.12 + 0.04,
-          life: 1,
-          decay: 0.004 + Math.random() * 0.006,
-          wobble: Math.random() * Math.PI * 2,
-          wobbleSpeed: 0.02 + Math.random() * 0.03
-        });
-      }
-    }
-
-    function drawSteam() {
-      sctx.clearRect(0, 0, sc.width, sc.height);
-      for (let i = steamParticles.length - 1; i >= 0; i--) {
-        const p = steamParticles[i];
-        p.wobble += p.wobbleSpeed;
-        p.x += p.vx + Math.sin(p.wobble) * 0.25;
-        p.y += p.vy;
-        p.life -= p.decay;
-        p.size += 0.015;
-        if (p.life <= 0) { steamParticles.splice(i, 1); continue; }
-        const a = p.alpha * p.life;
-        sctx.beginPath();
-        sctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        sctx.fillStyle = `rgba(130, 253, 71, ${a})`;
-        sctx.fill();
-        sctx.beginPath();
-        sctx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2);
-        sctx.fillStyle = `rgba(130, 253, 71, ${a * 0.12})`;
-        sctx.fill();
-      }
-      spawnSteam();
-      requestAnimationFrame(drawSteam);
-    }
-    drawSteam();
-  }
-  initSteam('steamCanvas1');
-  initSteam('steamCanvas2');
 
   // ─── PARTICLE SYSTEM ───
   const pc = document.getElementById('particleCanvas');
@@ -1588,32 +1371,34 @@
     const chips = document.querySelectorAll('.note-chip');
     const divider = document.querySelector('.menu-divider');
 
-    // Header fade in
-    tl.fromTo(header, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0.1);
+    // Header fade in first
+    if (header) {
+      tl.fromTo(header, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0.1);
+    }
 
     // V60 section head
     tl.fromTo(sectionHeads[0], { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, 0.3);
 
     // V60 items stagger
-    tl.fromTo([items[0], items[1]], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.15, ease: 'power3.out' }, 0.45);
+    tl.fromTo([items[0], items[1]], { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: 'power3.out' }, 0.45);
 
     // Tasting notes typing
     if (chips.length) {
-      tl.fromTo(chips, { opacity: 0, y: 4 }, { opacity: 0.8, y: 0, duration: 0.3, stagger: 0.1, ease: 'power2.out' }, 0.9);
+      tl.fromTo(chips, { opacity: 0, y: 4 }, { opacity: 0.8, y: 0, duration: 0.25, stagger: 0.08, ease: 'power2.out' }, 0.85);
     }
 
     // Divider
     if (divider) {
-      tl.fromTo(divider, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out' }, 1.1);
+      tl.fromTo(divider, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' }, 1.0);
     }
 
     // Cold brew section head
     if (sectionHeads[1]) {
-      tl.fromTo(sectionHeads[1], { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, 1.2);
+      tl.fromTo(sectionHeads[1], { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, 1.05);
     }
 
     // Cold brew items stagger
-    tl.fromTo([items[2], items[3], items[4]], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: 'power3.out' }, 1.3);
+    tl.fromTo([items[2], items[3], items[4]], { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out' }, 1.15);
 
     return tl;
   }
@@ -1621,7 +1406,7 @@
   // ─── MICRO-GLITCH LOOP ───
   function startGlitchLoop() {
     function doGlitch() {
-      const title = document.querySelector('.menu-title');
+      const title = document.querySelector('.concept-name');
       if (title) {
         gsap.timeline()
           .to(title, { x: (Math.random()-0.5)*5, textShadow: '-2px 0 #FF4B43, 2px 0 #224FD1', duration: 0.05, ease: 'steps(2)' })
@@ -1805,4 +1590,3 @@ function setOrientation(mode) {
 
 </body>
 </html>
-

@@ -153,11 +153,14 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     padding: 3px 10px;
-    border: 1px solid var(--green-dim);
+    border: 1px solid rgba(130,253,71,0.12);
     border-radius: 100px;
     color: var(--green);
-    opacity: 0.6;
+    opacity: 0.7;
     white-space: nowrap;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(130,253,71,0.03);
   }
 
   /* ─── MENU ITEMS LIST ─── */
@@ -169,11 +172,36 @@
     min-height: 0;
   }
 
-  /* ─── MENU HEADER ─── */
+  /* ─── MENU HEADER (liquid glass panel) ─── */
   .menu-header {
     text-align: center;
-    padding: 4px 0 8px;
+    padding: 8px 16px 10px;
     opacity: 0;
+    background: rgba(130,253,71,0.03);
+    border: 1px solid rgba(130,253,71,0.08);
+    border-radius: 14px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+
+  /* Specular sweep on header glass */
+  .menu-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; bottom: 0;
+    width: 60%;
+    background: linear-gradient(90deg, transparent, rgba(130,253,71,0.04), rgba(255,255,255,0.02), transparent);
+    animation: specularSweep 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes specularSweep {
+    0% { left: -100%; }
+    50% { left: 150%; }
+    100% { left: -100%; }
   }
 
   .menu-header .brand-line {
@@ -182,7 +210,7 @@
     font-weight: 400;
     letter-spacing: 4px;
     text-transform: uppercase;
-    color: rgba(239,255,254,0.3);
+    color: rgba(239,255,254,0.35);
   }
 
   .menu-header .concept-name {
@@ -205,19 +233,19 @@
     font-weight: 400;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: rgba(239,255,254,0.25);
+    color: rgba(239,255,254,0.35);
   }
 
-  /* ─── INDIVIDUAL MENU ITEM ─── */
+  /* ─── INDIVIDUAL MENU ITEM (liquid glass card) ─── */
   .menu-item {
     display: flex;
     gap: 12px;
     padding: 10px 14px;
     border: 1px solid rgba(130,253,71,0.06);
     border-radius: 12px;
-    background: rgba(255,255,255,0.015);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     position: relative;
     overflow: hidden;
     opacity: 0;
@@ -225,6 +253,28 @@
     flex: 1;
     min-height: 0;
   }
+
+  /* Specular sweep on cards */
+  .menu-item::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; bottom: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.015), transparent);
+    animation: specularSweep 12s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .menu-item:nth-child(2)::before { animation-delay: -4s; }
+  .menu-item:nth-child(3)::before { animation-delay: -8s; }
+
+  /* Glass tint per accent */
+  .item-accent-washed { background: rgba(34,79,209,0.03); }
+  .item-accent-cofermented { background: rgba(125,59,237,0.03); }
+  .item-accent-green { background: rgba(130,253,71,0.02); }
+  .item-accent-blue { background: rgba(34,79,209,0.03); }
+  .item-accent-orange { background: rgba(232,119,34,0.03); }
 
   /* Animated border glow */
   .menu-item::after {
@@ -319,28 +369,29 @@
     line-height: 1.2;
   }
 
-  /* Type / subtitle */
+  /* Type / subtitle — what you're actually getting */
   .item-type {
     font-family: var(--mono);
     font-size: 9px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: rgba(239,255,254,0.4);
+    color: rgba(239,255,254,0.5);
   }
 
-  /* Description */
+  /* Description — plain-language sell */
   .item-desc {
-    font-size: 12px;
+    font-family: var(--sans);
+    font-size: 11px;
     line-height: 1.4;
-    color: rgba(239,255,254,0.55);
+    color: rgba(239,255,254,0.6);
     margin-top: 2px;
   }
 
   .item-desc em {
     display: block;
-    font-style: normal;
+    font-style: italic;
     font-size: 10px;
-    color: rgba(239,255,254,0.3);
+    color: rgba(239,255,254,0.35);
     margin-top: 1px;
   }
 
@@ -405,8 +456,10 @@
     background: rgba(232,119,34,0.04);
   }
 
-  .item-accent-washed .item-name { color: var(--white); }
-  .item-accent-cofermented .item-name { color: var(--white); }
+  .item-accent-washed .item-name { color: var(--steel); }
+  .item-accent-washed .item-type { color: rgba(174,225,246,0.5); }
+  .item-accent-cofermented .item-name { color: var(--purple); }
+  .item-accent-cofermented .item-type { color: rgba(125,59,237,0.5); }
 
   /* Left accent stripe on cold brew items */
   .item-accent-green { border-left: 3px solid var(--green); }
@@ -1055,6 +1108,19 @@
       width: 4px;
     }
   }
+
+  /* ─── REDUCED MOTION (a11y) ─── */
+  @media (prefers-reduced-motion: reduce) {
+    .scanlines,
+    .screen-flicker { animation: none; }
+    .menu-item::after { animation: none; }
+    .menu-item::before { animation: none; }
+    .menu-header::before { animation: none; }
+    .process-badge::after { animation: none; }
+    .live-dot { animation: none; }
+    #particleCanvas,
+    #waveCanvas { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -1122,11 +1188,11 @@
       <div class="sub-line">Ritvales 2026 &middot; Open Bar</div>
     </div>
 
-    <!-- ══ POUR OVER ══ -->
+    <!-- ══ CAFÉ CALIENTE ══ -->
     <div class="section-head" data-anim>
-      <span class="section-label">_Pour Over</span>
+      <span class="section-label">_Café Caliente</span>
       <div class="section-line"></div>
-      <span class="section-badge">V60 &middot; Caturra Huila</span>
+      <span class="section-badge">Pour Over &middot; V60</span>
     </div>
 
     <div class="menu-section">
@@ -1136,12 +1202,8 @@
           <div class="item-info">
             <div class="process-badge process-washed">LAVADO</div>
             <div class="item-name">CATURRA FLEUR_</div>
-            <div class="item-type">1,750 masl &middot; Huila</div>
-            <div class="notes-row">
-              <span class="note-chip">Brown Sugar</span>
-              <span class="note-chip">Citrus</span>
-              <span class="note-chip">Chocolate</span>
-            </div>
+            <div class="item-type">Café filtrado &middot; Caturra Huila</div>
+            <div class="item-desc">Dulce y limpio. Notas de panela, cítrico y chocolate.<em>Sweet, clean. Brown sugar, citrus, chocolate.</em></div>
           </div>
         </div>
 
@@ -1149,11 +1211,8 @@
           <div class="item-info">
             <div class="process-badge process-cofermented">CO—FERMENTADO</div>
             <div class="item-name">CATURRA PINEAPPLE_</div>
-            <div class="item-type">1,750 masl &middot; Huila</div>
-            <div class="notes-row">
-              <span class="note-chip">Pineapple</span>
-              <span class="note-chip">Coconut</span>
-            </div>
+            <div class="item-type">Café filtrado &middot; Caturra Huila</div>
+            <div class="item-desc">Tropical y cremoso. Piña y coco en cada sorbo.<em>Tropical, creamy. Pineapple &amp; coconut in every sip.</em></div>
           </div>
         </div>
 
@@ -1167,11 +1226,11 @@
       <div class="div-line"></div>
     </div>
 
-    <!-- ══ COLD BREW ══ -->
+    <!-- ══ CAFÉ FRÍO ══ -->
     <div class="section-head" data-anim>
-      <span class="section-label">_Cold Brew</span>
+      <span class="section-label">_Café Frío</span>
       <div class="section-line"></div>
-      <span class="section-badge">24hr Steep</span>
+      <span class="section-badge">Cold Brew &middot; 24hr</span>
     </div>
 
     <div class="menu-section">
@@ -1180,18 +1239,18 @@
         <div class="menu-item item-accent-green" data-anim>
           <div class="item-info">
             <div class="item-name">SIGNAL_</div>
-            <div class="item-type">Pure &middot; Sin cortes</div>
-            <div class="item-desc">No filter, no noise. La frecuencia más pura.</div>
+            <div class="item-type">Cold Brew puro &middot; sin mezcla</div>
+            <div class="item-desc">Solo café, 24 horas de extracción fría.<em>Pure cold brew. No filter, no noise.</em></div>
           </div>
         </div>
 
         <div class="menu-item item-accent-blue" data-anim>
           <div class="item-info">
             <div class="item-name">ANALOG_</div>
-            <div class="item-type">Cold Brew + Milk</div>
-            <div class="item-desc">Smooth like vinyl. Profundo y cálido.</div>
+            <div class="item-type">Cold Brew + Leche</div>
+            <div class="item-desc">Suave y profundo. Elegí tu leche y syrup.<em>Smooth &amp; warm. Pick your milk and syrup.</em></div>
             <div class="drink-options">
-              <span class="option-pill">Averna</span>
+              <span class="option-pill">Avena</span>
               <span class="option-pill">Leche</span>
               <span class="option-pill">+ Syrup</span>
             </div>
@@ -1201,8 +1260,8 @@
         <div class="menu-item item-accent-orange" data-anim>
           <div class="item-info">
             <div class="item-name">FREQUENCY_</div>
-            <div class="item-type">Cold Brew + Tonic Water</div>
-            <div class="item-desc">Carbonation hits like a drop. Brillante y eléctrico.</div>
+            <div class="item-type">Cold Brew + Agua Tónica</div>
+            <div class="item-desc">Burbujas y cafeína. Brillante y eléctrico.<em>Sparkling caffeine. Bright &amp; electric.</em></div>
           </div>
         </div>
 
@@ -1439,14 +1498,14 @@
 
   // ─── SPLIT-FLAP DISPLAY ───
   const FLAP_MESSAGES = [
-    'CATURRA FLEUR _ LAVADO',
-    'CATURRA PINEAPPLE _ CO-FERMENTADO',
-    'HUILA COLOMBIA _ 1750 MASL',
-    'V60 POUR OVER _ BREWED LIVE',
-    'COLD BREW 24HR STEEP',
-    'ROASTED BY THOMAS GONZALEZ',
-    'SIGNAL_ ANALOG_ FREQUENCY_',
-    'LA ENERGIA ES UNA SOLA',
+    'CAFE CALIENTE _ POUR OVER V60',
+    'CAFE FRIO _ COLD BREW 24HR',
+    'CATURRA FLEUR _ DULCE Y LIMPIO',
+    'CATURRA PINEAPPLE _ TROPICAL',
+    'SIGNAL_ PURO _ SIN MEZCLA',
+    'ANALOG_ CON LECHE _ CON SYRUP',
+    'FREQUENCY_ CON AGUA TONICA',
+    'TOSTADO POR THOMAS GONZALEZ',
     'RITVALES X SALENTINO',
     'BREAKFAST LIVE _ MDE 2026',
   ];

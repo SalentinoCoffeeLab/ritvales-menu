@@ -1,0 +1,2332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RITVALES x Salentino Coffee Lab — Digital Menu</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --black: #020102;
+    --green: #82FD47;
+    --cobalt: #224FD1;
+    --orange: #E87722;
+    --red: #FF4B43;
+    --purple: #7D3BED;
+    --steel: #AEE1F6;
+    --white: #EFFFFE;
+    --green-dim: rgba(130, 253, 71, 0.15);
+    --green-glow: rgba(130, 253, 71, 0.4);
+    --mono: 'Space Mono', monospace;
+    --sans: 'Inter', -apple-system, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--black);
+    font-family: var(--sans);
+    color: var(--white);
+  }
+
+  /* ─── CANVAS LAYERS ─── */
+  canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  #particleCanvas { z-index: 1; }
+  #waveCanvas { z-index: 2; opacity: 0.6; }
+  #glitchCanvas { z-index: 90; opacity: 0; transition: opacity 0.05s; }
+
+  /* ─── SCANLINES ─── */
+  .scanlines {
+    position: fixed; inset: 0; z-index: 91;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px
+    );
+    animation: scanScroll 8s linear infinite;
+  }
+
+  @keyframes scanScroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100vh; }
+  }
+
+  /* ─── CRT VIGNETTE ─── */
+  .vignette {
+    position: fixed; inset: 0; z-index: 92;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%);
+  }
+
+  /* ─── FLICKER ─── */
+  .screen-flicker {
+    position: fixed; inset: 0; z-index: 89;
+    pointer-events: none;
+    animation: flicker 0.15s infinite;
+    opacity: 0;
+    background: rgba(130, 253, 71, 0.02);
+  }
+
+  @keyframes flicker {
+    0% { opacity: 0; }
+    5% { opacity: 0.02; }
+    10% { opacity: 0; }
+    15% { opacity: 0.015; }
+    20% { opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  /* ─── GPU HINTS ─── */
+  .slide,
+  .filter-card-hero,
+  .filter-card-secondary,
+  .card,
+  .title-main,
+  .section-tag,
+  .title-sub,
+  .open-bar,
+  .brand-quote,
+  .brand-text,
+  .step,
+  .note-chip {
+    will-change: transform, opacity;
+  }
+
+  /* ─── MAIN CONTAINER ─── */
+  .container {
+    position: relative;
+    z-index: 10;
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ─── SLIDE SYSTEM ─── */
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 28px 28px;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1);
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Slide transitions handled by GSAP — no CSS keyframes needed */
+
+  /* ─── PERSISTENT TOP BAR ─── */
+  .top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: linear-gradient(180deg, rgba(2,1,2,0.9) 0%, transparent 100%);
+  }
+
+  .top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ritvales-logo {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    color: var(--white);
+  }
+
+  .x-divider {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--green);
+    opacity: 0.5;
+  }
+
+  .salentino-logo {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: rgba(239,255,254,0.5);
+    text-transform: uppercase;
+  }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--green);
+  }
+
+  .live-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green-glow);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--green-glow); }
+    50% { opacity: 0.4; box-shadow: 0 0 4px var(--green-glow); }
+  }
+
+  /* ─── PERSISTENT BOTTOM BAR ─── */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 50;
+    padding: 16px 20px;
+    background: linear-gradient(0deg, rgba(2,1,2,0.95) 0%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tagline-bar {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+    text-align: center;
+    opacity: 0.7;
+    animation: taglinePulse 4s ease-in-out infinite;
+  }
+
+  @keyframes taglinePulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 0.35; }
+  }
+
+  /* PROGRESS DOTS */
+  .progress-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .p-dot {
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(130, 253, 71, 0.15);
+    transition: all 0.5s ease;
+    flex: 1;
+    max-width: 60px;
+  }
+
+  .p-dot.active {
+    background: var(--green);
+    box-shadow: 0 0 12px var(--green-glow);
+  }
+
+  .p-dot.active .p-dot-fill {
+    display: block;
+  }
+
+  .p-dot-fill {
+    display: none;
+    height: 100%;
+    background: var(--green);
+    border-radius: 2px;
+    box-shadow: 0 0 8px var(--green-glow);
+    width: 0%;
+  }
+
+  /* ─── SECTION HEADER ANIM ─── */
+  .section-tag {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 6px;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  /* section-tag entrance handled by GSAP */
+
+  /* ─── TITLE SYSTEM ─── */
+  .title-main {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 52px;
+    line-height: 1.1;
+    margin-bottom: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .title-main span { color: var(--green); }
+
+  /* TYPING CURSOR */
+  .title-main::after {
+    content: '_';
+    color: var(--green);
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Title glitch handled by GSAP */
+
+  .title-sub {
+    font-size: 16px;
+    color: rgba(239,255,254,0.4);
+    margin-bottom: 20px;
+    font-weight: 300;
+    line-height: 1.5;
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  /* title-sub entrance handled by GSAP */
+
+  /* ─── OPEN BAR PILL ─── */
+  .open-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    border: 1px solid var(--green-dim);
+    border-radius: 100px;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green);
+    background: rgba(130, 253, 71, 0.04);
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+  }
+
+  /* open-bar entrance handled by GSAP */
+
+  .open-bar::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; bottom: 0;
+    width: 60%;
+    background: linear-gradient(90deg, transparent, rgba(130,253,71,0.08), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+
+  /* ─── CARD SYSTEM ─── */
+  .cards-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+    padding-bottom: 60px;
+  }
+
+  .card {
+    flex: 1;
+    border: 1px solid rgba(130,253,71,0.08);
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    background: rgba(255,255,255,0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  /* card reveal stagger handled by GSAP */
+
+  /* Card hover glow */
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 14px;
+    border: 1px solid transparent;
+    background: linear-gradient(135deg, rgba(130,253,71,0.1), transparent, rgba(34,79,209,0.05)) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    animation: borderGlow 6s ease-in-out infinite;
+  }
+
+  @keyframes borderGlow {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+  }
+
+  /* ─── FILTER CARDS — HERO LAYOUT ─── */
+  .filter-cards-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+    padding-bottom: 60px;
+  }
+
+  .filter-card-hero {
+    flex: 6;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .filter-card-secondary {
+    flex: 4;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  /* filter card reveal handled by GSAP */
+
+  /* ─── ANIMATED GRADIENT BORDER ─── */
+  .filter-card-hero,
+  .filter-card-secondary {
+    border: 1px solid transparent;
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    position: relative;
+  }
+
+  .filter-card-hero::before,
+  .filter-card-secondary::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 18px;
+    padding: 2px;
+    background: conic-gradient(
+      from var(--border-angle, 0deg),
+      rgba(130,253,71,0.4),
+      rgba(34,79,209,0.3),
+      rgba(130,253,71,0.05),
+      rgba(232,119,34,0.2),
+      rgba(130,253,71,0.4)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: rotateBorder 4s linear infinite;
+    z-index: 1;
+  }
+
+  @property --border-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  @keyframes rotateBorder {
+    to { --border-angle: 360deg; }
+  }
+
+  /* ─── FULL-BLEED PHOTO AREA ─── */
+  .filter-photo {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, rgba(130,253,71,0.02), rgba(2,1,2,0.95), rgba(34,79,209,0.02));
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  /* Animated grid */
+  .filter-photo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(rgba(130,253,71,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(130,253,71,0.015) 1px, transparent 1px);
+    background-size: 30px 30px;
+    animation: gridScroll 20s linear infinite;
+  }
+
+  @keyframes gridScroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 30px 60px; }
+  }
+
+  /* Photo placeholder centered icon */
+  .filter-photo-inner {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.25;
+  }
+
+  .photo-ring-lg {
+    width: 64px; height: 64px;
+    border: 1.5px solid rgba(130,253,71,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(130,253,71,0.5);
+    letter-spacing: 2px;
+    position: relative;
+  }
+
+  .photo-ring-lg::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border: 1px solid rgba(130,253,71,0.08);
+    border-radius: 50%;
+    animation: ringExpand 3s ease-in-out infinite;
+  }
+
+  .photo-ring-lg::after {
+    content: '';
+    position: absolute;
+    inset: -14px;
+    border: 1px solid rgba(130,253,71,0.04);
+    border-radius: 50%;
+    animation: ringExpand 3s 0.5s ease-in-out infinite;
+  }
+
+  @keyframes ringExpand {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0; }
+  }
+
+  .photo-ring-sm {
+    width: 44px; height: 44px;
+    border: 1.5px solid rgba(130,253,71,0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: rgba(130,253,71,0.4);
+    letter-spacing: 1px;
+    position: relative;
+  }
+
+  .photo-ring-sm::before {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border: 1px solid rgba(130,253,71,0.05);
+    border-radius: 50%;
+    animation: ringExpand 4s ease-in-out infinite;
+  }
+
+  .photo-hint {
+    font-family: var(--mono);
+    font-size: 7px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(239,255,254,0.15);
+  }
+
+  /* ─── STEAM CANVAS (per card) ─── */
+  .steam-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* ─── CARD OVERLAY INFO ─── */
+  .filter-info-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    z-index: 5;
+    padding: 18px 20px;
+    background: linear-gradient(0deg, rgba(2,1,2,0.92) 0%, rgba(2,1,2,0.6) 60%, transparent 100%);
+  }
+
+  /* ─── PROCESS BADGE — BIG & GLOWING ─── */
+  .process-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .process-washed {
+    color: var(--steel);
+    border: 1px solid rgba(34,79,209,0.4);
+    background: rgba(34,79,209,0.1);
+    box-shadow: 0 0 20px rgba(34,79,209,0.15), inset 0 0 15px rgba(34,79,209,0.05);
+  }
+
+  .process-cofermented {
+    color: var(--purple);
+    border: 1px solid rgba(125,59,237,0.4);
+    background: rgba(125,59,237,0.1);
+    box-shadow: 0 0 20px rgba(125,59,237,0.15), inset 0 0 15px rgba(125,59,237,0.05);
+  }
+
+  /* Shimmer across badge */
+  .process-badge::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; bottom: 0;
+    width: 50%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  /* ─── V60 METHOD TAG ─── */
+  .method-pill {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid rgba(130,253,71,0.2);
+    border-radius: 3px;
+    color: var(--green);
+    background: rgba(130,253,71,0.04);
+    margin-bottom: 6px;
+    width: fit-content;
+  }
+
+  /* ─── VARIETY & ROASTER TAGS ─── */
+  .variety-tag {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(239,255,254,0.3);
+    margin-bottom: 2px;
+  }
+
+  .variety-tag span {
+    color: rgba(239,255,254,0.55);
+  }
+
+  .roaster-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: rgba(130,253,71,0.35);
+    margin-top: 4px;
+  }
+
+  .roaster-tag strong {
+    color: rgba(130,253,71,0.55);
+    font-weight: 500;
+  }
+
+  /* ─── SALENTINO ANGULAR LOGO ─── */
+  .salentino-angular {
+    font-family: var(--mono);
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    position: relative;
+  }
+
+  .salentino-angular-sm {
+    font-size: 11px;
+    color: rgba(239,255,254,0.5);
+  }
+
+  .salentino-angular-lg {
+    font-size: 38px;
+    color: var(--green);
+    text-shadow: 0 0 40px rgba(130,253,71,0.15);
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+
+  .salentino-angular-lg::before,
+  .salentino-angular-lg::after {
+    content: '__';
+    opacity: 0.4;
+  }
+
+  .salentino-angular-lg {
+    will-change: transform, opacity;
+  }
+
+  .drink-name {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+    color: var(--white);
+    text-shadow: 0 0 30px rgba(239,255,254,0.1);
+  }
+
+  .drink-origin {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green);
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+
+  .drink-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+    color: rgba(239,255,254,0.35);
+    margin-bottom: 6px;
+  }
+
+  .drink-meta strong {
+    color: rgba(239,255,254,0.55);
+    font-weight: 500;
+  }
+
+  /* ─── TYPING TASTING NOTES ─── */
+  .notes-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+  }
+
+  .note-chip {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    padding: 5px 14px;
+    border: 1px solid rgba(130,253,71,0.15);
+    border-radius: 100px;
+    color: var(--green);
+    background: rgba(130,253,71,0.04);
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  /* note-chip typing stagger handled by GSAP */
+
+  /* ─── ALTITUDE GLOW LINE ─── */
+  .altitude-line {
+    height: 1px;
+    margin-top: 8px;
+    background: linear-gradient(90deg, var(--green), rgba(34,79,209,0.3), transparent);
+    opacity: 0.2;
+    position: relative;
+  }
+
+  .altitude-line::after {
+    content: '';
+    position: absolute;
+    top: -2px; left: 0;
+    width: 4px; height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green-glow);
+    animation: altitudeScan 3s ease-in-out infinite;
+  }
+
+  @keyframes altitudeScan {
+    0% { left: 0; }
+    50% { left: 70%; }
+    100% { left: 0; }
+  }
+
+  /* ─── COLD BREW CARD (HORIZONTAL) ─── */
+  .card-coldbrew {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+  }
+
+  .card-coldbrew .card-photo {
+    width: 32%;
+    height: auto;
+    border-bottom: none;
+    border-right: 1px solid rgba(130,253,71,0.06);
+  }
+
+  .card-coldbrew .card-info {
+    padding: 14px 18px;
+  }
+
+  .card-coldbrew .drink-name {
+    font-size: 22px;
+  }
+
+  .drink-type-sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(239,255,254,0.35);
+    margin-bottom: 6px;
+  }
+
+  .drink-desc {
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(239,255,254,0.4);
+  }
+
+  .drink-desc em {
+    display: block;
+    font-style: normal;
+    font-size: 12px;
+    color: rgba(239,255,254,0.2);
+    margin-top: 3px;
+  }
+
+  /* Accent borders */
+  .accent-green { border-left: 3px solid var(--green); }
+  .accent-green .drink-name { color: var(--green); }
+  .accent-blue { border-left: 3px solid var(--cobalt); }
+  .accent-blue .drink-name { color: var(--steel); }
+  .accent-orange { border-left: 3px solid var(--orange); }
+  .accent-orange .drink-name { color: var(--orange); }
+
+  /* ─── BRAND SLIDE ─── */
+  .brand-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+    padding-bottom: 60px;
+  }
+
+  .brand-quote {
+    font-family: var(--mono);
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--green);
+    position: relative;
+    padding-left: 18px;
+    border-left: 3px solid var(--green);
+    box-shadow: -8px 0 30px rgba(130,253,71,0.06);
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  /* brand-quote reveal handled by GSAP */
+
+  .brand-text {
+    font-size: 17px;
+    line-height: 1.7;
+    color: rgba(239,255,254,0.45);
+    font-weight: 300;
+    opacity: 0;
+  }
+
+  /* brand-text entrance handled by GSAP */
+
+  .brand-text strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  /* CURATORIAL STEPS */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid rgba(130,253,71,0.06);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.015);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+
+  /* step reveal stagger handled by GSAP */
+
+  /* Animated line inside step */
+  .step::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, var(--green), transparent);
+    opacity: 0.15;
+    animation: lineSlide 4s ease-in-out infinite;
+  }
+
+  @keyframes lineSlide {
+    0% { transform: translateX(-100%); }
+    50% { transform: translateX(0); }
+    100% { transform: translateX(100%); }
+  }
+
+  .step-num {
+    font-family: var(--mono);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--green);
+    min-width: 42px;
+    text-shadow: 0 0 20px rgba(130,253,71,0.3);
+  }
+
+  .step-content strong {
+    display: block;
+    font-family: var(--mono);
+    font-size: 17px;
+    color: var(--white);
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+  }
+
+  .step-content span {
+    font-size: 14px;
+    color: rgba(239,255,254,0.35);
+    line-height: 1.5;
+  }
+
+  /* ─── PHOTO IMAGES (replacing placeholders) ─── */
+  .filter-photo img,
+  .card-photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.65;
+    filter: saturate(0.35) brightness(0.55) contrast(1.25);
+    transition: opacity 0.6s ease;
+    z-index: 0;
+  }
+
+  .filter-photo:hover img,
+  .card-photo:hover img {
+    opacity: 0.7;
+  }
+
+  /* Green tint overlay on photos */
+  .filter-photo .photo-tint,
+  .card-photo .photo-tint {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(2,1,2,0.3) 0%, rgba(130,253,71,0.03) 50%, rgba(2,1,2,0.8) 100%);
+    z-index: 1;
+    mix-blend-mode: normal;
+  }
+
+  /* ─── ORIENTATION TOGGLE ─── */
+  .orientation-toggle {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(2,1,2,0.85);
+    border: 1px solid rgba(130,253,71,0.2);
+    border-radius: 6px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .orientation-toggle .toggle-btn {
+    padding: 6px 14px;
+    background: transparent;
+    border: none;
+    color: rgba(239,255,254,0.35);
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .orientation-toggle .toggle-btn.active {
+    color: var(--green);
+    background: rgba(130,253,71,0.08);
+    box-shadow: inset 0 0 12px rgba(130,253,71,0.05);
+  }
+
+  .orientation-toggle .toggle-btn:hover {
+    color: var(--white);
+  }
+
+  .toggle-divider {
+    width: 1px;
+    height: 16px;
+    background: rgba(130,253,71,0.15);
+  }
+
+  .toggle-label {
+    padding: 0 8px;
+    font-family: var(--mono);
+    font-size: 7px;
+    letter-spacing: 1px;
+    color: rgba(130,253,71,0.25);
+  }
+
+  /* ─── HORIZONTAL MODE ─── */
+  body.horizontal .container,
+  body.horizontal .screen {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  body.horizontal .slide {
+    padding: 36px 48px 28px;
+  }
+
+  body.horizontal .title-main {
+    font-size: 56px;
+  }
+
+  body.horizontal .salentino-angular-lg {
+    font-size: 44px;
+  }
+
+  body.horizontal .filter-cards-area {
+    flex-direction: row;
+    gap: 14px;
+  }
+
+  body.horizontal .filter-card-hero,
+  body.horizontal .filter-card-secondary {
+    flex: 1;
+  }
+
+  body.horizontal .filter-info-overlay {
+    padding: 20px 24px;
+  }
+
+  body.horizontal .drink-name {
+    font-size: 30px;
+  }
+
+  body.horizontal .cards-area {
+    flex-direction: row;
+    gap: 14px;
+  }
+
+  body.horizontal .card-coldbrew {
+    flex-direction: column;
+  }
+
+  body.horizontal .card-coldbrew .card-photo {
+    width: 100%;
+    height: 40%;
+    border-right: none;
+    border-bottom: 1px solid rgba(130,253,71,0.06);
+  }
+
+  body.horizontal .card-coldbrew .card-info {
+    padding: 16px 18px;
+  }
+
+  body.horizontal .brand-area {
+    flex-direction: row;
+    gap: 32px;
+    align-items: flex-start;
+  }
+
+  body.horizontal .brand-area > * {
+    flex: 1;
+  }
+
+  body.horizontal .steps {
+    flex: 1.2;
+  }
+
+  body.horizontal .brand-quote {
+    font-size: 44px;
+  }
+
+  body.horizontal .top-bar {
+    padding: 12px 32px;
+  }
+
+  body.horizontal .hud-coords {
+    top: 40px; left: 32px;
+  }
+
+  body.horizontal .hud-time {
+    top: 40px; right: 32px;
+  }
+
+  body.horizontal .process-badge {
+    font-size: 18px;
+    padding: 8px 22px;
+  }
+
+  body.horizontal .notes-row {
+    gap: 8px;
+  }
+
+  body.horizontal .note-chip {
+    font-size: 14px;
+    padding: 6px 14px;
+  }
+
+  /* ═══════════════════════════════════════ */
+  /* ─── MOBILE RESPONSIVE ─── */
+  /* ═══════════════════════════════════════ */
+
+  /* Small phones (375px and below) */
+  @media (max-width: 420px) {
+    .slide {
+      padding: 36px 16px 20px;
+    }
+
+    .title-main {
+      font-size: 36px;
+      margin-bottom: 4px;
+    }
+
+    .title-sub {
+      font-size: 13px;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    .section-tag {
+      font-size: 11px;
+      letter-spacing: 3px;
+      margin-bottom: 4px;
+    }
+
+    .open-bar {
+      font-size: 10px;
+      padding: 6px 14px;
+      margin-bottom: 14px;
+      letter-spacing: 1.5px;
+    }
+
+    /* Top bar */
+    .top-bar {
+      padding: 8px 12px;
+    }
+
+    .ritvales-logo {
+      font-size: 12px;
+      letter-spacing: 3px;
+    }
+
+    .salentino-angular-sm {
+      font-size: 9px;
+    }
+
+    .live-badge {
+      font-size: 9px;
+    }
+
+    /* HUD */
+    .hud-time {
+      font-size: 7px;
+      top: 32px; right: 12px;
+    }
+
+    .hud-coords {
+      font-size: 7px;
+      top: 32px; left: 12px;
+    }
+
+    /* Filter cards */
+    .filter-cards-area {
+      gap: 8px;
+      padding-bottom: 50px;
+    }
+
+    .filter-info-overlay {
+      padding: 12px 14px;
+    }
+
+    .process-badge {
+      font-size: 12px;
+      padding: 5px 12px;
+      letter-spacing: 3px;
+      margin-bottom: 6px;
+    }
+
+    .method-pill {
+      font-size: 9px;
+      padding: 3px 8px;
+      margin-bottom: 4px;
+    }
+
+    .drink-name {
+      font-size: 20px;
+    }
+
+    .drink-origin {
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+
+    .drink-meta {
+      font-size: 10px;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .notes-row {
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .note-chip {
+      font-size: 10px;
+      padding: 3px 8px;
+    }
+
+    .altitude-line {
+      margin-top: 6px;
+    }
+
+    /* Cold brew cards */
+    .cards-area {
+      gap: 8px;
+      padding-bottom: 50px;
+    }
+
+    .card-coldbrew .card-info {
+      padding: 10px 14px;
+    }
+
+    .card-coldbrew .drink-name {
+      font-size: 18px;
+    }
+
+    .drink-type-sub {
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+
+    .drink-desc {
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .drink-desc em {
+      font-size: 10px;
+    }
+
+    /* Brand slide */
+    .brand-area {
+      gap: 16px;
+      padding-bottom: 50px;
+    }
+
+    .brand-quote {
+      font-size: 28px;
+      padding-left: 14px;
+    }
+
+    .salentino-angular-lg {
+      font-size: 26px;
+    }
+
+    .steps {
+      gap: 6px;
+    }
+
+    .step {
+      padding: 10px 12px;
+      gap: 10px;
+    }
+
+    .step-num {
+      font-size: 24px;
+      min-width: 32px;
+    }
+
+    .step-content strong {
+      font-size: 14px;
+    }
+
+    .step-content span {
+      font-size: 11px;
+    }
+
+    /* Bottom bar */
+    .bottom-bar {
+      padding: 10px 16px;
+      gap: 6px;
+    }
+
+    .tagline-bar {
+      font-size: 7px;
+      letter-spacing: 2px;
+    }
+
+    .data-ticker {
+      bottom: 40px;
+      height: 14px;
+    }
+
+    .ticker-track {
+      font-size: 7px;
+    }
+
+    /* Toggle */
+    .orientation-toggle {
+      top: 8px;
+    }
+
+    .toggle-btn {
+      padding: 4px 10px;
+      font-size: 7px;
+    }
+
+    /* Corners */
+    .corner {
+      width: 14px; height: 14px;
+    }
+  }
+
+  /* Standard phones (421-767px) */
+  @media (min-width: 421px) and (max-width: 767px) {
+    .slide {
+      padding: 38px 20px 24px;
+    }
+
+    .title-main {
+      font-size: 42px;
+    }
+
+    .title-sub {
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .filter-cards-area {
+      gap: 10px;
+      padding-bottom: 55px;
+    }
+
+    .filter-info-overlay {
+      padding: 14px 16px;
+    }
+
+    .process-badge {
+      font-size: 14px;
+      padding: 5px 14px;
+    }
+
+    .drink-name {
+      font-size: 24px;
+    }
+
+    .cards-area {
+      gap: 10px;
+      padding-bottom: 55px;
+    }
+
+    .card-coldbrew .card-info {
+      padding: 12px 16px;
+    }
+
+    .drink-desc {
+      font-size: 12px;
+    }
+
+    .brand-quote {
+      font-size: 32px;
+    }
+
+    .salentino-angular-lg {
+      font-size: 30px;
+    }
+
+    .step {
+      padding: 12px 14px;
+    }
+
+    .step-num {
+      font-size: 26px;
+    }
+
+    .step-content strong {
+      font-size: 15px;
+    }
+
+    .step-content span {
+      font-size: 12px;
+    }
+
+    .bottom-bar {
+      padding: 12px 18px;
+    }
+  }
+
+  /* Tablets (768-1024px) */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .slide {
+      padding: 44px 32px 28px;
+    }
+
+    .title-main {
+      font-size: 56px;
+    }
+
+    .process-badge {
+      font-size: 18px;
+      padding: 8px 20px;
+    }
+
+    .drink-name {
+      font-size: 32px;
+    }
+
+    .note-chip {
+      font-size: 14px;
+      padding: 6px 14px;
+    }
+
+    .brand-quote {
+      font-size: 44px;
+    }
+
+    .salentino-angular-lg {
+      font-size: 42px;
+    }
+  }
+
+  /* Ensure touch targets are large enough on mobile */
+  @media (hover: none) and (pointer: coarse) {
+    .toggle-btn {
+      min-height: 36px;
+      min-width: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  /* Landscape phone (short viewport) */
+  @media (max-height: 500px) {
+    .slide {
+      padding: 28px 20px 16px;
+    }
+
+    div[style="height: 32px"] {
+      height: 20px !important;
+    }
+
+    .title-main {
+      font-size: 24px;
+      margin-bottom: 2px;
+    }
+
+    .title-sub {
+      font-size: 10px;
+      margin-bottom: 10px;
+    }
+
+    .open-bar {
+      margin-bottom: 10px;
+      padding: 4px 10px;
+    }
+
+    .filter-cards-area,
+    .cards-area {
+      padding-bottom: 40px;
+    }
+
+    .filter-info-overlay {
+      padding: 10px 12px;
+    }
+
+    .process-badge {
+      font-size: 8px;
+      padding: 3px 10px;
+      margin-bottom: 4px;
+    }
+
+    .brand-area {
+      gap: 12px;
+      padding-bottom: 40px;
+    }
+
+    .brand-quote {
+      font-size: 18px;
+    }
+
+    .brand-text {
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .step {
+      padding: 8px 10px;
+    }
+
+    .step-num {
+      font-size: 16px;
+    }
+
+    .step-content strong {
+      font-size: 10px;
+    }
+
+    .step-content span {
+      font-size: 9px;
+    }
+
+    .bottom-bar {
+      padding: 8px 14px;
+      gap: 4px;
+    }
+
+    .data-ticker {
+      bottom: 34px;
+    }
+  }
+
+  /* ─── CORNER DECORATIONS ─── */
+  .corner {
+    position: fixed;
+    width: 20px; height: 20px;
+    z-index: 45;
+    opacity: 0.25;
+  }
+
+  .corner-tl { top: 8px; left: 8px; border-top: 1px solid var(--green); border-left: 1px solid var(--green); }
+  .corner-tr { top: 8px; right: 8px; border-top: 1px solid var(--green); border-right: 1px solid var(--green); }
+  .corner-bl { bottom: 8px; left: 8px; border-bottom: 1px solid var(--green); border-left: 1px solid var(--green); }
+  .corner-br { bottom: 8px; right: 8px; border-bottom: 1px solid var(--green); border-right: 1px solid var(--green); }
+
+  /* ─── HORIZONTAL DATA TICKER ─── */
+  .data-ticker {
+    position: fixed;
+    bottom: 52px;
+    left: 0; right: 0;
+    z-index: 48;
+    overflow: hidden;
+    height: 16px;
+    opacity: 0.25;
+  }
+
+  .ticker-track {
+    display: flex;
+    white-space: nowrap;
+    animation: tickerScroll 30s linear infinite;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--green);
+    text-transform: uppercase;
+  }
+
+  @keyframes tickerScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .ticker-track span {
+    margin-right: 40px;
+    opacity: 0.5;
+  }
+
+  .ticker-track span::before {
+    content: '//';
+    margin-right: 8px;
+    opacity: 0.3;
+  }
+
+  /* ─── HUD ELEMENTS ─── */
+  .hud-time {
+    position: fixed;
+    top: 40px; right: 20px;
+    z-index: 45;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: rgba(130,253,71,0.3);
+    text-align: right;
+  }
+
+  .hud-coords {
+    position: fixed;
+    top: 40px; left: 20px;
+    z-index: 45;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: rgba(130,253,71,0.2);
+  }
+</style>
+</head>
+<body>
+
+<!-- CANVAS LAYERS -->
+<canvas id="particleCanvas"></canvas>
+<canvas id="waveCanvas"></canvas>
+<canvas id="glitchCanvas"></canvas>
+
+<!-- OVERLAYS -->
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div class="screen-flicker"></div>
+
+<!-- CORNER BRACKETS -->
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
+<div class="corner corner-bl"></div>
+<div class="corner corner-br"></div>
+
+<!-- HUD -->
+<div class="hud-time" id="hudTime"></div>
+<div class="hud-coords">6.2442° N<br>75.5812° W<br><span style="opacity:0.5">MDE / COL</span></div>
+
+<!-- ORIENTATION TOGGLE (for client preview) -->
+<div class="orientation-toggle" id="orientationToggle">
+  <span class="toggle-label">VIEW</span>
+  <div class="toggle-divider"></div>
+  <button class="toggle-btn active" data-mode="vertical" onclick="setOrientation('vertical')">9:16</button>
+  <div class="toggle-divider"></div>
+  <button class="toggle-btn" data-mode="horizontal" onclick="setOrientation('horizontal')">16:9</button>
+</div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <span class="ritvales-logo">RITVALES</span>
+    <span class="x-divider">x</span>
+    <span class="salentino-angular salentino-angular-sm">SALENTINO</span>
+  </div>
+  <div class="live-badge">
+    <div class="live-dot"></div>
+    OPEN BAR
+  </div>
+</div>
+
+<!-- DATA TICKER -->
+<div class="data-ticker">
+  <div class="ticker-track">
+    <span>Caturra Fleur _ Lavado</span>
+    <span>Caturra Pineapple _ Co-Fermentado</span>
+    <span>Huila, Colombia _ 1,750 masl</span>
+    <span>V60 Pour Over</span>
+    <span>Cold Brew 18hr Steep</span>
+    <span>Roasted by Steven Martinez</span>
+    <span>Signal_ Analog_ Frequency_</span>
+    <span>La Energia Es Una Sola</span>
+    <span>Ritvales x Salentino Coffee Lab</span>
+    <span>Breakfast Live _ Medellin 2026</span>
+    <!-- Duplicate for seamless loop -->
+    <span>Caturra Fleur _ Lavado</span>
+    <span>Caturra Pineapple _ Co-Fermentado</span>
+    <span>Huila, Colombia _ 1,750 masl</span>
+    <span>V60 Pour Over</span>
+    <span>Cold Brew 18hr Steep</span>
+    <span>Roasted by Steven Martinez</span>
+    <span>Signal_ Analog_ Frequency_</span>
+    <span>La Energia Es Una Sola</span>
+    <span>Ritvales x Salentino Coffee Lab</span>
+    <span>Breakfast Live _ Medellin 2026</span>
+  </div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <div class="tagline-bar">_La energia es una sola</div>
+  <div class="progress-dots">
+    <div class="p-dot active" id="pd0"><div class="p-dot-fill" id="pf0"></div></div>
+    <div class="p-dot" id="pd1"><div class="p-dot-fill" id="pf1"></div></div>
+    <div class="p-dot" id="pd2"><div class="p-dot-fill" id="pf2"></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- CONTAINER                             -->
+<!-- ══════════════════════════════════════ -->
+<div class="container">
+
+  <!-- SLIDE 1: POUR OVER -->
+  <div class="slide active" id="slide0">
+    <div style="height: 32px"></div>
+
+    <div class="section-tag">_Pour Over &middot; V60</div>
+
+    <div class="title-main" data-text="Caturra">
+      Caturra <span>Huila</span>
+    </div>
+    <div class="title-sub">
+      One origin. Two processes. Brewed to order on V60.<br>
+      Un origen. Dos procesos. Preparado al momento.
+    </div>
+
+    <div class="open-bar">
+      <div class="live-dot" style="width:4px;height:4px;"></div>
+      _fuel the ritual
+    </div>
+
+    <div class="filter-cards-area">
+      <!-- HERO CARD — CATURRA FLEUR (Lavado) -->
+      <div class="filter-card-hero">
+        <div class="filter-photo">
+          <img src="https://images.unsplash.com/photo-1559496417-e7f25cb247f3?w=800&q=80" alt="V60 Pour Over — Caturra Fleur" loading="eager">
+          <div class="photo-tint"></div>
+        </div>
+        <canvas class="steam-canvas" id="steamCanvas1"></canvas>
+        <div class="filter-info-overlay">
+          <div class="process-badge process-washed">LAVADO</div>
+          <div class="method-pill">V60 Pour Over</div>
+          <div class="drink-name">CATURRA FLEUR_</div>
+          <div class="drink-origin">Huila, Colombia</div>
+          <div class="variety-tag"><span>Var_</span> Caturra</div>
+          <div class="drink-meta">
+            <span><strong>Alt_</strong> 1,750 masl</span>
+            <span><strong>Score_</strong> 86+</span>
+          </div>
+          <div class="notes-row">
+            <span class="note-chip">Brown Sugar</span>
+            <span class="note-chip">Citrus</span>
+            <span class="note-chip">Chocolate</span>
+          </div>
+          <div class="altitude-line"></div>
+          <div class="roaster-tag">Roasted by <strong>Steven Martinez</strong></div>
+        </div>
+      </div>
+
+      <!-- SECONDARY CARD — CATURRA PINEAPPLE (Co-Fermentado Avanzado) -->
+      <div class="filter-card-secondary">
+        <div class="filter-photo">
+          <img src="https://images.unsplash.com/photo-1507133750040-4a8f57021571?w=800&q=80" alt="V60 Pour Over — Caturra Pineapple" loading="eager">
+          <div class="photo-tint"></div>
+        </div>
+        <canvas class="steam-canvas" id="steamCanvas2"></canvas>
+        <div class="filter-info-overlay">
+          <div class="process-badge process-cofermented">CO—FERMENTADO</div>
+          <div class="method-pill">V60 Pour Over</div>
+          <div class="drink-name">CATURRA PINEAPPLE_</div>
+          <div class="drink-origin">Huila, Colombia</div>
+          <div class="variety-tag"><span>Var_</span> Caturra</div>
+          <div class="drink-meta">
+            <span><strong>Alt_</strong> 1,750 masl</span>
+            <span><strong>Score_</strong> 87+</span>
+          </div>
+          <div class="notes-row">
+            <span class="note-chip">Pineapple</span>
+            <span class="note-chip">Coconut</span>
+          </div>
+          <div class="altitude-line"></div>
+          <div class="roaster-tag">Roasted by <strong>Steven Martinez</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: COLD BREW -->
+  <div class="slide" id="slide1">
+    <div style="height: 32px"></div>
+
+    <div class="section-tag">_Cold Brew Series</div>
+
+    <div class="title-main" data-text="Cold Brew">
+      Cold <span>Brew</span>
+    </div>
+    <div class="title-sub">
+      Three frequencies. One ritual.<br>
+      Tres frecuencias. Un ritual.
+    </div>
+
+    <div class="open-bar">
+      <div class="live-dot" style="width:4px;height:4px;"></div>
+      _fuel the ritual
+    </div>
+
+    <div class="cards-area">
+      <div class="card card-coldbrew accent-green">
+        <div class="card-photo">
+          <img src="https://images.unsplash.com/photo-1531835207745-506a1bc035d8?w=600&q=80" alt="SIGNAL — Pure Cold Brew" loading="lazy">
+          <div class="photo-tint"></div>
+        </div>
+        <div class="card-info">
+          <div class="drink-name">SIGNAL_</div>
+          <div class="drink-type-sub">Pure Cold Brew &middot; 18hr Steep</div>
+          <div class="drink-desc">
+            Uncut. 18 hours steeped in silence. The purest frequency of the bean — no filter, no noise.
+            <em>Sin cortes. 18 horas en silencio. La frecuencia mas pura del grano.</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-coldbrew accent-blue">
+        <div class="card-photo">
+          <img src="https://images.unsplash.com/photo-1562447457-579fc34967fb?w=600&q=80" alt="ANALOG — Cold Brew + Milk" loading="lazy">
+          <div class="photo-tint"></div>
+        </div>
+        <div class="card-info">
+          <div class="drink-name">ANALOG_</div>
+          <div class="drink-type-sub">Cold Brew + Milk</div>
+          <div class="drink-desc">
+            Smooth like vinyl. Cold brew meets milk in a slow, deep embrace. Warm. Analog. Real.
+            <em>Suave como el vinilo. Cold brew y leche en un abrazo profundo.</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-coldbrew accent-orange">
+        <div class="card-photo">
+          <img src="https://images.unsplash.com/photo-1760304737368-7d8376bde94c?w=600&q=80" alt="FREQUENCY — Cold Brew + Tonic" loading="lazy">
+          <div class="photo-tint"></div>
+        </div>
+        <div class="card-info">
+          <div class="drink-name">FREQUENCY_</div>
+          <div class="drink-type-sub">Cold Brew + Tonic Water</div>
+          <div class="drink-desc">
+            Carbonation hits like a drop. Cold brew and tonic — bright, alive, electric. Feel the fizz.
+            <em>La efervescencia golpea como un drop. Brillante, vivo, electrico.</em>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: BRAND -->
+  <div class="slide" id="slide2">
+    <div style="height: 32px"></div>
+
+    <div class="section-tag">_Curatorial Process</div>
+
+    <div class="salentino-angular salentino-angular-lg">SALENTINO</div>
+    <div class="title-sub" style="margin-top: -2px;">
+      Coffee Lab &middot; Envigado, Colombia
+    </div>
+
+    <div class="brand-area">
+      <div class="brand-quote">
+        La energia<br>es una sola_
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <strong>Select_</strong>
+            <span>Caturra from Huila, Colombia. Scored and cupped before it earns a place.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <strong>Roast_</strong>
+            <span>Profiles designed by Steven Martinez. Every variable intentional.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <strong>Brew_</strong>
+            <span>V60 to order. Cold brew steeped 18 hours. Precision is the ritual.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- GSAP CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<!-- ══════════════════════════════════════ -->
+<!-- ENGINE (GSAP-powered)                 -->
+<!-- ══════════════════════════════════════ -->
+<script>
+(function() {
+
+  // ─── CONFIG ───
+  const SLIDE_MS = 12000;
+  const slides = document.querySelectorAll('.slide');
+  const pDots = [document.getElementById('pd0'), document.getElementById('pd1'), document.getElementById('pd2')];
+  const pFills = [document.getElementById('pf0'), document.getElementById('pf1'), document.getElementById('pf2')];
+  const glitchCanvas = document.getElementById('glitchCanvas');
+  const glitchCtx = glitchCanvas.getContext('2d');
+  let current = 0;
+  let transitioning = false;
+  let progressTween = null;
+  let glitchLoop = null;
+
+  // ─── GSAP DEFAULTS ───
+  gsap.defaults({ overwrite: 'auto' });
+
+  // ─── HUD CLOCK ───
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('hudTime').innerHTML = h + ':' + m + ':' + s + '<br><span style="opacity:0.4">' + now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) + '</span>';
+    requestAnimationFrame(updateClock);
+  }
+  updateClock();
+
+  // ─── STEAM PARTICLE SYSTEM ───
+  function initSteam(canvasId) {
+    const sc = document.getElementById(canvasId);
+    if (!sc) return;
+    const sctx = sc.getContext('2d');
+    const steamParticles = [];
+    const MAX = 35;
+
+    function resizeSteam() {
+      const rect = sc.parentElement.getBoundingClientRect();
+      sc.width = rect.width;
+      sc.height = rect.height;
+    }
+    resizeSteam();
+    window.addEventListener('resize', resizeSteam);
+
+    function spawnSteam() {
+      if (steamParticles.length < MAX) {
+        steamParticles.push({
+          x: sc.width * 0.3 + Math.random() * sc.width * 0.4,
+          y: sc.height * 0.55 + Math.random() * 20,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: -(0.3 + Math.random() * 0.6),
+          size: Math.random() * 3 + 1,
+          alpha: Math.random() * 0.15 + 0.05,
+          life: 1,
+          decay: 0.003 + Math.random() * 0.005,
+          wobble: Math.random() * Math.PI * 2,
+          wobbleSpeed: 0.02 + Math.random() * 0.03
+        });
+      }
+    }
+
+    function drawSteam() {
+      sctx.clearRect(0, 0, sc.width, sc.height);
+      for (let i = steamParticles.length - 1; i >= 0; i--) {
+        const p = steamParticles[i];
+        p.wobble += p.wobbleSpeed;
+        p.x += p.vx + Math.sin(p.wobble) * 0.3;
+        p.y += p.vy;
+        p.life -= p.decay;
+        p.size += 0.02;
+        if (p.life <= 0) { steamParticles.splice(i, 1); continue; }
+        const a = p.alpha * p.life;
+        sctx.beginPath();
+        sctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        sctx.fillStyle = `rgba(130, 253, 71, ${a})`;
+        sctx.fill();
+        sctx.beginPath();
+        sctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
+        sctx.fillStyle = `rgba(130, 253, 71, ${a * 0.15})`;
+        sctx.fill();
+      }
+      spawnSteam();
+      requestAnimationFrame(drawSteam);
+    }
+    drawSteam();
+  }
+  initSteam('steamCanvas1');
+  initSteam('steamCanvas2');
+
+  // ─── PARTICLE SYSTEM ───
+  const pc = document.getElementById('particleCanvas');
+  const pctx = pc.getContext('2d');
+  let particles = [];
+
+  function resizeCanvases() {
+    [pc, document.getElementById('waveCanvas'), glitchCanvas].forEach(c => {
+      c.width = window.innerWidth;
+      c.height = window.innerHeight;
+    });
+    initParticles();
+  }
+
+  function initParticles() {
+    particles = [];
+    const count = Math.floor((pc.width * pc.height) / 12000);
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * pc.width,
+        y: Math.random() * pc.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        size: Math.random() * 1.5 + 0.5,
+        alpha: Math.random() * 0.3 + 0.05,
+        pulse: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function drawParticles() {
+    pctx.clearRect(0, 0, pc.width, pc.height);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.pulse += 0.02;
+      if (p.x < 0) p.x = pc.width;
+      if (p.x > pc.width) p.x = 0;
+      if (p.y < 0) p.y = pc.height;
+      if (p.y > pc.height) p.y = 0;
+      const alpha = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse));
+      pctx.beginPath();
+      pctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      pctx.fillStyle = `rgba(130, 253, 71, ${alpha})`;
+      pctx.fill();
+    });
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 80) {
+          pctx.beginPath();
+          pctx.moveTo(particles[i].x, particles[i].y);
+          pctx.lineTo(particles[j].x, particles[j].y);
+          pctx.strokeStyle = `rgba(130, 253, 71, ${0.04 * (1 - dist / 80)})`;
+          pctx.lineWidth = 0.5;
+          pctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(drawParticles);
+  }
+
+  // ─── WAVEFORM ───
+  const wc = document.getElementById('waveCanvas');
+  const wctx = wc.getContext('2d');
+
+  function drawWave() {
+    wctx.clearRect(0, 0, wc.width, wc.height);
+    const time = Date.now() * 0.001;
+    const midY = wc.height * 0.85;
+    wctx.beginPath();
+    wctx.moveTo(0, midY);
+    for (let x = 0; x < wc.width; x += 2) {
+      const y = midY + Math.sin(x * 0.008 + time * 1.2) * 8 + Math.sin(x * 0.015 + time * 0.8) * 4 + Math.sin(x * 0.03 + time * 2.0) * 2;
+      wctx.lineTo(x, y);
+    }
+    wctx.strokeStyle = 'rgba(130, 253, 71, 0.12)';
+    wctx.lineWidth = 1;
+    wctx.stroke();
+    wctx.beginPath();
+    wctx.moveTo(0, midY);
+    for (let x = 0; x < wc.width; x += 2) {
+      const y = midY + Math.sin(x * 0.01 + time * 0.6 + 1) * 12 + Math.sin(x * 0.02 + time * 1.5) * 3;
+      wctx.lineTo(x, y);
+    }
+    wctx.strokeStyle = 'rgba(34, 79, 209, 0.08)';
+    wctx.lineWidth = 0.8;
+    wctx.stroke();
+    requestAnimationFrame(drawWave);
+  }
+
+  // ─── GLITCH FLASH (canvas — stays raw for randomness) ───
+  function triggerGlitch() {
+    gsap.to(glitchCanvas, { opacity: 1, duration: 0.05 });
+    const w = glitchCanvas.width, h = glitchCanvas.height;
+    const slices = 15 + Math.floor(Math.random() * 20);
+    let frame = 0;
+    const maxFrames = 8;
+
+    function drawGlitchFrame() {
+      glitchCtx.clearRect(0, 0, w, h);
+      for (let i = 0; i < slices; i++) {
+        const y = Math.random() * h;
+        const sliceH = Math.random() * 30 + 2;
+        const offsetX = (Math.random() - 0.5) * 40;
+        glitchCtx.fillStyle = `rgba(130, 253, 71, ${Math.random() * 0.06})`;
+        glitchCtx.fillRect(offsetX, y, w, sliceH);
+        if (Math.random() > 0.7) {
+          glitchCtx.fillStyle = `rgba(255, 75, 67, ${Math.random() * 0.04})`;
+          glitchCtx.fillRect(offsetX + 3, y, w, sliceH * 0.5);
+        }
+        if (Math.random() > 0.8) {
+          glitchCtx.fillStyle = `rgba(34, 79, 209, ${Math.random() * 0.04})`;
+          glitchCtx.fillRect(offsetX - 3, y + 1, w, sliceH * 0.3);
+        }
+      }
+      frame++;
+      if (frame < maxFrames) {
+        setTimeout(drawGlitchFrame, 30 + Math.random() * 40);
+      } else {
+        gsap.to(glitchCanvas, { opacity: 0, duration: 0.1 });
+        glitchCtx.clearRect(0, 0, w, h);
+      }
+    }
+    drawGlitchFrame();
+  }
+
+  // ═══════════════════════════════════════
+  // GSAP SLIDE ENTRANCE TIMELINES
+  // ═══════════════════════════════════════
+
+  function buildEntranceTL(slide) {
+    const tl = gsap.timeline({ paused: true });
+    const tag = slide.querySelector('.section-tag');
+    const title = slide.querySelector('.title-main');
+    const angularLogo = slide.querySelector('.salentino-angular-lg');
+    const sub = slide.querySelector('.title-sub');
+    const bar = slide.querySelector('.open-bar');
+    const filterHero = slide.querySelector('.filter-card-hero');
+    const filterSec = slide.querySelector('.filter-card-secondary');
+    const cards = slide.querySelectorAll('.card');
+    const chips = slide.querySelectorAll('.note-chip');
+    const quote = slide.querySelector('.brand-quote');
+    const text = slide.querySelector('.brand-text');
+    const steps = slide.querySelectorAll('.step');
+
+    // Phase 1: Header elements
+    if (tag) tl.fromTo(tag, { opacity: 0, y: 8 }, { opacity: 0.7, y: 0, duration: 0.4, ease: 'power2.out' }, 0.1);
+    if (title) tl.fromTo(title, { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }, 0.15);
+    if (angularLogo) tl.fromTo(angularLogo, { opacity: 0, x: -15, scale: 0.95 }, { opacity: 1, x: 0, scale: 1, duration: 0.6, ease: 'power3.out' }, 0.15);
+    if (sub) tl.fromTo(sub, { opacity: 0, y: 6 }, { opacity: 0.7, y: 0, duration: 0.4, ease: 'power2.out' }, 0.3);
+    if (bar) tl.fromTo(bar, { opacity: 0, y: 6 }, { opacity: 0.7, y: 0, duration: 0.4, ease: 'power2.out' }, 0.4);
+
+    // Phase 2: Cards — filter or cold brew
+    if (filterHero) tl.fromTo(filterHero, { opacity: 0, y: 30, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'power3.out' }, 0.35);
+    if (filterSec) tl.fromTo(filterSec, { opacity: 0, y: 25, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'power3.out' }, 0.5);
+
+    if (cards.length) {
+      tl.fromTo(cards, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out' }, 0.35);
+    }
+
+    // Phase 3: Tasting notes (typing stagger)
+    if (chips.length) {
+      tl.fromTo(chips, { opacity: 0, y: 6 }, { opacity: 0.8, y: 0, duration: 0.35, stagger: 0.2, ease: 'power2.out' }, 0.9);
+    }
+
+    // Phase 3: Brand slide elements
+    if (quote) tl.fromTo(quote, { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0.3);
+    if (text) tl.fromTo(text, { opacity: 0, y: 8 }, { opacity: 0.7, y: 0, duration: 0.5, ease: 'power2.out' }, 0.5);
+    if (steps.length) {
+      tl.fromTo(steps, { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.5, stagger: 0.12, ease: 'power3.out' }, 0.6);
+    }
+
+    return tl;
+  }
+
+  // ─── SLIDE EXIT TIMELINE ───
+  function buildExitTL(slide) {
+    const tl = gsap.timeline({ paused: true });
+    tl.to(slide, {
+      opacity: 0,
+      x: 10,
+      skewX: 1,
+      duration: 0.15,
+      ease: 'steps(3)'
+    })
+    .to(slide, {
+      x: -12,
+      skewX: -2,
+      opacity: 0.3,
+      duration: 0.1,
+      ease: 'steps(2)'
+    })
+    .to(slide, {
+      x: 5,
+      opacity: 0,
+      skewX: 0,
+      duration: 0.15,
+      ease: 'steps(3)',
+      onComplete: () => {
+        gsap.set(slide, { visibility: 'hidden', opacity: 0, x: 0, skewX: 0 });
+      }
+    });
+    return tl;
+  }
+
+  // ─── SLIDE TRANSITION ───
+  function goTo(index) {
+    if (transitioning || index === current) return;
+    transitioning = true;
+
+    const outgoing = slides[current];
+    const incoming = slides[index];
+
+    triggerGlitch();
+
+    outgoing.classList.remove('active');
+    const exitTL = buildExitTL(outgoing);
+    exitTL.play();
+
+    // After exit, enter new slide
+    gsap.delayedCall(0.45, () => {
+      // Reset outgoing children
+      gsap.set(outgoing.querySelectorAll('.section-tag, .title-main, .salentino-angular-lg, .title-sub, .open-bar, .card, .filter-card-hero, .filter-card-secondary, .note-chip, .brand-quote, .brand-text, .step'), {
+        opacity: 0, x: 0, y: 0, scale: 1, skewX: 0
+      });
+
+      // Show incoming
+      gsap.set(incoming, { visibility: 'visible', opacity: 1, x: 0, skewX: 0 });
+      incoming.classList.add('active');
+
+      const enterTL = buildEntranceTL(incoming);
+      enterTL.play().then(() => { transitioning = false; });
+    });
+
+    // Update dots
+    pDots[current].classList.remove('active');
+    pDots[index].classList.add('active');
+
+    current = index;
+    startProgress();
+  }
+
+  // ─── PROGRESS (GSAP tween) ───
+  function startProgress() {
+    if (progressTween) progressTween.kill();
+    gsap.set(pFills[current], { width: '0%' });
+    progressTween = gsap.to(pFills[current], {
+      width: '100%',
+      duration: SLIDE_MS / 1000,
+      ease: 'none'
+    });
+  }
+
+  // ─── AUTO ADVANCE ───
+  function tick() {
+    const prev = current;
+    const next = (current + 1) % slides.length;
+    goTo(next);
+    // Reset previous fill
+    gsap.delayedCall(0.6, () => { gsap.set(pFills[prev], { width: '0%' }); });
+  }
+
+  // ─── GSAP MICRO-GLITCH LOOP ───
+  function startGlitchLoop() {
+    function doGlitch() {
+      if (!transitioning) {
+        const title = document.querySelector('.slide.active .title-main') || document.querySelector('.slide.active .salentino-angular-lg');
+        if (title) {
+          gsap.timeline()
+            .to(title, { x: (Math.random()-0.5)*6, textShadow: '-2px 0 #FF4B43, 2px 0 #224FD1', duration: 0.05, ease: 'steps(2)' })
+            .to(title, { x: (Math.random()-0.5)*4, textShadow: '2px 0 #FF4B43, -2px 0 #7D3BED', duration: 0.05, ease: 'steps(2)' })
+            .to(title, { x: 0, textShadow: 'none', duration: 0.05, ease: 'steps(1)' });
+        }
+      }
+      gsap.delayedCall(3 + Math.random() * 5, doGlitch);
+    }
+    gsap.delayedCall(3, doGlitch);
+  }
+
+  // ─── GSAP TAGLINE PULSE ───
+  gsap.to('.tagline-bar', {
+    opacity: 0.35,
+    duration: 2,
+    ease: 'power1.inOut',
+    yoyo: true,
+    repeat: -1
+  });
+
+  // ─── GSAP LIVE DOT PULSE ───
+  gsap.to('.live-dot', {
+    opacity: 0.3,
+    boxShadow: '0 0 4px rgba(130,253,71,0.2)',
+    duration: 0.75,
+    ease: 'power1.inOut',
+    yoyo: true,
+    repeat: -1
+  });
+
+  // ─── GSAP TICKER (replaces CSS animation) ───
+  const ticker = document.querySelector('.ticker-track');
+  if (ticker) {
+    gsap.to(ticker, {
+      xPercent: -50,
+      duration: 30,
+      ease: 'none',
+      repeat: -1
+    });
+    // Remove CSS animation
+    ticker.style.animation = 'none';
+  }
+
+  // ─── INIT ───
+  window.addEventListener('resize', resizeCanvases);
+  resizeCanvases();
+  drawParticles();
+  drawWave();
+  startGlitchLoop();
+
+  // Boot first slide
+  gsap.set(slides[0], { opacity: 1, visibility: 'visible' });
+  slides[0].classList.add('active');
+  const firstEntrance = buildEntranceTL(slides[0]);
+  firstEntrance.play();
+  startProgress();
+
+  setInterval(tick, SLIDE_MS);
+
+})();
+
+// ─── ORIENTATION TOGGLE ───
+function setOrientation(mode) {
+  const btns = document.querySelectorAll('.toggle-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  document.querySelector(`.toggle-btn[data-mode="${mode}"]`).classList.add('active');
+
+  if (mode === 'horizontal') {
+    document.body.classList.add('horizontal');
+  } else {
+    document.body.classList.remove('horizontal');
+  }
+  window.dispatchEvent(new Event('resize'));
+}
+</script>
+
+</body>
+</html>

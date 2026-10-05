@@ -149,18 +149,18 @@
 
   .section-head .section-badge {
     font-family: var(--mono);
-    font-size: 8px;
+    font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 3px 10px;
-    border: 1px solid rgba(130,253,71,0.12);
+    padding: 4px 14px;
+    border: 1px solid rgba(130,253,71,0.18);
     border-radius: 100px;
     color: var(--green);
-    opacity: 0.7;
+    opacity: 0.85;
     white-space: nowrap;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    background: rgba(130,253,71,0.03);
+    background: rgba(130,253,71,0.05);
   }
 
   /* ─── MENU ITEMS LIST ─── */
@@ -359,7 +359,7 @@
     border-radius: 2px;
     background: var(--green);
     opacity: 0.6;
-    transition: width 0.8s ease-out;
+    width: 0; /* animate from 0 via GSAP */
   }
 
   /* Accent-colored fills */
@@ -523,36 +523,72 @@
   body.en .item-desc .lang-es { display: none; }
   body:not(.en) .item-desc .lang-en { display: none; }
 
-  /* Language indicator pill */
-  .lang-indicator {
+  /* Split-flap + lang indicator wrapper */
+  .split-flap-wrapper {
     position: fixed;
-    bottom: 52px;
+    bottom: 28px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 49;
+    z-index: 48;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Language indicator — integrated next to split-flap */
+  .lang-indicator {
     font-family: var(--mono);
-    font-size: 8px;
+    font-size: 9px;
     font-weight: 700;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--green);
-    opacity: 0.5;
-    padding: 2px 10px;
+    opacity: 0.6;
+    padding: 2px 8px;
     border: 1px solid rgba(130,253,71,0.15);
-    border-radius: 100px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    background: rgba(130,253,71,0.03);
+    border-radius: 3px;
+    background: rgba(10,10,10,0.9);
     transition: opacity 0.3s ease;
   }
 
-  /* ─── SECTION DIVIDER ─── */
+  /* ─── TEMPERATURE SECTION GLOW ─── */
+  .menu-section.section-hot {
+    position: relative;
+  }
+
+  .menu-section.section-hot::before {
+    content: '';
+    position: absolute;
+    top: -10px; left: -10px; right: -10px; bottom: -10px;
+    background: radial-gradient(ellipse at 30% 40%, rgba(232,119,34,0.04) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 16px;
+  }
+
+  .menu-section.section-cold {
+    position: relative;
+  }
+
+  .menu-section.section-cold::before {
+    content: '';
+    position: absolute;
+    top: -10px; left: -10px; right: -10px; bottom: -10px;
+    background: radial-gradient(ellipse at 70% 40%, rgba(34,79,209,0.04) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 16px;
+  }
+
+  /* ─── SECTION DIVIDER (EKG/Equalizer) ─── */
   .menu-divider {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0;
     margin: 10px 0;
     opacity: 0;
+    height: 16px;
+    position: relative;
   }
 
   .menu-divider .div-line {
@@ -561,12 +597,35 @@
     background: linear-gradient(90deg, transparent, rgba(130,253,71,0.15), transparent);
   }
 
-  .menu-divider .div-dot {
-    width: 4px; height: 4px;
-    border-radius: 50%;
+  .eq-bars {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 0 10px;
+    height: 16px;
+  }
+
+  .eq-bar {
+    width: 2px;
     background: var(--green);
-    opacity: 0.4;
-    box-shadow: 0 0 8px var(--green-glow);
+    opacity: 0.5;
+    border-radius: 1px;
+    height: 4px;
+    animation: eqPulse 1.2s ease-in-out infinite alternate;
+  }
+
+  .eq-bar:nth-child(1) { animation-delay: 0s; }
+  .eq-bar:nth-child(2) { animation-delay: 0.15s; }
+  .eq-bar:nth-child(3) { animation-delay: 0.3s; }
+  .eq-bar:nth-child(4) { animation-delay: 0.45s; }
+  .eq-bar:nth-child(5) { animation-delay: 0.6s; }
+  .eq-bar:nth-child(6) { animation-delay: 0.35s; }
+  .eq-bar:nth-child(7) { animation-delay: 0.1s; }
+
+  @keyframes eqPulse {
+    0% { height: 3px; opacity: 0.3; }
+    50% { height: 14px; opacity: 0.7; }
+    100% { height: 5px; opacity: 0.4; }
   }
 
   /* ─── PERSISTENT TOP BAR ─── */
@@ -728,11 +787,6 @@
 
   /* ─── SPLIT-FLAP DISPLAY ─── */
   .split-flap-display {
-    position: fixed;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 48;
     display: flex;
     gap: 2px;
     perspective: 400px;
@@ -1046,9 +1100,9 @@
       letter-spacing: 2px;
     }
 
-    .split-flap-display {
-      bottom: 26px;
-      gap: 1px;
+    .split-flap-wrapper {
+      bottom: 22px;
+      gap: 6px;
     }
 
     .flap-cell {
@@ -1069,14 +1123,19 @@
       margin: 6px 0;
     }
 
+    .eq-bar { width: 1.5px; }
+
     .orientation-toggle {
       top: 6px;
     }
 
     .lang-indicator {
-      bottom: 44px;
       font-size: 7px;
-      padding: 2px 8px;
+    }
+
+    .section-head .section-badge {
+      font-size: 8px;
+      padding: 3px 10px;
     }
   }
 
@@ -1204,9 +1263,9 @@
       padding: 4px 10px;
     }
 
-    .split-flap-display {
-      bottom: 22px;
-      gap: 1px;
+    .split-flap-wrapper {
+      bottom: 18px;
+      gap: 5px;
     }
 
     .flap-cell {
@@ -1218,6 +1277,9 @@
     .flap-cell.space-cell {
       width: 4px;
     }
+
+    .eq-bar { width: 1.5px; }
+    .eq-bars { gap: 2px; padding: 0 6px; }
   }
 
   /* ─── REDUCED MOTION (a11y) ─── */
@@ -1229,6 +1291,7 @@
     .menu-header::before { animation: none; }
     .process-badge::after { animation: none; }
     .live-dot { animation: none; }
+    .eq-bar { animation: none; height: 6px; }
     #particleCanvas,
     #waveCanvas { display: none; }
   }
@@ -1278,11 +1341,11 @@
   </div>
 </div>
 
-<!-- LANGUAGE INDICATOR -->
-<div class="lang-indicator" id="langIndicator">ES</div>
-
-<!-- SPLIT-FLAP DISPLAY -->
-<div class="split-flap-display" id="splitFlap"></div>
+<!-- SPLIT-FLAP + LANG INDICATOR (integrated) -->
+<div class="split-flap-wrapper">
+  <div class="split-flap-display" id="splitFlap"></div>
+  <div class="lang-indicator" id="langIndicator">ES</div>
+</div>
 
 <!-- BOTTOM BAR -->
 <div class="bottom-bar">
@@ -1309,7 +1372,7 @@
       <span class="section-badge">Pour Over &middot; V60</span>
     </div>
 
-    <div class="menu-section">
+    <div class="menu-section section-hot">
       <div class="menu-items">
 
         <div class="menu-item item-accent-washed" data-anim>
@@ -1350,10 +1413,18 @@
       </div>
     </div>
 
-    <!-- ══ DIVIDER ══ -->
+    <!-- ══ DIVIDER (EQ) ══ -->
     <div class="menu-divider" data-anim>
       <div class="div-line"></div>
-      <div class="div-dot"></div>
+      <div class="eq-bars">
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+      </div>
       <div class="div-line"></div>
     </div>
 
@@ -1364,7 +1435,7 @@
       <span class="section-badge">Cold Brew &middot; 24hr</span>
     </div>
 
-    <div class="menu-section">
+    <div class="menu-section section-cold">
       <div class="menu-items">
 
         <div class="menu-item item-accent-green" data-anim>
@@ -1605,7 +1676,31 @@
     // Cold brew items stagger
     tl.fromTo([items[2], items[3], items[4]], { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out' }, 1.15);
 
+    // Flavor bar fill animation — animate width from 0 to data value
+    const allFills = document.querySelectorAll('.bar-fill');
+    allFills.forEach(fill => {
+      const target = fill.style.width || '0%';
+      fill.style.width = '0%';
+      tl.to(fill, { width: target, duration: 0.8, ease: 'power2.out' }, 1.6);
+    });
+
     return tl;
+  }
+
+  // ─── CARD BREATHING (ambient pulse) ───
+  function startCardBreathing() {
+    const items = document.querySelectorAll('.menu-item');
+    items.forEach((item, i) => {
+      gsap.to(item, {
+        borderColor: 'rgba(130,253,71,0.12)',
+        boxShadow: '0 0 12px rgba(130,253,71,0.03)',
+        duration: 2.5 + i * 0.4,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        delay: i * 0.6
+      });
+    });
   }
 
   // ─── MICRO-GLITCH LOOP ───
@@ -1827,6 +1922,7 @@
   drawWave();
   startGlitchLoop();
   playEntrance();
+  gsap.delayedCall(2.5, startCardBreathing);
 
 })();
 

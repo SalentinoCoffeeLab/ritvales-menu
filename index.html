@@ -695,21 +695,26 @@ function animateVUEntry() {
 // LANGUAGE SYSTEM
 // ══════════════════════════════════════════
 function setLang(lang) {
-  console.log('[LANG] setLang called:', lang, 'current:', currentLang, 'view:', viewMode);
   if (lang === currentLang) return;
+  currentLang = lang;
+  document.documentElement.lang = lang;
+
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (reducedMotion || viewMode === 'mobile') {
-    // Simple fade
-    currentLang = lang;
-    document.documentElement.lang = lang;
     updateTexts(lang);
     updateMobileLangBtns(lang);
+    animateVUEntry();
     return;
   }
 
-  // Decode transition
-  decodeTransition(lang);
+  try {
+    decodeTransition(lang);
+  } catch(e) {
+    // Fallback: direct text swap
+    updateTexts(lang);
+    animateVUEntry();
+  }
 }
 
 function updateTexts(lang) {
@@ -753,9 +758,6 @@ function decodeTransition(newLang) {
     el.style.width = el.offsetWidth + 'px';
     el.style.display = 'inline-block';
   });
-
-  currentLang = newLang;
-  document.documentElement.lang = newLang;
 
   sortedEls.forEach(function(el, idx) {
     var key = el.dataset.i18n;
@@ -817,23 +819,14 @@ function scrambleText(el, target) {
 // ══════════════════════════════════════════
 var langPhase = 'es';
 function startLangCycle() {
-  console.log('[LANG] startLangCycle called. forceLang:', forceLang, 'viewMode:', viewMode, 'isTouchSmall:', isTouchSmall);
-  if (forceLang || viewMode === 'mobile') {
-    console.log('[LANG] cycle skipped — forceLang or mobile');
-    return;
-  }
+  if (forceLang || viewMode === 'mobile') return;
   clearTimeout(langCycleTimer);
 
   function cycle() {
     var delay = langPhase === 'en' ? 20000 : 10000;
-    console.log('[LANG] cycle scheduled. phase:', langPhase, 'next switch in:', delay/1000, 's');
     langCycleTimer = setTimeout(function() {
-      if (isHidden) {
-        console.log('[LANG] tab hidden, skipping');
-        return;
-      }
+      if (isHidden) return;
       var next = langPhase === 'en' ? 'es' : 'en';
-      console.log('[LANG] switching to:', next);
       setLang(next);
       langPhase = next;
       cycle();

@@ -3,1990 +3,997 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RITVALES x Salentino Coffee Lab — Digital Menu</title>
+<title>RITVALES x Salentino Coffee Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
-
-  :root {
-    --black: #020102;
-    --green: #82FD47;
-    --cobalt: #224FD1;
-    --red: #FF4B43;
-    --purple: #A855F7;
-    --magenta: #E879F9;
-    --steel: #AEE1F6;
-    --white: #F0EEFF;
-    --purple-dim: rgba(168, 85, 247, 0.15);
-    --purple-glow: rgba(168, 85, 247, 0.4);
-    --mono: 'Space Mono', monospace;
-    --sans: 'Inter', -apple-system, sans-serif;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html, body {
-    width: 100%; height: 100%;
-    overflow: hidden;
-    background: var(--black);
-    font-family: var(--sans);
-    color: var(--white);
-  }
-
-  /* ─── CANVAS LAYERS ─── */
-  canvas {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-  }
-
-  #particleCanvas { z-index: 1; }
-  #waveCanvas { z-index: 2; opacity: 0.6; }
-  #glitchCanvas { z-index: 90; opacity: 0; transition: opacity 0.05s; }
-
-  /* ─── SCANLINES ─── */
-  .scanlines {
-    position: fixed; inset: 0; z-index: 91;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-      0deg, transparent, transparent 2px,
-      rgba(0,0,0,0.10) 2px, rgba(0,0,0,0.10) 4px
-    );
-    animation: scanScroll 8s linear infinite;
-  }
-
-  @keyframes scanScroll {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 100vh; }
-  }
-
-  /* ─── CRT VIGNETTE ─── */
-  .vignette {
-    position: fixed; inset: 0; z-index: 92;
-    pointer-events: none;
-    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.65) 100%);
-  }
-
-  /* ─── FLICKER ─── */
-  .screen-flicker {
-    position: fixed; inset: 0; z-index: 89;
-    pointer-events: none;
-    animation: flicker 0.15s infinite;
-    opacity: 0;
-    background: rgba(168, 85, 247, 0.02);
-  }
-
-  @keyframes flicker {
-    0% { opacity: 0; }
-    5% { opacity: 0.02; }
-    10% { opacity: 0; }
-    15% { opacity: 0.015; }
-    20% { opacity: 0; }
-    100% { opacity: 0; }
-  }
-
-  /* ─── GPU HINTS ─── */
-  .menu-view, .menu-item, .menu-header, .section-head, .note-chip {
-    will-change: transform, opacity;
-  }
-
-  /* ─── MAIN CONTAINER ─── */
-  .container {
-    position: relative;
-    z-index: 10;
-    width: 100vw; height: 100vh;
-    overflow: hidden;
-  }
-
-  /* ═══════════════════════════════════════ */
-  /* ─── MENU LAYOUT ─── */
-  /* ═══════════════════════════════════════ */
-  .menu-view {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 48px 20px 56px;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  /* ─── SECTION ─── */
-  .menu-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-  }
-
-  .section-head {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    margin-bottom: 8px;
-    opacity: 0;
-  }
-
-  .section-head .section-label {
-    font-family: var(--mono);
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--white);
-    white-space: nowrap;
-    line-height: 1;
-  }
-
-  .section-head .section-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(239,255,254,0.2), transparent);
-    opacity: 0.5;
-    align-self: center;
-  }
-
-  .section-head .section-badge {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 3px 12px;
-    border: 1px solid rgba(168,85,247,0.18);
-    border-radius: 100px;
-    color: var(--purple);
-    opacity: 0.8;
-    white-space: nowrap;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    background: rgba(168,85,247,0.05);
-    align-self: center;
-  }
-
-  /* Temperature accent on section labels */
-  .section-head-hot .section-label {
-    color: var(--magenta);
-  }
-
-  .section-head-cold .section-label {
-    color: var(--steel);
-  }
-
-  /* ─── MENU ITEMS LIST ─── */
-  .menu-items {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex: 1;
-    min-height: 0;
-  }
-
-  /* ─── MENU HEADER (liquid glass panel) ─── */
-  .menu-header {
-    text-align: center;
-    padding: 8px 16px 10px;
-    opacity: 0;
-    background: rgba(168,85,247,0.03);
-    border: 1px solid rgba(168,85,247,0.08);
-    border-radius: 14px;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 6px;
-  }
-
-  /* Specular sweep on header glass */
-  .menu-header::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%; bottom: 0;
-    width: 60%;
-    background: linear-gradient(90deg, transparent, rgba(168,85,247,0.04), rgba(255,255,255,0.02), transparent);
-    animation: specularSweep 8s ease-in-out infinite;
-    pointer-events: none;
-  }
-
-  @keyframes specularSweep {
-    0% { left: -100%; }
-    50% { left: 150%; }
-    100% { left: -100%; }
-  }
-
-  .menu-header .brand-line {
-    font-family: var(--mono);
-    font-size: 8px;
-    font-weight: 400;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: rgba(239,255,254,0.35);
-  }
-
-  .menu-header .concept-name {
-    font-family: var(--mono);
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: var(--purple);
-    line-height: 1.3;
-  }
-
-  .menu-header .concept-name::after {
-    content: '_';
-    animation: blink 1s step-end infinite;
-  }
-
-  .menu-header .sub-line {
-    font-family: var(--mono);
-    font-size: 8px;
-    font-weight: 400;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: rgba(239,255,254,0.35);
-  }
-
-  /* ─── INDIVIDUAL MENU ITEM (liquid glass card) ─── */
-  .menu-item {
-    display: flex;
-    gap: 12px;
-    padding: 10px 14px;
-    border: 1px solid rgba(168,85,247,0.06);
-    border-radius: 12px;
-    background: rgba(255,255,255,0.02);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    position: relative;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(15px);
-    flex: 1;
-    min-height: 0;
-  }
-
-  /* Specular sweep on cards */
-  .menu-item::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%; bottom: 0;
-    width: 40%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.015), transparent);
-    animation: specularSweep 12s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .menu-item:nth-child(2)::before { animation-delay: -4s; }
-  .menu-item:nth-child(3)::before { animation-delay: -8s; }
-
-  /* Glass tint per accent */
-  .item-accent-washed { background: rgba(34,79,209,0.03); }
-  .item-accent-cofermented { background: rgba(168,85,247,0.03); }
-  .item-accent-purple { background: rgba(168,85,247,0.02); }
-  .item-accent-blue { background: rgba(34,79,209,0.03); }
-  .item-accent-magenta { background: rgba(232,121,249,0.03); }
-
-  /* Animated border glow */
-  .menu-item::after {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: 12px;
-    padding: 1px;
-    background: conic-gradient(
-      from var(--border-angle, 0deg),
-      rgba(168,85,247,0.25),
-      transparent 40%,
-      rgba(34,79,209,0.15),
-      transparent 80%,
-      rgba(168,85,247,0.25)
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: rotateBorder 6s linear infinite;
-    z-index: -1;
-  }
-
-  @property --border-angle {
-    syntax: '<angle>';
-    initial-value: 0deg;
-    inherits: false;
-  }
-
-  @keyframes rotateBorder {
-    to { --border-angle: 360deg; }
-  }
-
-  /* ─── ITEM INFO ─── */
-  .item-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-width: 0;
-    gap: 3px;
-  }
-
-  /* ─── FLAVOR PROFILE BARS ─── */
-  .flavor-profile {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 6px;
-    width: 90px;
-    min-width: 90px;
-    flex-shrink: 0;
-    padding-left: 10px;
-    border-left: 1px solid rgba(168,85,247,0.06);
-  }
-
-  .flavor-bar {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .flavor-bar .bar-label {
-    font-family: var(--mono);
-    font-size: 7px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(239,255,254,0.3);
-    line-height: 1;
-  }
-
-  .flavor-bar .bar-track {
-    width: 100%;
-    height: 3px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .flavor-bar .bar-fill {
-    height: 100%;
-    border-radius: 2px;
-    background: var(--purple);
-    opacity: 0.6;
-    width: 0; /* animate from 0 via GSAP */
-  }
-
-  /* Accent-colored fills */
-  .item-accent-washed .bar-fill { background: var(--steel); }
-  .item-accent-cofermented .bar-fill { background: var(--purple); }
-  .item-accent-purple .bar-fill { background: var(--green); }
-  .item-accent-blue .bar-fill { background: var(--cobalt); }
-  .item-accent-magenta .bar-fill { background: var(--magenta); }
-
-  /* Process badge */
-  .process-badge {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 8px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border-radius: 3px;
-    width: fit-content;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .process-washed {
-    color: var(--steel);
-    border: 1px solid rgba(34,79,209,0.35);
-    background: rgba(34,79,209,0.08);
-  }
-
-  .process-cofermented {
-    color: var(--purple);
-    border: 1px solid rgba(168,85,247,0.35);
-    background: rgba(168,85,247,0.08);
-  }
-
-  .process-badge::after {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%; bottom: 0;
-    width: 50%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    animation: shimmer 3s ease-in-out infinite;
-  }
-
-  @keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 200%; }
-  }
-
-  /* Drink name */
-  .item-name {
-    font-family: var(--mono);
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: var(--white);
-    line-height: 1.2;
-  }
-
-  /* Type / subtitle — what you're actually getting */
-  .item-type {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(239,255,254,0.45);
-  }
-
-  /* Origin / location */
-  .item-origin {
-    font-family: var(--mono);
-    font-size: 8px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(168,85,247,0.4);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .item-origin::before {
-    content: '◉';
-    font-size: 5px;
-    opacity: 0.6;
-  }
-
-  /* Description — plain-language, readable at distance */
-  .item-desc {
-    font-family: var(--sans);
-    font-size: 13px;
-    line-height: 1.5;
-    color: rgba(239,255,254,0.75);
-    margin-top: 3px;
-  }
-
-  /* Tasting notes */
-  .notes-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-top: 4px;
-  }
-
-  .note-chip {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 1px;
-    padding: 3px 10px;
-    border: 1px solid rgba(168,85,247,0.2);
-    border-radius: 100px;
-    color: var(--purple);
-    background: rgba(168,85,247,0.06);
-    opacity: 0;
-    transform: translateY(4px);
-  }
-
-  /* Drink options */
-  .drink-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-top: 4px;
-  }
-
-  .option-pill {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    border-radius: 100px;
-    border: 1px solid rgba(174,225,246,0.25);
-    color: rgba(239,255,254,0.7);
-    background: rgba(174,225,246,0.06);
-  }
-
-  /* ─── ACCENT COLOR VARIANTS ─── */
-  .item-accent-purple .item-name { color: var(--purple); }
-  .item-accent-purple .item-type { color: rgba(168,85,247,0.5); }
-  .item-accent-purple .option-pill {
-    border-color: rgba(168,85,247,0.2);
-    color: rgba(168,85,247,0.55);
-    background: rgba(168,85,247,0.04);
-  }
-
-  .item-accent-blue .item-name { color: var(--steel); }
-  .item-accent-blue .item-type { color: rgba(174,225,246,0.5); }
-
-  .item-accent-magenta .item-name { color: var(--magenta); }
-  .item-accent-magenta .item-type { color: rgba(232,121,249,0.5); }
-  .item-accent-magenta .option-pill {
-    border-color: rgba(232,121,249,0.2);
-    color: rgba(232,121,249,0.55);
-    background: rgba(232,121,249,0.04);
-  }
-
-  .item-accent-washed .item-name { color: var(--steel); }
-  .item-accent-washed .item-type { color: rgba(174,225,246,0.5); }
-  .item-accent-cofermented .item-name { color: var(--purple); }
-  .item-accent-cofermented .item-type { color: rgba(168,85,247,0.5); }
-
-  /* Left accent stripe on all items */
-  .item-accent-washed { border-left: 3px solid var(--cobalt); }
-  .item-accent-cofermented { border-left: 3px solid var(--purple); }
-  .item-accent-purple { border-left: 3px solid var(--purple); }
-  .item-accent-blue { border-left: 3px solid var(--cobalt); }
-  .item-accent-magenta { border-left: 3px solid var(--magenta); }
-
-  /* ─── BILINGUAL SYSTEM ─── */
-  .lang-en { display: none; }
-  .lang-es { display: inline; }
-  body.en .lang-en { display: inline; }
-  body.en .lang-es { display: none; }
-
-  /* Block-level bilingual for descriptions */
-  .item-desc .lang-en,
-  .item-desc .lang-es { display: block; }
-  body.en .item-desc .lang-es { display: none; }
-  body:not(.en) .item-desc .lang-en { display: none; }
-
-  /* Split-flap + lang indicator wrapper */
-  .split-flap-wrapper {
-    position: fixed;
-    bottom: 28px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 48;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  /* Language indicator — integrated next to split-flap */
-  .lang-indicator {
-    font-family: var(--mono);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--purple);
-    opacity: 0.6;
-    padding: 2px 8px;
-    border: 1px solid rgba(168,85,247,0.15);
-    border-radius: 3px;
-    background: rgba(10,10,10,0.9);
-    transition: opacity 0.3s ease;
-  }
-
-  /* ─── TEMPERATURE SECTION GLOW ─── */
-  .menu-section.section-hot {
-    position: relative;
-  }
-
-  .menu-section.section-hot::before {
-    content: '';
-    position: absolute;
-    top: -10px; left: -10px; right: -10px; bottom: -10px;
-    background: radial-gradient(ellipse at 30% 40%, rgba(232,121,249,0.04) 0%, transparent 65%);
-    pointer-events: none;
-    z-index: -1;
-    border-radius: 16px;
-  }
-
-  .menu-section.section-cold {
-    position: relative;
-  }
-
-  .menu-section.section-cold::before {
-    content: '';
-    position: absolute;
-    top: -10px; left: -10px; right: -10px; bottom: -10px;
-    background: radial-gradient(ellipse at 70% 40%, rgba(34,79,209,0.04) 0%, transparent 65%);
-    pointer-events: none;
-    z-index: -1;
-    border-radius: 16px;
-  }
-
-  /* ─── SECTION DIVIDER (EKG/Equalizer) ─── */
-  .menu-divider {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    margin: 10px 0;
-    opacity: 0;
-    height: 16px;
-    position: relative;
-  }
-
-  .menu-divider .div-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(168,85,247,0.15), transparent);
-  }
-
-  .eq-bars {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    padding: 0 10px;
-    height: 16px;
-  }
-
-  .eq-bar {
-    width: 2px;
-    background: var(--purple);
-    opacity: 0.5;
-    border-radius: 1px;
-    height: 4px;
-    animation: eqPulse 1.2s ease-in-out infinite alternate;
-  }
-
-  .eq-bar:nth-child(1) { animation-delay: 0s; }
-  .eq-bar:nth-child(2) { animation-delay: 0.15s; }
-  .eq-bar:nth-child(3) { animation-delay: 0.3s; }
-  .eq-bar:nth-child(4) { animation-delay: 0.45s; }
-  .eq-bar:nth-child(5) { animation-delay: 0.6s; }
-  .eq-bar:nth-child(6) { animation-delay: 0.35s; }
-  .eq-bar:nth-child(7) { animation-delay: 0.1s; }
-
-  @keyframes eqPulse {
-    0% { height: 3px; opacity: 0.3; }
-    50% { height: 14px; opacity: 0.7; }
-    100% { height: 5px; opacity: 0.4; }
-  }
-
-  /* ─── PERSISTENT TOP BAR ─── */
-  .top-bar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 50;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background: linear-gradient(180deg, rgba(2,1,2,0.92) 0%, transparent 100%);
-  }
-
-  .top-bar-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .ritvales-logo {
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 4px;
-    color: var(--white);
-  }
-
-  .x-divider {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--purple);
-    opacity: 0.5;
-  }
-
-  .salentino-angular {
-    font-family: var(--mono);
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-  }
-
-  .salentino-angular-sm {
-    font-size: 10px;
-    color: rgba(239,255,254,0.5);
-  }
-
-  .live-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--purple);
-  }
-
-  .live-dot {
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--purple);
-    box-shadow: 0 0 10px var(--purple-glow);
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--purple-glow); }
-    50% { opacity: 0.4; box-shadow: 0 0 4px var(--purple-glow); }
-  }
-
-  /* ─── PERSISTENT BOTTOM BAR ─── */
-  .bottom-bar {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    z-index: 50;
-    padding: 10px 20px;
-    background: linear-gradient(0deg, rgba(2,1,2,0.95) 0%, transparent 100%);
-    text-align: center;
-  }
-
-  .tagline-bar {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--purple);
-    opacity: 0.6;
-  }
-
-  /* ─── ORIENTATION TOGGLE ─── */
-  .orientation-toggle {
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    gap: 0;
-    background: rgba(2,1,2,0.85);
-    border: 1px solid rgba(168,85,247,0.2);
-    border-radius: 6px;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    font-family: var(--mono);
-    font-size: 8px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .orientation-toggle .toggle-btn {
-    padding: 5px 12px;
-    background: transparent;
-    border: none;
-    color: rgba(239,255,254,0.35);
-    cursor: pointer;
-    font-family: var(--mono);
-    font-size: 8px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-  }
-
-  .orientation-toggle .toggle-btn.active {
-    color: var(--purple);
-    background: rgba(168,85,247,0.08);
-  }
-
-  .orientation-toggle .toggle-btn:hover {
-    color: var(--white);
-  }
-
-  .toggle-divider {
-    width: 1px;
-    height: 14px;
-    background: rgba(168,85,247,0.15);
-  }
-
-  .toggle-label {
-    padding: 0 6px;
-    font-family: var(--mono);
-    font-size: 7px;
-    letter-spacing: 1px;
-    color: rgba(168,85,247,0.25);
-  }
-
-  /* ─── CORNER DECORATIONS ─── */
-  .corner {
-    position: fixed;
-    width: 18px; height: 18px;
-    z-index: 45;
-    opacity: 0.25;
-  }
-
-  .corner-tl { top: 6px; left: 6px; border-top: 1px solid var(--purple); border-left: 1px solid var(--purple); }
-  .corner-tr { top: 6px; right: 6px; border-top: 1px solid var(--purple); border-right: 1px solid var(--purple); }
-  .corner-bl { bottom: 6px; left: 6px; border-bottom: 1px solid var(--purple); border-left: 1px solid var(--purple); }
-  .corner-br { bottom: 6px; right: 6px; border-bottom: 1px solid var(--purple); border-right: 1px solid var(--purple); }
-
-  /* ─── SPLIT-FLAP DISPLAY ─── */
-  .split-flap-display {
-    display: flex;
-    gap: 2px;
-    perspective: 400px;
-  }
-
-  .flap-cell {
-    width: 14px;
-    height: 20px;
-    position: relative;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0;
-    text-transform: uppercase;
-    background: rgba(10,10,10,0.9);
-    border: 1px solid rgba(168,85,247,0.08);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .flap-cell.space-cell {
-    background: transparent;
-    border-color: transparent;
-    width: 7px;
-  }
-
-  /* Top and bottom halves */
-  .flap-top, .flap-bottom {
-    position: absolute;
-    left: 0; right: 0;
-    height: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    backface-visibility: hidden;
-  }
-
-  .flap-top {
-    top: 0;
-    background: rgba(15,15,15,0.95);
-    color: var(--purple);
-    align-items: flex-end;
-    padding-bottom: 0;
-    border-bottom: 1px solid rgba(0,0,0,0.6);
-  }
-
-  .flap-top span {
-    transform: translateY(50%);
-  }
-
-  .flap-bottom {
-    bottom: 0;
-    background: rgba(8,8,8,0.95);
-    color: rgba(168,85,247,0.85);
-    align-items: flex-start;
-    padding-top: 0;
-  }
-
-  .flap-bottom span {
-    transform: translateY(-50%);
-  }
-
-  /* Center line (mechanical split) */
-  .flap-cell::after {
-    content: '';
-    position: absolute;
-    left: 0; right: 0;
-    top: 50%;
-    height: 1px;
-    background: rgba(0,0,0,0.7);
-    z-index: 5;
-  }
-
-  /* Flipping flap overlay */
-  .flap-flip {
-    position: absolute;
-    left: 0; right: 0;
-    height: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    backface-visibility: hidden;
-    z-index: 10;
-  }
-
-  .flap-flip-top {
-    top: 0;
-    background: rgba(15,15,15,0.95);
-    color: var(--purple);
-    align-items: flex-end;
-    transform-origin: bottom center;
-    border-bottom: 1px solid rgba(0,0,0,0.6);
-    border-radius: 2px 2px 0 0;
-  }
-
-  .flap-flip-top span {
-    transform: translateY(50%);
-  }
-
-  .flap-flip-bottom {
-    bottom: 0;
-    background: rgba(8,8,8,0.95);
-    color: rgba(168,85,247,0.85);
-    align-items: flex-start;
-    transform-origin: top center;
-    border-radius: 0 0 2px 2px;
-  }
-
-  .flap-flip-bottom span {
-    transform: translateY(-50%);
-  }
-
-  /* Subtle glow on the whole display */
-  .split-flap-display::before {
-    content: '';
-    position: absolute;
-    inset: -4px -8px;
-    background: radial-gradient(ellipse at center, rgba(168,85,247,0.03) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  /* ─── HUD ELEMENTS ─── */
-  .hud-time {
-    position: fixed;
-    top: 36px; right: 20px;
-    z-index: 45;
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 1px;
-    color: rgba(168,85,247,0.25);
-    text-align: right;
-  }
-
-  .hud-coords {
-    position: fixed;
-    top: 36px; left: 20px;
-    z-index: 45;
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 1px;
-    color: rgba(168,85,247,0.18);
-  }
-
-  /* ═══════════════════════════════════════ */
-  /* ─── HORIZONTAL MODE ─── */
-  /* ═══════════════════════════════════════ */
-  body.horizontal .menu-view {
-    padding: 48px 36px 56px;
-  }
-
-  body.horizontal .menu-items {
-    gap: 10px;
-  }
-
-  body.horizontal .section-head .section-label {
-    font-size: 26px;
-  }
-
-  body.horizontal .item-name {
-    font-size: 24px;
-  }
-
-  body.horizontal .item-desc {
-    font-size: 14px;
-  }
-
-  body.horizontal .note-chip {
-    font-size: 11px;
-    padding: 3px 10px;
-  }
-
-  body.horizontal .flavor-profile {
-    width: 120px;
-    min-width: 120px;
-    gap: 8px;
-  }
-
-  body.horizontal .bar-label {
-    font-size: 8px;
-  }
-
-  body.horizontal .bar-track {
-    height: 4px;
-  }
-
-  body.horizontal .top-bar {
-    padding: 10px 32px;
-  }
-
-  body.horizontal .hud-coords {
-    top: 36px; left: 32px;
-  }
-
-  body.horizontal .hud-time {
-    top: 36px; right: 32px;
-  }
-
-  /* ═══════════════════════════════════════ */
-  /* ─── MOBILE RESPONSIVE ─── */
-  /* ═══════════════════════════════════════ */
-
-  @media (max-width: 420px) {
-    .menu-view {
-      padding: 42px 12px 50px;
-    }
-
-    .section-head .section-label {
-      font-size: 15px;
-      letter-spacing: 2px;
-    }
-
-    .section-head .section-badge {
-      font-size: 7px;
-      padding: 2px 8px;
-    }
-
-    .menu-items {
-      gap: 6px;
-    }
-
-    .menu-item {
-      padding: 8px;
-      gap: 10px;
-    }
-
-    .menu-header .concept-name {
-      font-size: 18px;
-    }
-
-    .menu-header .brand-line,
-    .menu-header .sub-line {
-      font-size: 7px;
-      letter-spacing: 3px;
-    }
-
-    .item-name {
-      font-size: 16px;
-    }
-
-    .item-type {
-      font-size: 8px;
-    }
-
-    .item-desc {
-      font-size: 11px;
-    }
-
-    .note-chip {
-      font-size: 8px;
-      padding: 2px 7px;
-    }
-
-    .option-pill {
-      font-size: 8px;
-      padding: 2px 7px;
-    }
-
-    .notes-row {
-      gap: 3px;
-      margin-top: 3px;
-    }
-
-    .flavor-profile {
-      width: 65px;
-      min-width: 65px;
-      gap: 4px;
-      padding-left: 8px;
-    }
-
-    .flavor-bar .bar-label {
-      font-size: 6px;
-      letter-spacing: 1px;
-    }
-
-    .flavor-bar .bar-track {
-      height: 2px;
-    }
-
-    .top-bar {
-      padding: 8px 12px;
-    }
-
-    .ritvales-logo {
-      font-size: 11px;
-      letter-spacing: 3px;
-    }
-
-    .salentino-angular-sm {
-      font-size: 8px;
-    }
-
-    .live-badge {
-      font-size: 8px;
-    }
-
-    .hud-time {
-      font-size: 7px;
-      top: 30px; right: 12px;
-    }
-
-    .hud-coords {
-      font-size: 7px;
-      top: 30px; left: 12px;
-    }
-
-    .bottom-bar {
-      padding: 6px 12px;
-    }
-
-    .tagline-bar {
-      font-size: 7px;
-      letter-spacing: 2px;
-    }
-
-    .split-flap-wrapper {
-      bottom: 22px;
-      gap: 6px;
-    }
-
-    .flap-cell {
-      width: 10px;
-      height: 15px;
-      font-size: 9px;
-    }
-
-    .flap-cell.space-cell {
-      width: 5px;
-    }
-
-    .corner {
-      width: 12px; height: 12px;
-    }
-
-    .menu-divider {
-      margin: 6px 0;
-    }
-
-    .eq-bar { width: 1.5px; }
-
-    .orientation-toggle {
-      top: 6px;
-    }
-
-    .lang-indicator {
-      font-size: 7px;
-    }
-
-    .section-head .section-badge {
-      font-size: 8px;
-      padding: 3px 10px;
-    }
-  }
-
-  @media (min-width: 421px) and (max-width: 767px) {
-    .menu-view {
-      padding: 44px 16px 52px;
-    }
-
-    .item-name {
-      font-size: 18px;
-    }
-  }
-
-  @media (min-width: 768px) and (max-width: 1024px) {
-    .menu-view {
-      padding: 50px 24px 60px;
-    }
-
-    .item-name {
-      font-size: 22px;
-    }
-
-    .item-desc {
-      font-size: 15px;
-    }
-
-    .note-chip {
-      font-size: 11px;
-      padding: 3px 12px;
-    }
-
-    .option-pill {
-      font-size: 11px;
-      padding: 3px 12px;
-    }
-
-    .section-head .section-label {
-      font-size: 24px;
-    }
-  }
-
-  @media (min-width: 1025px) {
-    .menu-view {
-      padding: 52px 32px 64px;
-    }
-
-    .menu-header .concept-name {
-      font-size: 28px;
-    }
-
-    .section-head .section-label {
-      font-size: 28px;
-    }
-
-    .item-name {
-      font-size: 26px;
-    }
-
-    .item-desc {
-      font-size: 16px;
-    }
-
-    .note-chip {
-      font-size: 12px;
-      padding: 4px 14px;
-    }
-
-    .option-pill {
-      font-size: 12px;
-      padding: 4px 14px;
-    }
-  }
-
-  @media (hover: none) and (pointer: coarse) {
-    .toggle-btn {
-      min-height: 36px;
-      min-width: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  }
-
-  @media (max-height: 500px) {
-    .menu-view {
-      padding: 36px 14px 44px;
-    }
-
-    .menu-items {
-      gap: 4px;
-    }
-
-    .menu-item {
-      padding: 6px;
-      gap: 6px;
-    }
-
-    .flavor-profile {
-      width: 55px;
-      min-width: 55px;
-      gap: 3px;
-      padding-left: 6px;
-    }
-
-    .flavor-bar .bar-label { font-size: 5px; }
-    .flavor-bar .bar-track { height: 2px; }
-
-    .menu-header .concept-name {
-      font-size: 16px;
-    }
-
-    .menu-header {
-      padding: 2px 0 4px;
-    }
-
-    .section-head .section-label {
-      font-size: 13px;
-    }
-
-    .item-name {
-      font-size: 14px;
-    }
-
-    .item-desc {
-      font-size: 9px;
-    }
-
-    .section-head {
-      margin-bottom: 4px;
-    }
-
-    .menu-divider {
-      margin: 4px 0;
-    }
-
-    .bottom-bar {
-      padding: 4px 10px;
-    }
-
-    .split-flap-wrapper {
-      bottom: 18px;
-      gap: 5px;
-    }
-
-    .flap-cell {
-      width: 9px;
-      height: 13px;
-      font-size: 8px;
-    }
-
-    .flap-cell.space-cell {
-      width: 4px;
-    }
-
-    .eq-bar { width: 1.5px; }
-    .eq-bars { gap: 2px; padding: 0 6px; }
-  }
-
-  /* ─── REDUCED MOTION (a11y) ─── */
-  @media (prefers-reduced-motion: reduce) {
-    .scanlines,
-    .screen-flicker { animation: none; }
-    .menu-item::after { animation: none; }
-    .menu-item::before { animation: none; }
-    .menu-header::before { animation: none; }
-    .process-badge::after { animation: none; }
-    .live-dot { animation: none; }
-    .eq-bar { animation: none; height: 6px; }
-    #particleCanvas,
-    #waveCanvas { display: none; }
-  }
+:root {
+  --black: #020102;
+  --green: #82FD47;
+  --white: #EFFFFE;
+  --steel: #AEE1F6;
+  --purple: #7D3BED;
+  --purple-text: #B591F7;
+  --cobalt: #224FD1;
+  --cobalt-text: #6F8FF0;
+  --red: #FF4B43;
+  --secondary: #A7B3AE;
+  --desc: #C9D3CE;
+  --line: #2E3D27;
+  --dim: #1A2416;
+  --grotesk: 'Space Grotesk', sans-serif;
+  --mono: 'Space Mono', monospace;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--black); color: var(--white); font-family: var(--grotesk); }
+body.loading * { visibility: hidden; }
+body.loading { background: var(--black); }
+
+/* ── SCANLINES ── */
+.scanlines {
+  position: fixed; inset: 0; z-index: 100; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 3px);
+  background-size: 100% 3px;
+  animation: scanScroll 6s linear infinite;
+}
+@keyframes scanScroll { to { background-position: 0 3px; } }
+
+/* ── PARTICLE GLOW ── */
+.glow {
+  position: absolute; pointer-events: none;
+  background-image: radial-gradient(circle, var(--glow-color) 0.9px, transparent 1.5px);
+  background-size: 5px 5px;
+  -webkit-mask-image: radial-gradient(circle, #000 0%, rgba(0,0,0,0.45) 32%, transparent 64%);
+  mask-image: radial-gradient(circle, #000 0%, rgba(0,0,0,0.45) 32%, transparent 64%);
+  border-radius: 50%;
+}
+.glow-purple { --glow-color: #7D3BED; }
+.glow-green { --glow-color: #82FD47; }
+@keyframes glowBreathe {
+  0%, 100% { opacity: 0.75; transform: translate(var(--gx), var(--gy)) scale(1); }
+  50% { opacity: 1; transform: translate(var(--gx), var(--gy)) scale(1.04); }
+}
+
+/* ── STAGE SCALING ── */
+.stage-wrapper {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; background: var(--black);
+}
+.stage {
+  position: relative; overflow: hidden;
+  transform-origin: center center;
+  background: var(--black);
+}
+.stage-v { width: 540px; height: 960px; }
+.stage-h { width: 1280px; height: 720px; }
+
+/* ── TERMINAL BOX ── */
+.tbox {
+  position: relative;
+  border: 1px solid var(--tbox-color, var(--green));
+  border-radius: 0;
+  background: var(--black);
+}
+.tbox::after {
+  content: '';
+  position: absolute; top: -4px; right: -4px;
+  width: 7px; height: 7px;
+  background: var(--tbox-color, var(--green));
+}
+
+/* ── SECTION TAB ── */
+.stab {
+  display: inline-block;
+  border: 1px solid var(--green);
+  padding: 3px 9px;
+  font-family: var(--mono); font-weight: 700; font-size: 12px;
+  color: var(--green);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+/* ── CIRCUIT TRACE ── */
+.circuit-trace { width: 100%; position: relative; }
+.circuit-trace svg { display: block; width: 100%; }
+
+/* ── HUD ── */
+.hud { display: flex; justify-content: space-between; align-items: flex-start; }
+.hud-left, .hud-right { font-family: var(--mono); font-size: 9px; color: var(--secondary); line-height: 1.4; }
+.hud-time { color: var(--green); font-family: var(--mono); font-size: 9px; font-weight: 400; }
+.hud-time .blink-colon { animation: blinkColon 1s steps(1) infinite; }
+@keyframes blinkColon {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.open-bar {
+  display: inline-block;
+  border: 1px solid var(--green);
+  padding: 3px 9px;
+  font-family: var(--mono); font-weight: 700; font-size: 9px;
+  color: var(--green); letter-spacing: 2px;
+  position: relative;
+}
+.open-bar::after {
+  content: ''; position: absolute; top: -4px; right: -4px;
+  width: 7px; height: 7px; background: var(--green);
+}
+
+/* ── BRAND ── */
+.brand { text-align: center; }
+.brand-logo { height: 50px; display: block; margin: 0 auto; }
+.brand-title { font-family: var(--grotesk); font-size: 30px; font-weight: 700; color: var(--white); display: inline; }
+.brand-title .uscore { color: var(--green); }
+.brand-descriptor { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--secondary); margin-left: 6px; }
+.brand-slogan { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; color: var(--secondary); margin-top: 2px; }
+
+/* ── SECTION HEADER ── */
+.sec-header { display: flex; align-items: center; gap: 8px; }
+.sec-line { flex: 1; height: 1px; background: var(--line); }
+.sec-method { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--white); white-space: nowrap; }
+
+/* ── DRINK CARD ── */
+.card {
+  position: relative;
+  border: 1px solid var(--card-color, var(--green));
+  background: var(--black);
+  display: flex; gap: 12px;
+  padding: 10px;
+}
+.card::after {
+  content: ''; position: absolute; top: -4px; right: -4px;
+  width: 7px; height: 7px;
+  background: var(--card-color, var(--green));
+}
+.card-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.card-name {
+  font-family: var(--grotesk); font-size: 22px; font-weight: 700;
+  letter-spacing: -0.5px; color: var(--card-color, var(--green));
+  line-height: 1.1;
+}
+.card-name .uscore {
+  display: inline-block;
+  animation: cursorBlink 1.1s steps(1) infinite;
+}
+.card-type { font-family: var(--mono); font-size: 9px; font-weight: 700; color: var(--white); line-height: 1.3; }
+.card-origin { font-family: var(--mono); font-size: 9px; color: var(--secondary); line-height: 1.3; }
+.card-desc { font-family: var(--grotesk); font-size: 11px; font-weight: 500; line-height: 1.35; color: var(--desc); }
+.card-badge {
+  display: inline-block;
+  background: var(--red); color: var(--black);
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  padding: 2px 7px; margin-top: 2px;
+  width: fit-content;
+}
+
+/* ── FLAVOR PROFILE (VU METER) ── */
+.profile {
+  width: 124px; min-width: 124px; flex-shrink: 0;
+  border-left: 1px dashed var(--line);
+  padding-left: 12px;
+  display: flex; flex-direction: column; justify-content: center; gap: 8px;
+}
+.prow { display: flex; flex-direction: column; gap: 3px; }
+.prow-label { font-family: var(--mono); font-size: 8px; font-weight: 700; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; }
+.prow-blocks { display: flex; gap: 2px; }
+.pblock { width: 100%; height: 7px; background: var(--dim); flex: 1; }
+.pblock.on { background: var(--card-color, var(--green)); }
+.pblock.last-on { animation: vuTick 1.6s ease-in-out infinite; }
+@keyframes vuTick {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* ── CURSOR BLINK ── */
+@keyframes cursorBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ── FOOTER ── */
+.footer { display: flex; justify-content: space-between; align-items: center; }
+.footer-left { font-family: var(--mono); font-size: 9px; font-weight: 700; color: var(--green); }
+.footer-right { font-family: var(--mono); font-size: 9px; color: var(--secondary); }
+
+/* ── GLITCH ── */
+.glitch-active { position: relative; }
+.glitch-active::before, .glitch-active::after {
+  content: attr(data-text);
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  font: inherit; letter-spacing: inherit; color: inherit;
+}
+.glitch-active::before { color: var(--red); transform: translate(-2px, 0); clip-path: inset(0 0 70% 0); }
+.glitch-active::after { color: var(--cobalt); transform: translate(2px, 0); clip-path: inset(30% 0 50% 0); }
+.glitch-slice {
+  position: absolute; left: 6px; right: 0;
+  height: 3px; background: var(--black);
+  pointer-events: none;
+}
+
+/* ── MOBILE ── */
+.mobile-stage {
+  width: 100%; max-width: 480px; margin: 0 auto;
+  padding: 16px 16px 32px;
+  min-height: 100vh;
+  position: relative; overflow: visible;
+}
+.mobile-stage .card-name { font-size: 22px; }
+.mobile-stage .card-desc { font-size: 14px; }
+.mobile-stage .profile { width: 104px; min-width: 104px; }
+.mobile-stage .glow { display: none; }
+.lang-toggle { display: flex; gap: 0; }
+.lang-btn {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  padding: 0 10px; height: 44px; line-height: 44px;
+  background: transparent; border: 1px solid var(--line); color: var(--secondary);
+  cursor: pointer; letter-spacing: 1px;
+}
+.lang-btn.active { color: var(--green); border-color: var(--green); }
+
+/* ── BURN-IN PROTECTION ── */
+.stage { transition: transform 2s ease; }
+
+/* ── HIDE CURSOR ── */
+body.cursor-hidden, body.cursor-hidden * { cursor: none !important; }
+
+/* ── REDUCED MOTION ── */
+@media (prefers-reduced-motion: reduce) {
+  .scanlines { animation: none !important; }
+  .glow { animation: none !important; opacity: 0.85 !important; }
+  .circuit-pulse { animation: none !important; display: none !important; }
+  .pblock.last-on { animation: none !important; }
+  .card-name .uscore { animation: none !important; opacity: 1 !important; }
+  .brand-title .uscore { animation: none !important; opacity: 1 !important; }
+  .hud-time .blink-colon { animation: none !important; opacity: 1 !important; }
+  .glitch-active::before, .glitch-active::after { display: none !important; }
+  .glitch-slice { display: none !important; }
+  .stage { transition: none !important; }
+  .decode-fade { transition: opacity 0.2s ease !important; }
+}
+
+/* ── HORIZONTAL OVERRIDES (applied via JS class) ── */
+.stage-h .brand-title { font-size: 24px; }
+.stage-h .brand-descriptor { font-size: 11px; }
+.stage-h .brand-slogan { font-size: 11px; }
+.stage-h .hud-left, .stage-h .hud-right { font-size: 10px; }
+.stage-h .hud-time { font-size: 10px; }
+
+/* hot cards in horizontal */
+.stage-h .hot-cards .card { padding: 14px; }
+.stage-h .hot-cards .card-name { font-size: 24px; }
+.stage-h .hot-cards .card-origin { font-size: 10px; }
+.stage-h .hot-cards .card-desc { font-size: 13px; }
+.stage-h .hot-cards .profile { width: 150px; min-width: 150px; }
+.stage-h .hot-cards .pblock { height: 9px; }
+.stage-h .hot-cards .prow-label { font-size: 9px; }
+
+/* cold cards in horizontal */
+.stage-h .cold-cards .card { padding: 11px; }
+.stage-h .cold-cards .card-name { font-size: 22px; }
+.stage-h .cold-cards .card-desc { font-size: 12px; }
+.stage-h .cold-cards .pblock { height: 8px; }
+
+.stage-h .footer-left, .stage-h .footer-right { font-size: 11px; }
 </style>
 </head>
-<body>
-
-<!-- CANVAS LAYERS -->
-<canvas id="particleCanvas"></canvas>
-<canvas id="waveCanvas"></canvas>
-<canvas id="glitchCanvas"></canvas>
-
-<!-- OVERLAYS -->
+<body class="loading">
 <div class="scanlines"></div>
-<div class="vignette"></div>
-<div class="screen-flicker"></div>
+<div class="stage-wrapper" id="stageWrapper"></div>
 
-<!-- CORNER BRACKETS -->
-<div class="corner corner-tl"></div>
-<div class="corner corner-tr"></div>
-<div class="corner corner-bl"></div>
-<div class="corner corner-br"></div>
-
-<!-- HUD -->
-<div class="hud-time" id="hudTime"></div>
-<div class="hud-coords">6.2442° N<br>75.5812° W<br><span style="opacity:0.5">MDE / COL</span></div>
-
-<!-- ORIENTATION TOGGLE -->
-<div class="orientation-toggle" id="orientationToggle">
-  <span class="toggle-label">VIEW</span>
-  <div class="toggle-divider"></div>
-  <button class="toggle-btn active" data-mode="vertical" onclick="setOrientation('vertical')">9:16</button>
-  <div class="toggle-divider"></div>
-  <button class="toggle-btn" data-mode="horizontal" onclick="setOrientation('horizontal')">16:9</button>
-</div>
-
-<!-- TOP BAR -->
-<div class="top-bar">
-  <div class="top-bar-left">
-    <span class="ritvales-logo">RITVALES</span>
-    <span class="x-divider">x</span>
-    <span class="salentino-angular salentino-angular-sm">SALENTINO</span>
-  </div>
-  <div class="live-badge">
-    <div class="live-dot"></div>
-    OPEN BAR
-  </div>
-</div>
-
-<!-- SPLIT-FLAP + LANG INDICATOR (integrated) -->
-<div class="split-flap-wrapper">
-  <div class="split-flap-display" id="splitFlap"></div>
-  <div class="lang-indicator" id="langIndicator">ES</div>
-</div>
-
-<!-- BOTTOM BAR -->
-<div class="bottom-bar">
-  <div class="tagline-bar"><span class="lang-es">_fuel the ritual</span><span class="lang-en">_fuel the ritual</span></div>
-</div>
-
-<!-- ══════════════════════════════════════ -->
-<!-- CONTAINER — MENU LAYOUT              -->
-<!-- ══════════════════════════════════════ -->
-<div class="container">
-  <div class="menu-view">
-
-    <!-- ══ HEADER ══ -->
-    <div class="menu-header" data-anim>
-      <div class="brand-line">Salentino Coffee Lab</div>
-      <div class="concept-name">CAFÉ NÓMADA</div>
-      <div class="sub-line">Menú &middot; Ritvales 2026</div>
-    </div>
-
-    <!-- ══ CAFÉ CALIENTE ══ -->
-    <div class="section-head section-head-hot" data-anim>
-      <span class="section-label"><span class="lang-es">_Café Caliente</span><span class="lang-en">_Hot Coffee</span></span>
-      <div class="section-line"></div>
-      <span class="section-badge">Pour Over &middot; V60</span>
-    </div>
-
-    <div class="menu-section section-hot">
-      <div class="menu-items">
-
-        <div class="menu-item item-accent-washed" data-anim>
-          <div class="item-info">
-            <div class="item-name">CATURRA FLEUR_</div>
-            <div class="item-type"><span class="lang-es">Café filtrado &middot; Lavado</span><span class="lang-en">Filter coffee &middot; Washed</span></div>
-            <div class="item-origin"><span class="lang-es">Huila, Colombia</span><span class="lang-en">Huila, Colombia</span></div>
-            <div class="item-desc"><span class="lang-es">Café filtrado en V60. Grano lavado del Huila con notas a panela, mandarina y chocolate oscuro. Se sirve caliente, negro.</span><span class="lang-en">V60 pour over. Washed Huila bean with notes of brown sugar, tangerine, and dark chocolate. Served hot, black.</span></div>
-            <div class="notes-row">
-              <span class="note-chip">Panela</span>
-              <span class="note-chip">Citrus</span>
-              <span class="note-chip">Chocolate</span>
-            </div>
-          </div>
-          <div class="flavor-profile">
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Dulzura</span><span class="lang-en">Sweet</span></span><div class="bar-track"><div class="bar-fill" style="width:80%"></div></div></div>
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Acidez</span><span class="lang-en">Acidity</span></span><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div></div>
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Cuerpo</span><span class="lang-en">Body</span></span><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div></div>
-          </div>
-        </div>
-
-        <div class="menu-item item-accent-cofermented" data-anim>
-          <div class="item-info">
-            <div class="item-name">CATURRA PINEAPPLE_</div>
-            <div class="item-type"><span class="lang-es">Café filtrado &middot; Co-fermentado</span><span class="lang-en">Filter coffee &middot; Co-fermented</span></div>
-            <div class="item-origin"><span class="lang-es">Tolima, Colombia</span><span class="lang-en">Tolima, Colombia</span></div>
-            <div class="item-desc"><span class="lang-es">Café filtrado en V60. Grano co-fermentado con piña del Tolima. Sabor tropical, cremoso, con fondo a coco. Se sirve caliente, negro.</span><span class="lang-en">V60 pour over. Co-fermented Tolima bean with pineapple. Tropical flavor, creamy, with coconut undertones. Served hot, black.</span></div>
-            <div class="notes-row">
-              <span class="note-chip">Pineapple</span>
-              <span class="note-chip">Coconut</span>
-            </div>
-          </div>
-          <div class="flavor-profile">
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Dulzura</span><span class="lang-en">Sweet</span></span><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div></div>
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Acidez</span><span class="lang-en">Acidity</span></span><div class="bar-track"><div class="bar-fill" style="width:75%"></div></div></div>
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Cuerpo</span><span class="lang-en">Body</span></span><div class="bar-track"><div class="bar-fill" style="width:55%"></div></div></div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ══ DIVIDER (EQ) ══ -->
-    <div class="menu-divider" data-anim>
-      <div class="div-line"></div>
-      <div class="eq-bars">
-        <div class="eq-bar"></div>
-        <div class="eq-bar"></div>
-        <div class="eq-bar"></div>
-        <div class="eq-bar"></div>
-        <div class="eq-bar"></div>
-        <div class="eq-bar"></div>
-        <div class="eq-bar"></div>
-      </div>
-      <div class="div-line"></div>
-    </div>
-
-    <!-- ══ CAFÉ FRÍO ══ -->
-    <div class="section-head section-head-cold" data-anim>
-      <span class="section-label"><span class="lang-es">_Café Frío</span><span class="lang-en">_Iced Coffee</span></span>
-      <div class="section-line"></div>
-      <span class="section-badge">Cold Brew &middot; 24hr</span>
-    </div>
-
-    <div class="menu-section section-cold">
-      <div class="menu-items">
-
-        <div class="menu-item item-accent-purple" data-anim>
-          <div class="item-info">
-            <div class="item-name">SIGNAL_</div>
-            <div class="item-type"><span class="lang-es">Cold Brew puro &middot; sin mezcla</span><span class="lang-en">Pure Cold Brew &middot; straight up</span></div>
-            <div class="item-desc"><span class="lang-es">Cold brew puro, sin mezclar. Extracción en frío durante 24 horas. Sabor concentrado, intenso, sin acidez. Se sirve frío, solo.</span><span class="lang-en">Pure cold brew, unmixed. 24-hour cold extraction. Concentrated, bold flavor, zero acidity. Served cold, straight.</span></div>
-          </div>
-          <div class="flavor-profile">
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Intenso</span><span class="lang-en">Bold</span></span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div></div>
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Dulzura</span><span class="lang-en">Sweet</span></span><div class="bar-track"><div class="bar-fill" style="width:40%"></div></div></div>
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Cuerpo</span><span class="lang-en">Body</span></span><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div></div>
-          </div>
-        </div>
-
-        <div class="menu-item item-accent-blue" data-anim>
-          <div class="item-info">
-            <div class="item-name">ANALOG_</div>
-            <div class="item-type"><span class="lang-es">Cold Brew + Leche</span><span class="lang-en">Cold Brew + Milk</span></div>
-            <div class="item-desc"><span class="lang-es">Cold brew 24h mezclado con leche a tu elección (entera, almendras o avena) y syrup opcional. Suave, cremoso, refrescante.</span><span class="lang-en">Cold brew 24h blended with your choice of milk (whole, almond, or oat) and optional syrup. Smooth, creamy, refreshing.</span></div>
-            <div class="drink-options">
-              <span class="option-pill"><span class="lang-es">Avena</span><span class="lang-en">Oat</span></span>
-              <span class="option-pill"><span class="lang-es">Leche</span><span class="lang-en">Milk</span></span>
-              <span class="option-pill">+ Syrup</span>
-            </div>
-          </div>
-          <div class="flavor-profile">
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Suave</span><span class="lang-en">Smooth</span></span><div class="bar-track"><div class="bar-fill" style="width:85%"></div></div></div>
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Dulzura</span><span class="lang-en">Sweet</span></span><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div></div>
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Cuerpo</span><span class="lang-en">Body</span></span><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div></div>
-          </div>
-        </div>
-
-        <div class="menu-item item-accent-magenta" data-anim>
-          <div class="item-info">
-            <div class="item-name">FREQUENCY_</div>
-            <div class="item-type"><span class="lang-es">Cold Brew + Agua Tónica</span><span class="lang-en">Cold Brew + Tonic Water</span></div>
-            <div class="item-desc"><span class="lang-es">Cold brew 24h con agua tónica premium y hielo. Efervescente, cítrico, con cuerpo cafeinado. El trago del festival.</span><span class="lang-en">Cold brew 24h with premium tonic water and ice. Effervescent, citrusy, with caffeinated body. The festival drink.</span></div>
-          </div>
-          <div class="flavor-profile">
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Fresco</span><span class="lang-en">Fresh</span></span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div></div>
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Acidez</span><span class="lang-en">Acidity</span></span><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div></div>
-            <div class="flavor-bar"><span class="bar-label"><span class="lang-es">Burbujas</span><span class="lang-en">Fizz</span></span><div class="bar-track"><div class="bar-fill" style="width:95%"></div></div></div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- GSAP CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-
-<!-- ══════════════════════════════════════ -->
-<!-- ENGINE                                -->
-<!-- ══════════════════════════════════════ -->
 <script>
-(function() {
-
-  const glitchCanvas = document.getElementById('glitchCanvas');
-  const glitchCtx = glitchCanvas.getContext('2d');
-
-  gsap.defaults({ overwrite: 'auto' });
-
-  // ─── HUD CLOCK ───
-  function updateClock() {
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2, '0');
-    const m = String(now.getMinutes()).padStart(2, '0');
-    const s = String(now.getSeconds()).padStart(2, '0');
-    document.getElementById('hudTime').innerHTML = h + ':' + m + ':' + s + '<br><span style="opacity:0.4">' + now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) + '</span>';
-    requestAnimationFrame(updateClock);
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const I18N = {
+  en: {
+    descriptor: '// NOMAD COFFEE',
+    hotSection: '_HOT COFFEE',
+    coldSection: '_ICED COFFEE',
+    festivalBadge: '_FESTIVAL DRINK',
+  },
+  es: {
+    descriptor: '// CAFE NOMADA',
+    hotSection: '_CAFE CALIENTE',
+    coldSection: '_CAFE FRIO',
+    festivalBadge: '_TRAGO DEL FESTIVAL',
   }
-  updateClock();
+};
 
-  // ─── PARTICLE SYSTEM ───
-  const pc = document.getElementById('particleCanvas');
-  const pctx = pc.getContext('2d');
-  let particles = [];
-
-  function resizeCanvases() {
-    [pc, document.getElementById('waveCanvas'), glitchCanvas].forEach(c => {
-      c.width = window.innerWidth;
-      c.height = window.innerHeight;
-    });
-    initParticles();
+const DRINKS = [
+  {
+    id: 'caturra-fleur', name: 'CATURRA FLEUR', color: '#AEE1F6', borderColor: '#AEE1F6',
+    section: 'hot', origin: 'Huila, Colombia',
+    type: null,
+    desc: {
+      en: 'Washed, from Huila. Brown sugar, tangerine, dark chocolate.',
+      es: 'Lavado del Huila. Panela, mandarina y chocolate oscuro.'
+    },
+    profile: [
+      { en: 'SWEET', es: 'DULZURA', value: 80 },
+      { en: 'ACIDITY', es: 'ACIDEZ', value: 50 },
+      { en: 'BODY', es: 'CUERPO', value: 65 }
+    ]
+  },
+  {
+    id: 'caturra-pineapple', name: 'CATURRA PINEAPPLE', color: '#7D3BED', borderColor: '#B591F7',
+    section: 'hot', origin: 'Tolima, Colombia',
+    type: null,
+    desc: {
+      en: 'Pineapple co-fermented, from Tolima. Tropical and creamy, with a coconut finish.',
+      es: 'Co-fermentado con pina, del Tolima. Tropical y cremoso, con fondo a coco.'
+    },
+    profile: [
+      { en: 'SWEET', es: 'DULZURA', value: 70 },
+      { en: 'ACIDITY', es: 'ACIDEZ', value: 75 },
+      { en: 'BODY', es: 'CUERPO', value: 55 }
+    ]
+  },
+  {
+    id: 'signal', name: 'SIGNAL', color: '#82FD47', borderColor: '#82FD47',
+    section: 'cold', origin: null,
+    type: { en: 'PURE COLD BREW \u00B7 STRAIGHT UP', es: 'COLD BREW PURO \u00B7 SIN MEZCLA' },
+    desc: {
+      en: 'Pure cold brew, unmixed. 24-hour cold extraction. Concentrated, bold flavor, zero acidity. Served cold, straight.',
+      es: 'Cold brew puro, sin mezclar. Extracci\u00F3n en fr\u00EDo durante 24 horas. Sabor concentrado, intenso, sin acidez. Se sirve fr\u00EDo, solo.'
+    },
+    profile: [
+      { en: 'BOLD', es: 'INTENSO', value: 90 },
+      { en: 'SWEET', es: 'DULZURA', value: 40 },
+      { en: 'BODY', es: 'CUERPO', value: 85 }
+    ]
+  },
+  {
+    id: 'analog', name: 'ANALOG', color: '#EFFFFE', borderColor: '#EFFFFE',
+    section: 'cold', origin: null,
+    type: { en: 'COLD BREW + MILK', es: 'COLD BREW + LECHE' },
+    desc: {
+      en: 'Cold brew 24h blended with your choice of milk (whole, almond, or oat) and optional syrup. Smooth, creamy, refreshing.',
+      es: 'Cold brew 24h mezclado con leche a tu elecci\u00F3n (entera, almendras o avena) y syrup opcional. Suave, cremoso, refrescante.'
+    },
+    profile: [
+      { en: 'SMOOTH', es: 'SUAVE', value: 85 },
+      { en: 'SWEET', es: 'DULZURA', value: 65 },
+      { en: 'BODY', es: 'CUERPO', value: 70 }
+    ]
+  },
+  {
+    id: 'frequency', name: 'FREQUENCY', color: '#224FD1', borderColor: '#6F8FF0',
+    section: 'cold', origin: null,
+    type: { en: 'COLD BREW + TONIC WATER', es: 'COLD BREW + AGUA TONICA' },
+    badge: true,
+    desc: {
+      en: 'Cold brew 24h with premium tonic water and ice. Effervescent, citrusy, with caffeinated body. The festival drink.',
+      es: 'Cold brew 24h con agua t\u00F3nica premium y hielo. Efervescente, c\u00EDtrico, con cuerpo cafeinado. El trago del festival.'
+    },
+    profile: [
+      { en: 'FRESH', es: 'FRESCO', value: 90 },
+      { en: 'ACIDITY', es: 'ACIDEZ', value: 70 },
+      { en: 'FIZZ', es: 'BURBUJAS', value: 95 }
+    ]
   }
+];
 
-  function initParticles() {
-    particles = [];
-    const count = Math.floor((pc.width * pc.height) / 14000);
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x: Math.random() * pc.width,
-        y: Math.random() * pc.height,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.25,
-        size: Math.random() * 1.2 + 0.4,
-        alpha: Math.random() * 0.25 + 0.04,
-        pulse: Math.random() * Math.PI * 2
-      });
-    }
-  }
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+const params = new URLSearchParams(location.search);
+const forceView = params.get('view');
+const forceLang = params.get('lang');
+const isTouchSmall = ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth < 600;
+let currentLang = forceLang === 'es' ? 'es' : forceLang === 'en' ? 'en' : 'en';
+let langCycleTimer = null;
+let viewMode = 'v'; // 'v', 'h', 'mobile'
+let isHidden = false;
+let animFrameIds = [];
+let burnInTimer = null;
+let burnInOffset = false;
+let cursorTimer = null;
+let glitchTimer = null;
 
-  function drawParticles() {
-    pctx.clearRect(0, 0, pc.width, pc.height);
-    particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy; p.pulse += 0.02;
-      if (p.x < 0) p.x = pc.width;
-      if (p.x > pc.width) p.x = 0;
-      if (p.y < 0) p.y = pc.height;
-      if (p.y > pc.height) p.y = 0;
-      const alpha = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse));
-      pctx.beginPath();
-      pctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      pctx.fillStyle = `rgba(168, 85, 247, ${alpha})`;
-      pctx.fill();
-    });
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 80) {
-          pctx.beginPath();
-          pctx.moveTo(particles[i].x, particles[i].y);
-          pctx.lineTo(particles[j].x, particles[j].y);
-          pctx.strokeStyle = `rgba(168, 85, 247, ${0.03 * (1 - dist / 80)})`;
-          pctx.lineWidth = 0.5;
-          pctx.stroke();
-        }
-      }
-    }
-    requestAnimationFrame(drawParticles);
-  }
-
-  // ─── WAVEFORM ───
-  const wc = document.getElementById('waveCanvas');
-  const wctx = wc.getContext('2d');
-
-  function drawWave() {
-    wctx.clearRect(0, 0, wc.width, wc.height);
-    const time = Date.now() * 0.001;
-    const midY = wc.height * 0.88;
-    wctx.beginPath();
-    wctx.moveTo(0, midY);
-    for (let x = 0; x < wc.width; x += 2) {
-      const y = midY + Math.sin(x * 0.008 + time * 1.2) * 6 + Math.sin(x * 0.015 + time * 0.8) * 3 + Math.sin(x * 0.03 + time * 2.0) * 1.5;
-      wctx.lineTo(x, y);
-    }
-    wctx.strokeStyle = 'rgba(168, 85, 247, 0.10)';
-    wctx.lineWidth = 1;
-    wctx.stroke();
-    wctx.beginPath();
-    wctx.moveTo(0, midY);
-    for (let x = 0; x < wc.width; x += 2) {
-      const y = midY + Math.sin(x * 0.01 + time * 0.6 + 1) * 10 + Math.sin(x * 0.02 + time * 1.5) * 2;
-      wctx.lineTo(x, y);
-    }
-    wctx.strokeStyle = 'rgba(34, 79, 209, 0.06)';
-    wctx.lineWidth = 0.8;
-    wctx.stroke();
-    requestAnimationFrame(drawWave);
-  }
-
-  // ─── GLITCH FLASH ───
-  function triggerGlitch() {
-    gsap.to(glitchCanvas, { opacity: 1, duration: 0.05 });
-    const w = glitchCanvas.width, h = glitchCanvas.height;
-    const slices = 12 + Math.floor(Math.random() * 15);
-    let frame = 0;
-    const maxFrames = 6;
-
-    function drawGlitchFrame() {
-      glitchCtx.clearRect(0, 0, w, h);
-      for (let i = 0; i < slices; i++) {
-        const y = Math.random() * h;
-        const sliceH = Math.random() * 25 + 2;
-        const offsetX = (Math.random() - 0.5) * 30;
-        glitchCtx.fillStyle = `rgba(168, 85, 247, ${Math.random() * 0.05})`;
-        glitchCtx.fillRect(offsetX, y, w, sliceH);
-        if (Math.random() > 0.7) {
-          glitchCtx.fillStyle = `rgba(255, 75, 67, ${Math.random() * 0.03})`;
-          glitchCtx.fillRect(offsetX + 3, y, w, sliceH * 0.5);
-        }
-      }
-      frame++;
-      if (frame < maxFrames) {
-        setTimeout(drawGlitchFrame, 30 + Math.random() * 40);
-      } else {
-        gsap.to(glitchCanvas, { opacity: 0, duration: 0.1 });
-        glitchCtx.clearRect(0, 0, w, h);
-      }
-    }
-    drawGlitchFrame();
-  }
-
-  // ═══════════════════════════════════════
-  // ENTRANCE ANIMATION
-  // ═══════════════════════════════════════
-  function playEntrance() {
-    const tl = gsap.timeline();
-
-    const header = document.querySelector('.menu-header');
-    const sectionHeads = document.querySelectorAll('.section-head');
-    const items = document.querySelectorAll('.menu-item');
-    const chips = document.querySelectorAll('.note-chip');
-    const divider = document.querySelector('.menu-divider');
-
-    // Header fade in first
-    if (header) {
-      tl.fromTo(header, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0.1);
-    }
-
-    // V60 section head
-    tl.fromTo(sectionHeads[0], { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, 0.3);
-
-    // V60 items stagger
-    tl.fromTo([items[0], items[1]], { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: 'power3.out' }, 0.45);
-
-    // Tasting notes typing
-    if (chips.length) {
-      tl.fromTo(chips, { opacity: 0, y: 4 }, { opacity: 0.8, y: 0, duration: 0.25, stagger: 0.08, ease: 'power2.out' }, 0.85);
-    }
-
-    // Divider
-    if (divider) {
-      tl.fromTo(divider, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' }, 1.0);
-    }
-
-    // Cold brew section head
-    if (sectionHeads[1]) {
-      tl.fromTo(sectionHeads[1], { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, 1.05);
-    }
-
-    // Cold brew items stagger
-    tl.fromTo([items[2], items[3], items[4]], { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out' }, 1.15);
-
-    // Flavor bar fill animation — animate width from 0 to data value
-    const allFills = document.querySelectorAll('.bar-fill');
-    allFills.forEach(fill => {
-      const target = fill.style.width || '0%';
-      fill.style.width = '0%';
-      tl.to(fill, { width: target, duration: 0.8, ease: 'power2.out' }, 1.6);
-    });
-
-    return tl;
-  }
-
-  // ─── CARD BREATHING (ambient pulse) ───
-  function startCardBreathing() {
-    const items = document.querySelectorAll('.menu-item');
-    items.forEach((item, i) => {
-      gsap.to(item, {
-        borderColor: 'rgba(168,85,247,0.12)',
-        boxShadow: '0 0 12px rgba(168,85,247,0.03)',
-        duration: 2.5 + i * 0.4,
-        ease: 'sine.inOut',
-        yoyo: true,
-        repeat: -1,
-        delay: i * 0.6
-      });
-    });
-  }
-
-  // ─── MICRO-GLITCH LOOP ───
-  function startGlitchLoop() {
-    function doGlitch() {
-      const title = document.querySelector('.concept-name');
-      if (title) {
-        gsap.timeline()
-          .to(title, { x: (Math.random()-0.5)*5, textShadow: '-2px 0 #FF4B43, 2px 0 #224FD1', duration: 0.05, ease: 'steps(2)' })
-          .to(title, { x: (Math.random()-0.5)*3, textShadow: '2px 0 #FF4B43, -2px 0 #A855F7', duration: 0.05, ease: 'steps(2)' })
-          .to(title, { x: 0, textShadow: 'none', duration: 0.05, ease: 'steps(1)' });
-      }
-      if (Math.random() > 0.65) triggerGlitch();
-      gsap.delayedCall(4 + Math.random() * 6, doGlitch);
-    }
-    gsap.delayedCall(3, doGlitch);
-  }
-
-  // ─── AMBIENT LOOPS ───
-  gsap.to('.tagline-bar', {
-    opacity: 0.3,
-    duration: 2,
-    ease: 'power1.inOut',
-    yoyo: true,
-    repeat: -1
-  });
-
-  gsap.to('.live-dot', {
-    opacity: 0.3,
-    boxShadow: '0 0 4px rgba(168,85,247,0.2)',
-    duration: 0.75,
-    ease: 'power1.inOut',
-    yoyo: true,
-    repeat: -1
-  });
-
-  // ─── LANGUAGE ROTATION ───
-  const LANG_INTERVAL = 10000; // 10 seconds per language
-  let currentLang = 'es';
-  const langIndicator = document.getElementById('langIndicator');
-
-  function toggleLanguage() {
-    const menuView = document.querySelector('.menu-view');
-    const newLang = currentLang === 'es' ? 'en' : 'es';
-
-    // Crossfade: fade out content, swap, fade in
-    gsap.to(menuView, {
-      opacity: 0.4,
-      duration: 0.3,
-      ease: 'power2.in',
-      onComplete: () => {
-        if (newLang === 'en') {
-          document.body.classList.add('en');
-        } else {
-          document.body.classList.remove('en');
-        }
-        currentLang = newLang;
-        langIndicator.textContent = newLang.toUpperCase();
-
-        gsap.to(menuView, {
-          opacity: 1,
-          duration: 0.4,
-          ease: 'power2.out'
-        });
-      }
-    });
-  }
-
-  // Start language rotation after entrance
-  gsap.delayedCall(3, () => {
-    setInterval(toggleLanguage, LANG_INTERVAL);
-  });
-
-  // ─── SPLIT-FLAP DISPLAY ───
-  const FLAP_MESSAGES_ES = [
-    'CAFE CALIENTE _ POUR OVER V60',
-    'CAFE FRIO _ COLD BREW 24HR',
-    'CATURRA FLEUR _ DULCE Y LIMPIO',
-    'CATURRA PINEAPPLE _ TROPICAL',
-    'SIGNAL_ PURO _ SIN MEZCLA',
-    'ANALOG_ CON LECHE Y SYRUP',
-    'FREQUENCY_ CON AGUA TONICA',
-    'TOSTADO POR THOMAS GONZALEZ',
-    'RITVALES X SALENTINO',
-    'BREAKFAST LIVE _ MDE 2026',
-  ];
-  const FLAP_MESSAGES_EN = [
-    'HOT COFFEE _ POUR OVER V60',
-    'ICED COFFEE _ COLD BREW 24HR',
-    'CATURRA FLEUR _ SWEET N CLEAN',
-    'CATURRA PINEAPPLE _ TROPICAL',
-    'SIGNAL_ PURE _ STRAIGHT UP',
-    'ANALOG_ WITH MILK AND SYRUP',
-    'FREQUENCY_ WITH TONIC WATER',
-    'ROASTED BY THOMAS GONZALEZ',
-    'RITVALES X SALENTINO',
-    'BREAKFAST LIVE _ MDE 2026',
-  ];
-  const FLAP_MESSAGES = FLAP_MESSAGES_ES;
-  const FLAP_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.-·';
-  const FLAP_COLS = 28;
-  const FLAP_INTERVAL = 4500;
-  let flapIndex = 0;
-  const flapContainer = document.getElementById('splitFlap');
-
-  // Build cells
-  function buildFlapCells() {
-    flapContainer.innerHTML = '';
-    for (let i = 0; i < FLAP_COLS; i++) {
-      const cell = document.createElement('div');
-      cell.className = 'flap-cell';
-      cell.innerHTML = '<div class="flap-top"><span> </span></div><div class="flap-bottom"><span> </span></div>';
-      cell.dataset.char = ' ';
-      flapContainer.appendChild(cell);
-    }
-  }
-
-  function flapTo(message) {
-    const padded = message.padEnd(FLAP_COLS, ' ').substring(0, FLAP_COLS);
-    const cells = flapContainer.querySelectorAll('.flap-cell');
-
-    cells.forEach((cell, i) => {
-      const target = padded[i];
-      const current = cell.dataset.char || ' ';
-
-      if (target === current) return;
-
-      // Determine flip steps (random intermediate chars)
-      const isSpace = target === ' ';
-      const steps = isSpace ? 1 : 2 + Math.floor(Math.random() * 4);
-      const delay = i * 40 + Math.random() * 60;
-
-      let step = 0;
-      function flipNext() {
-        step++;
-        const isLast = step > steps;
-        const nextChar = isLast ? target : FLAP_CHARS[Math.floor(Math.random() * FLAP_CHARS.length)];
-
-        // Update space class
-        if (nextChar === ' ') {
-          cell.classList.add('space-cell');
-        } else {
-          cell.classList.remove('space-cell');
-        }
-
-        // Animate: top flap falls down revealing new char
-        const topHalf = cell.querySelector('.flap-top');
-        const bottomHalf = cell.querySelector('.flap-bottom');
-        const oldChar = cell.dataset.char;
-
-        // Create falling top flap (old char)
-        const flipTop = document.createElement('div');
-        flipTop.className = 'flap-flip flap-flip-top';
-        flipTop.innerHTML = '<span>' + oldChar + '</span>';
-        cell.appendChild(flipTop);
-
-        // Update bottom half immediately to new char (hidden behind falling flap)
-        bottomHalf.querySelector('span').textContent = nextChar;
-
-        // Animate top flap falling
-        gsap.fromTo(flipTop, {
-          rotationX: 0
-        }, {
-          rotationX: -90,
-          duration: 0.08,
-          ease: 'power1.in',
-          onComplete: () => {
-            flipTop.remove();
-
-            // Create rising bottom flap (new char)
-            const flipBottom = document.createElement('div');
-            flipBottom.className = 'flap-flip flap-flip-bottom';
-            flipBottom.innerHTML = '<span>' + nextChar + '</span>';
-            cell.appendChild(flipBottom);
-
-            gsap.fromTo(flipBottom, {
-              rotationX: 90
-            }, {
-              rotationX: 0,
-              duration: 0.06,
-              ease: 'power1.out',
-              onComplete: () => {
-                flipBottom.remove();
-                // Update static display
-                topHalf.querySelector('span').textContent = nextChar;
-                cell.dataset.char = nextChar;
-
-                if (!isLast) {
-                  setTimeout(flipNext, 50 + Math.random() * 30);
-                }
-              }
-            });
-          }
-        });
-      }
-
-      setTimeout(flipNext, delay);
-    });
-  }
-
-  buildFlapCells();
-
-  // Initial message after entrance
-  gsap.delayedCall(1.8, () => {
-    flapTo(FLAP_MESSAGES[0]);
-  });
-
-  // Cycle messages (language-aware)
-  setInterval(() => {
-    const msgs = currentLang === 'en' ? FLAP_MESSAGES_EN : FLAP_MESSAGES_ES;
-    flapIndex = (flapIndex + 1) % msgs.length;
-    flapTo(msgs[flapIndex]);
-  }, FLAP_INTERVAL);
-
-  // ─── INIT ───
-  window.addEventListener('resize', resizeCanvases);
-  resizeCanvases();
-  drawParticles();
-  drawWave();
-  startGlitchLoop();
-  playEntrance();
-  gsap.delayedCall(2.5, startCardBreathing);
-
-})();
-
-// ─── ORIENTATION TOGGLE ───
-function setOrientation(mode) {
-  const btns = document.querySelectorAll('.toggle-btn');
-  btns.forEach(b => b.classList.remove('active'));
-  document.querySelector(`.toggle-btn[data-mode="${mode}"]`).classList.add('active');
-  if (mode === 'horizontal') {
-    document.body.classList.add('horizontal');
-  } else {
-    document.body.classList.remove('horizontal');
-  }
-  window.dispatchEvent(new Event('resize'));
+// ══════════════════════════════════════════
+// DETECT VIEW
+// ══════════════════════════════════════════
+function detectView() {
+  if (isTouchSmall) return 'mobile';
+  if (forceView === 'v') return 'v';
+  if (forceView === 'h') return 'h';
+  return window.innerHeight >= window.innerWidth ? 'v' : 'h';
 }
-</script>
 
+// ══════════════════════════════════════════
+// SALENTINO LOGO SVG
+// ══════════════════════════════════════════
+const LOGO_SVG = '<svg viewBox="0 0 120 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:50px;display:block;margin:0 auto"><text x="60" y="32" text-anchor="middle" font-family="\'Space Grotesk\',sans-serif" font-weight="700" font-size="14" fill="#EFFFFE" letter-spacing="4">SALENTINO</text><text x="60" y="46" text-anchor="middle" font-family="\'Space Mono\',monospace" font-size="7" fill="#A7B3AE" letter-spacing="2">COFFEE LAB</text></svg>';
+
+// ══════════════════════════════════════════
+// CIRCUIT TRACE SVG
+// ══════════════════════════════════════════
+function circuitSVG(w) {
+  const id = 'cp' + Math.random().toString(36).slice(2, 8);
+  return '<div class="circuit-trace"><svg viewBox="0 0 ' + w + ' 20" xmlns="http://www.w3.org/2000/svg">'
+    + '<path id="' + id + '" d="M0,10 L' + (w * 0.25) + ',10 L' + (w * 0.3) + ',4 L' + (w * 0.7) + ',4 L' + (w * 0.75) + ',10 L' + w + ',10" fill="none" stroke="#82FD47" stroke-width="1.5"/>'
+    + '<rect x="' + (w * 0.25 - 4) + '" y="6" width="8" height="8" fill="#020102" stroke="#82FD47" stroke-width="1.5"/>'
+    + '<rect x="' + (w * 0.75 - 4) + '" y="6" width="8" height="8" fill="#020102" stroke="#82FD47" stroke-width="1.5"/>'
+    + '<circle cx="' + (w * 0.5) + '" cy="4" r="2.5" fill="#82FD47"/>'
+    + '<circle class="circuit-pulse" r="4" fill="#82FD47">'
+    + '<animateMotion dur="2.4s" begin="0s;cpAnim.end+4.6s" id="cpAnim" fill="freeze"><mpath href="#' + id + '"/></animateMotion>'
+    + '<animate attributeName="opacity" values="1;0" dur="0.3s" begin="cpAnim.end" fill="freeze"/>'
+    + '<animate attributeName="opacity" values="0;1" dur="0.01s" begin="cpAnim.end+4.6s" fill="freeze"/>'
+    + '</circle>'
+    + '</svg></div>';
+}
+
+// ══════════════════════════════════════════
+// BUILD CARD HTML
+// ══════════════════════════════════════════
+function cardHTML(drink, lang) {
+  const nameSpan = drink.name.replace(/_$/, '') + '<span class="uscore" style="animation-delay:' + (Math.random() * 1.1).toFixed(2) + 's">_</span>';
+  let h = '<div class="card" data-drink="' + drink.id + '" style="--card-color:' + drink.borderColor + '">';
+  h += '<div class="card-content">';
+  h += '<div class="card-name" data-text="' + drink.name + '_">' + nameSpan + '</div>';
+  if (drink.type) {
+    h += '<div class="card-type" data-i18n="type" data-drink-id="' + drink.id + '">' + drink.type[lang] + '</div>';
+  }
+  if (drink.origin) {
+    h += '<div class="card-origin">\u25E2 ' + drink.origin + '</div>';
+  }
+  h += '<div class="card-desc" data-i18n="desc" data-drink-id="' + drink.id + '">' + drink.desc[lang] + '</div>';
+  if (drink.badge) {
+    h += '<div class="card-badge" data-i18n="festivalBadge">' + I18N[lang].festivalBadge + '</div>';
+  }
+  h += '</div>';
+
+  // Profile
+  h += '<div class="profile">';
+  drink.profile.forEach(function(p, pi) {
+    const filled = Math.round(p.value / 10);
+    h += '<div class="prow"><div class="prow-label" data-i18n="profile" data-drink-id="' + drink.id + '" data-pi="' + pi + '">' + p[lang] + '</div>';
+    h += '<div class="prow-blocks">';
+    for (var b = 0; b < 10; b++) {
+      var cls = 'pblock';
+      if (b < filled) cls += ' on';
+      if (b === filled - 1) cls += ' last-on';
+      h += '<div class="' + cls + '" style="' + (b < filled ? 'background:' + drink.color : '') + '"></div>';
+    }
+    h += '</div></div>';
+  });
+  h += '</div></div>';
+  return h;
+}
+
+// ══════════════════════════════════════════
+// BUILD VERTICAL LAYOUT (540x960)
+// ══════════════════════════════════════════
+function buildVertical(lang) {
+  const hot = DRINKS.filter(function(d) { return d.section === 'hot'; });
+  const cold = DRINKS.filter(function(d) { return d.section === 'cold'; });
+
+  var h = '';
+  // Glows
+  h += '<div class="glow glow-purple" style="width:520px;height:520px;left:-200px;top:-200px;--gx:0px;--gy:0px;animation:glowBreathe 10s ease-in-out infinite"></div>';
+  h += '<div class="glow glow-green" style="width:460px;height:460px;left:300px;top:640px;--gx:0px;--gy:0px;animation:glowBreathe 10s ease-in-out infinite 5s"></div>';
+
+  // Content wrapper
+  h += '<div style="position:relative;z-index:2;display:flex;flex-direction:column;padding:20px 24px 16px;height:100%;gap:10px">';
+
+  // HUD
+  h += '<div class="hud">';
+  h += '<div class="hud-left">6.2442\u00B0 N \u00B7 75.5812\u00B0 W<br>MDE / COL<br><span class="hud-time" id="hudTime"></span></div>';
+  h += '<div class="hud-right"><span class="open-bar">OPEN BAR</span></div>';
+  h += '</div>';
+
+  // Brand
+  h += '<div class="brand" style="margin-top:8px">';
+  h += LOGO_SVG;
+  h += '<div style="margin-top:4px"><span class="brand-title">B2B<span class="uscore">_</span></span>';
+  h += '<span class="brand-descriptor" data-i18n="descriptor">' + I18N[lang].descriptor + '</span></div>';
+  h += '<div class="brand-slogan">LENTO DE ORIGEN - RAPIDO DE TOMAR</div>';
+  h += '</div>';
+
+  // Circuit
+  h += circuitSVG(492);
+
+  // Hot section
+  h += '<div>';
+  h += '<div class="sec-header"><span class="stab" data-i18n="hotSection">' + I18N[lang].hotSection + '</span><div class="sec-line"></div><span class="sec-method">POUR OVER \u00B7 V60</span></div>';
+  h += '<div class="hot-cards" style="display:flex;flex-direction:column;gap:7px;margin-top:7px">';
+  hot.forEach(function(d) { h += cardHTML(d, lang); });
+  h += '</div></div>';
+
+  // Cold section
+  h += '<div>';
+  h += '<div class="sec-header"><span class="stab" data-i18n="coldSection">' + I18N[lang].coldSection + '</span><div class="sec-line"></div><span class="sec-method">COLD BREW \u00B7 24H</span></div>';
+  h += '<div class="cold-cards" style="display:flex;flex-direction:column;gap:7px;margin-top:7px">';
+  cold.forEach(function(d) { h += cardHTML(d, lang); });
+  h += '</div></div>';
+
+  // Footer
+  h += '<div class="footer" style="margin-top:auto">';
+  h += '<div class="footer-left">_FUEL THE RITUAL</div>';
+  h += '<div class="footer-right">salentino.co \u00B7 @salentino.co</div>';
+  h += '</div>';
+
+  h += '</div>'; // content wrapper
+  return h;
+}
+
+// ══════════════════════════════════════════
+// BUILD HORIZONTAL LAYOUT (1280x720)
+// ══════════════════════════════════════════
+function buildHorizontal(lang) {
+  const hot = DRINKS.filter(function(d) { return d.section === 'hot'; });
+  const cold = DRINKS.filter(function(d) { return d.section === 'cold'; });
+
+  var h = '';
+  // Glows
+  h += '<div class="glow glow-purple" style="width:640px;height:640px;left:-220px;top:-300px;--gx:0px;--gy:0px;animation:glowBreathe 10s ease-in-out infinite"></div>';
+  h += '<div class="glow glow-green" style="width:560px;height:560px;left:920px;top:360px;--gx:0px;--gy:0px;animation:glowBreathe 10s ease-in-out infinite 5s"></div>';
+
+  h += '<div style="position:relative;z-index:2;display:flex;flex-direction:column;padding:22px 40px 16px;height:100%;gap:12px">';
+
+  // Header 3-col
+  h += '<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:20px">';
+  // Left: HUD
+  h += '<div class="hud-left" style="font-size:10px">6.2442\u00B0 N \u00B7 75.5812\u00B0 W<br>MDE / COL<br><span class="hud-time" id="hudTime"></span></div>';
+  // Center: Brand
+  h += '<div style="text-align:center">';
+  h += LOGO_SVG;
+  h += '<div style="margin-top:4px;white-space:nowrap"><span class="brand-title" style="font-size:24px">B2B<span class="uscore">_</span></span>';
+  h += '<span class="brand-descriptor" style="font-size:11px" data-i18n="descriptor">' + I18N[lang].descriptor + '</span>';
+  h += '<span style="color:#2E3D27;margin:0 8px">|</span>';
+  h += '<span class="brand-slogan" style="display:inline;font-size:11px;margin:0">LENTO DE ORIGEN - RAPIDO DE TOMAR</span>';
+  h += '</div></div>';
+  // Right: OPEN BAR
+  h += '<div style="text-align:right"><span class="open-bar">OPEN BAR</span></div>';
+  h += '</div>';
+
+  // Circuit
+  h += circuitSVG(1200);
+
+  // Two columns
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;flex:1;min-height:0">';
+
+  // Hot column
+  h += '<div>';
+  h += '<div class="sec-header"><span class="stab" data-i18n="hotSection">' + I18N[lang].hotSection + '</span><div class="sec-line"></div><span class="sec-method">POUR OVER \u00B7 V60</span></div>';
+  h += '<div class="hot-cards" style="display:flex;flex-direction:column;gap:8px;margin-top:8px">';
+  hot.forEach(function(d) { h += cardHTML(d, lang); });
+  h += '</div></div>';
+
+  // Cold column
+  h += '<div>';
+  h += '<div class="sec-header"><span class="stab" data-i18n="coldSection">' + I18N[lang].coldSection + '</span><div class="sec-line"></div><span class="sec-method">COLD BREW \u00B7 24H</span></div>';
+  h += '<div class="cold-cards" style="display:flex;flex-direction:column;gap:7px;margin-top:7px">';
+  cold.forEach(function(d) { h += cardHTML(d, lang); });
+  h += '</div></div>';
+
+  h += '</div>';
+
+  // Footer
+  h += '<div class="footer">';
+  h += '<div class="footer-left">_FUEL THE RITUAL</div>';
+  h += '<div class="footer-right">salentino.co \u00B7 @salentino.co</div>';
+  h += '</div>';
+
+  h += '</div>';
+  return h;
+}
+
+// ══════════════════════════════════════════
+// BUILD MOBILE LAYOUT
+// ══════════════════════════════════════════
+function buildMobile(lang) {
+  const hot = DRINKS.filter(function(d) { return d.section === 'hot'; });
+  const cold = DRINKS.filter(function(d) { return d.section === 'cold'; });
+
+  var h = '<div class="mobile-stage">';
+
+  // HUD with lang toggle
+  h += '<div class="hud" style="margin-bottom:12px">';
+  h += '<div class="hud-left">6.2442\u00B0 N \u00B7 75.5812\u00B0 W<br>MDE / COL</div>';
+  h += '<div style="display:flex;align-items:flex-start;gap:8px">';
+  h += '<div class="lang-toggle"><button class="lang-btn' + (lang === 'en' ? ' active' : '') + '" data-lang="en">EN</button><button class="lang-btn' + (lang === 'es' ? ' active' : '') + '" data-lang="es">ES</button></div>';
+  h += '<span class="open-bar">OPEN BAR</span>';
+  h += '</div></div>';
+
+  // Brand
+  h += '<div class="brand" style="margin-bottom:12px">';
+  h += LOGO_SVG;
+  h += '<div style="margin-top:4px"><span class="brand-title">B2B<span class="uscore">_</span></span>';
+  h += '<span class="brand-descriptor" data-i18n="descriptor">' + I18N[lang].descriptor + '</span></div>';
+  h += '<div class="brand-slogan">LENTO DE ORIGEN - RAPIDO DE TOMAR</div>';
+  h += '</div>';
+
+  // Circuit
+  h += circuitSVG(448);
+
+  // Hot section
+  h += '<div style="margin-top:12px">';
+  h += '<div class="sec-header"><span class="stab" data-i18n="hotSection">' + I18N[lang].hotSection + '</span><div class="sec-line"></div><span class="sec-method">POUR OVER \u00B7 V60</span></div>';
+  h += '<div class="hot-cards" style="display:flex;flex-direction:column;gap:10px;margin-top:8px">';
+  hot.forEach(function(d) { h += cardHTML(d, lang); });
+  h += '</div></div>';
+
+  // Cold section
+  h += '<div style="margin-top:16px">';
+  h += '<div class="sec-header"><span class="stab" data-i18n="coldSection">' + I18N[lang].coldSection + '</span><div class="sec-line"></div><span class="sec-method">COLD BREW \u00B7 24H</span></div>';
+  h += '<div class="cold-cards" style="display:flex;flex-direction:column;gap:10px;margin-top:8px">';
+  cold.forEach(function(d) { h += cardHTML(d, lang); });
+  h += '</div></div>';
+
+  // Footer
+  h += '<div class="footer" style="margin-top:20px;padding-top:12px;border-top:1px solid #2E3D27">';
+  h += '<div class="footer-left">_FUEL THE RITUAL</div>';
+  h += '<div class="footer-right">salentino.co \u00B7 @salentino.co</div>';
+  h += '</div>';
+
+  h += '</div>';
+  return h;
+}
+
+// ══════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════
+function render() {
+  viewMode = detectView();
+  var wrapper = document.getElementById('stageWrapper');
+
+  if (viewMode === 'mobile') {
+    wrapper.style.overflow = 'auto';
+    wrapper.style.display = 'block';
+    wrapper.innerHTML = buildMobile(currentLang);
+    // Bind lang toggle
+    wrapper.querySelectorAll('.lang-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        setLang(btn.dataset.lang);
+      });
+    });
+  } else {
+    wrapper.style.overflow = 'hidden';
+    wrapper.style.display = 'flex';
+    var stageClass = viewMode === 'h' ? 'stage stage-h' : 'stage stage-v';
+    var content = viewMode === 'h' ? buildHorizontal(currentLang) : buildVertical(currentLang);
+    wrapper.innerHTML = '<div class="' + stageClass + '" id="stage">' + content + '</div>';
+    scaleStage();
+  }
+
+  updateClock();
+  animateVUEntry();
+}
+
+// ══════════════════════════════════════════
+// SCALE STAGE
+// ══════════════════════════════════════════
+function scaleStage() {
+  var stage = document.getElementById('stage');
+  if (!stage) return;
+  var sw = viewMode === 'h' ? 1280 : 540;
+  var sh = viewMode === 'h' ? 720 : 960;
+  var ww = window.innerWidth;
+  var wh = window.innerHeight;
+  var scale = Math.min(ww / sw, wh / sh);
+  stage.style.transform = 'scale(' + scale + ')';
+}
+
+// ══════════════════════════════════════════
+// CLOCK
+// ══════════════════════════════════════════
+function updateClock() {
+  var el = document.getElementById('hudTime');
+  if (!el) return;
+  var now = new Date();
+  var hh = String(now.getHours()).padStart(2, '0');
+  var mm = String(now.getMinutes()).padStart(2, '0');
+  el.innerHTML = hh + '<span class="blink-colon">:</span>' + mm;
+}
+setInterval(updateClock, 1000);
+
+// ══════════════════════════════════════════
+// VU METER ENTRY ANIMATION
+// ══════════════════════════════════════════
+function animateVUEntry() {
+  document.querySelectorAll('.prow-blocks').forEach(function(row) {
+    var blocks = row.querySelectorAll('.pblock.on');
+    blocks.forEach(function(b, i) {
+      b.style.opacity = '0';
+      setTimeout(function() { b.style.opacity = '1'; }, i * 30);
+    });
+  });
+}
+
+// ══════════════════════════════════════════
+// LANGUAGE SYSTEM
+// ══════════════════════════════════════════
+function setLang(lang) {
+  if (lang === currentLang) return;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (reducedMotion || viewMode === 'mobile') {
+    // Simple fade
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    updateTexts(lang);
+    updateMobileLangBtns(lang);
+    return;
+  }
+
+  // Decode transition
+  decodeTransition(lang);
+}
+
+function updateTexts(lang) {
+  // I18N keys
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.dataset.i18n;
+    if (key === 'descriptor' || key === 'hotSection' || key === 'coldSection' || key === 'festivalBadge') {
+      el.textContent = I18N[lang][key];
+    }
+    if (key === 'type') {
+      var drink = DRINKS.find(function(d) { return d.id === el.dataset.drinkId; });
+      if (drink && drink.type) el.textContent = drink.type[lang];
+    }
+    if (key === 'desc') {
+      var drink = DRINKS.find(function(d) { return d.id === el.dataset.drinkId; });
+      if (drink) el.textContent = drink.desc[lang];
+    }
+    if (key === 'profile') {
+      var drink = DRINKS.find(function(d) { return d.id === el.dataset.drinkId; });
+      if (drink) el.textContent = drink.profile[parseInt(el.dataset.pi)][lang];
+    }
+  });
+}
+
+function updateMobileLangBtns(lang) {
+  document.querySelectorAll('.lang-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+}
+
+// ══════════════════════════════════════════
+// DECODE TRANSITION
+// ══════════════════════════════════════════
+var SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_/#%';
+function decodeTransition(newLang) {
+  var els = document.querySelectorAll('[data-i18n]');
+  var sortedEls = Array.from(els);
+
+  // Fix widths to prevent layout jump
+  sortedEls.forEach(function(el) {
+    el.style.width = el.offsetWidth + 'px';
+    el.style.display = 'inline-block';
+  });
+
+  currentLang = newLang;
+  document.documentElement.lang = newLang;
+
+  sortedEls.forEach(function(el, idx) {
+    var key = el.dataset.i18n;
+    var target = '';
+    if (key === 'descriptor' || key === 'hotSection' || key === 'coldSection' || key === 'festivalBadge') {
+      target = I18N[newLang][key];
+    } else if (key === 'type') {
+      var drink = DRINKS.find(function(d) { return d.id === el.dataset.drinkId; });
+      target = drink && drink.type ? drink.type[newLang] : el.textContent;
+    } else if (key === 'desc') {
+      var drink = DRINKS.find(function(d) { return d.id === el.dataset.drinkId; });
+      target = drink ? drink.desc[newLang] : el.textContent;
+    } else if (key === 'profile') {
+      var drink = DRINKS.find(function(d) { return d.id === el.dataset.drinkId; });
+      target = drink ? drink.profile[parseInt(el.dataset.pi)][newLang] : el.textContent;
+    }
+
+    var delay = idx * 15;
+    setTimeout(function() { scrambleText(el, target); }, delay);
+  });
+
+  // Re-animate VU meters
+  setTimeout(animateVUEntry, 200);
+
+  // Release fixed widths after transition
+  setTimeout(function() {
+    sortedEls.forEach(function(el) {
+      el.style.width = '';
+      el.style.display = '';
+    });
+  }, 800);
+}
+
+function scrambleText(el, target) {
+  var len = Math.max(el.textContent.length, target.length);
+  var duration = 500;
+  var start = performance.now();
+
+  function step(now) {
+    var progress = Math.min((now - start) / duration, 1);
+    var revealed = Math.floor(progress * len);
+    var result = '';
+    for (var i = 0; i < len; i++) {
+      if (i < revealed) {
+        result += target[i] || '';
+      } else if (i < target.length) {
+        result += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+      }
+    }
+    el.textContent = result;
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(step);
+}
+
+// ══════════════════════════════════════════
+// LANGUAGE CYCLE (screens only)
+// ══════════════════════════════════════════
+function startLangCycle() {
+  if (forceLang || viewMode === 'mobile') return;
+  // Start in EN, after 20s switch to ES for 10s, repeat
+  var phase = 'en'; // current display
+  currentLang = 'en';
+  document.documentElement.lang = 'en';
+
+  function cycle() {
+    if (isHidden) return;
+    if (phase === 'en') {
+      // After 20s of EN, switch to ES
+      langCycleTimer = setTimeout(function() {
+        setLang('es');
+        phase = 'es';
+        cycle();
+      }, 20000);
+    } else {
+      // After 10s of ES, switch to EN
+      langCycleTimer = setTimeout(function() {
+        setLang('en');
+        phase = 'en';
+        cycle();
+      }, 10000);
+    }
+  }
+  cycle();
+}
+
+// ══════════════════════════════════════════
+// GLITCH EFFECT
+// ══════════════════════════════════════════
+function scheduleGlitch() {
+  var delay = (45 + Math.random() * 30) * 1000;
+  glitchTimer = setTimeout(function() {
+    if (isHidden) { scheduleGlitch(); return; }
+    doGlitch();
+    scheduleGlitch();
+  }, delay);
+}
+
+function doGlitch() {
+  var names = document.querySelectorAll('.card-name');
+  if (!names.length) return;
+  var target = names[Math.floor(Math.random() * names.length)];
+  var text = target.dataset.text || target.textContent;
+  target.classList.add('glitch-active');
+  target.setAttribute('data-text', text);
+
+  // Add slice
+  var slice = document.createElement('div');
+  slice.className = 'glitch-slice';
+  slice.style.top = Math.floor(Math.random() * 80) + '%';
+  target.appendChild(slice);
+
+  setTimeout(function() {
+    target.classList.remove('glitch-active');
+    if (slice.parentNode) slice.parentNode.removeChild(slice);
+  }, 250);
+}
+
+// ══════════════════════════════════════════
+// BURN-IN PROTECTION
+// ══════════════════════════════════════════
+function startBurnInProtection() {
+  setInterval(function() {
+    var stage = document.getElementById('stage');
+    if (!stage || isHidden) return;
+    if (burnInOffset) {
+      scaleStage(); // resets to center
+      burnInOffset = false;
+    } else {
+      var dx = Math.round((Math.random() - 0.5) * 4); // -2 to 2
+      var dy = Math.round((Math.random() - 0.5) * 4);
+      var sw = viewMode === 'h' ? 1280 : 540;
+      var sh = viewMode === 'h' ? 720 : 960;
+      var scale = Math.min(window.innerWidth / sw, window.innerHeight / sh);
+      stage.style.transform = 'scale(' + scale + ') translate(' + dx + 'px,' + dy + 'px)';
+      burnInOffset = true;
+    }
+  }, 300000); // 5 min
+}
+
+// ══════════════════════════════════════════
+// CURSOR HIDE
+// ══════════════════════════════════════════
+function setupCursorHide() {
+  function hide() { document.body.classList.add('cursor-hidden'); }
+  function show() {
+    document.body.classList.remove('cursor-hidden');
+    clearTimeout(cursorTimer);
+    cursorTimer = setTimeout(hide, 3000);
+  }
+  document.addEventListener('mousemove', show);
+  cursorTimer = setTimeout(hide, 3000);
+}
+
+// ══════════════════════════════════════════
+// VISIBILITY
+// ══════════════════════════════════════════
+document.addEventListener('visibilitychange', function() {
+  isHidden = document.hidden;
+  if (!isHidden) {
+    updateClock();
+    if (!forceLang && viewMode !== 'mobile' && !langCycleTimer) {
+      startLangCycle();
+    }
+  } else {
+    clearTimeout(langCycleTimer);
+    langCycleTimer = null;
+  }
+});
+
+// ══════════════════════════════════════════
+// WAKE LOCK
+// ══════════════════════════════════════════
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      var lock = await navigator.wakeLock.request('screen');
+      document.addEventListener('visibilitychange', async function() {
+        if (!document.hidden && 'wakeLock' in navigator) {
+          lock = await navigator.wakeLock.request('screen');
+        }
+      });
+    }
+  } catch(e) { /* Wake Lock not supported or denied */ }
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+function init() {
+  // Mobile: detect initial lang from navigator
+  if (isTouchSmall && !forceLang) {
+    currentLang = (navigator.language || '').startsWith('es') ? 'es' : 'en';
+  }
+
+  document.documentElement.lang = currentLang;
+  render();
+
+  window.addEventListener('resize', function() {
+    var newView = detectView();
+    if (newView !== viewMode) {
+      viewMode = newView;
+      render();
+    } else if (viewMode !== 'mobile') {
+      scaleStage();
+    }
+  });
+
+  startLangCycle();
+  scheduleGlitch();
+  startBurnInProtection();
+  setupCursorHide();
+  requestWakeLock();
+
+  // Reveal
+  document.body.classList.remove('loading');
+  document.getElementById('stageWrapper').style.opacity = '0';
+  requestAnimationFrame(function() {
+    document.getElementById('stageWrapper').style.transition = 'opacity 0.4s ease';
+    document.getElementById('stageWrapper').style.opacity = '1';
+  });
+}
+
+// Wait for fonts
+document.fonts.ready.then(init);
+</script>
 </body>
 </html>

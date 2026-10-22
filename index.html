@@ -814,30 +814,20 @@ function scrambleText(el, target) {
 // ══════════════════════════════════════════
 // LANGUAGE CYCLE (screens only)
 // ══════════════════════════════════════════
+var langPhase = 'en';
 function startLangCycle() {
   if (forceLang || viewMode === 'mobile') return;
-  // Start in EN, after 20s switch to ES for 10s, repeat
-  var phase = 'en'; // current display
-  currentLang = 'en';
-  document.documentElement.lang = 'en';
+  clearTimeout(langCycleTimer);
 
   function cycle() {
-    if (isHidden) return;
-    if (phase === 'en') {
-      // After 20s of EN, switch to ES
-      langCycleTimer = setTimeout(function() {
-        setLang('es');
-        phase = 'es';
-        cycle();
-      }, 20000);
-    } else {
-      // After 10s of ES, switch to EN
-      langCycleTimer = setTimeout(function() {
-        setLang('en');
-        phase = 'en';
-        cycle();
-      }, 10000);
-    }
+    var delay = langPhase === 'en' ? 20000 : 10000;
+    langCycleTimer = setTimeout(function() {
+      if (isHidden) return; // will be restarted by visibilitychange
+      var next = langPhase === 'en' ? 'es' : 'en';
+      setLang(next);
+      langPhase = next;
+      cycle();
+    }, delay);
   }
   cycle();
 }
@@ -917,7 +907,7 @@ document.addEventListener('visibilitychange', function() {
   isHidden = document.hidden;
   if (!isHidden) {
     updateClock();
-    if (!forceLang && viewMode !== 'mobile' && !langCycleTimer) {
+    if (!forceLang && viewMode !== 'mobile') {
       startLangCycle();
     }
   } else {

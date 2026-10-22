@@ -87,8 +87,8 @@ body.loading { background: var(--black); }
 .stab {
   display: inline-block;
   border: 1px solid var(--green);
-  padding: 3px 9px;
-  font-family: var(--mono); font-weight: 700; font-size: 12px;
+  padding: 4px 12px;
+  font-family: var(--mono); font-weight: 700; font-size: 14px;
   color: var(--green);
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -101,8 +101,8 @@ body.loading { background: var(--black); }
 
 /* ── HUD ── */
 .hud { display: flex; justify-content: space-between; align-items: flex-start; }
-.hud-left, .hud-right { font-family: var(--mono); font-size: 9px; color: var(--secondary); line-height: 1.4; }
-.hud-time { color: var(--green); font-family: var(--mono); font-size: 9px; font-weight: 400; }
+.hud-left, .hud-right { font-family: var(--mono); font-size: 11px; color: var(--secondary); line-height: 1.4; }
+.hud-time { color: var(--green); font-family: var(--mono); font-size: 11px; font-weight: 400; }
 .hud-time .blink-colon { animation: blinkColon 1s steps(1) infinite; }
 @keyframes blinkColon {
   0%, 49% { opacity: 1; }
@@ -112,7 +112,7 @@ body.loading { background: var(--black); }
   display: inline-block;
   border: 1px solid var(--green);
   padding: 3px 9px;
-  font-family: var(--mono); font-weight: 700; font-size: 9px;
+  font-family: var(--mono); font-weight: 700; font-size: 11px;
   color: var(--green); letter-spacing: 2px;
   position: relative;
 }
@@ -124,32 +124,32 @@ body.loading { background: var(--black); }
 /* ── BRAND ── */
 .brand { text-align: center; }
 .brand-logo { height: 50px; display: block; margin: 0 auto; }
-.brand-title { font-family: var(--grotesk); font-size: 30px; font-weight: 700; color: var(--white); display: inline; }
+.brand-title { font-family: var(--grotesk); font-size: 36px; font-weight: 700; color: var(--white); display: inline; }
 .brand-title .uscore { color: var(--green); }
-.brand-descriptor { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--secondary); margin-left: 6px; }
-.brand-slogan { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; color: var(--secondary); margin-top: 2px; }
+.brand-descriptor { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--secondary); margin-left: 6px; }
+.brand-slogan { font-family: var(--mono); font-size: 11px; letter-spacing: 2px; color: var(--secondary); margin-top: 2px; }
 
 /* ── SECTION HEADER ── */
 .sec-header { display: flex; align-items: center; gap: 8px; }
 .sec-line { flex: 1; height: 1px; background: var(--line); }
-.sec-method { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--white); white-space: nowrap; }
+.sec-method { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--white); white-space: nowrap; }
 
 /* ── DRINK CARD ── */
 .card {
   position: relative;
   border: 1px solid var(--card-color, var(--green));
   background: var(--black);
-  display: flex; gap: 12px;
-  padding: 10px;
+  display: flex; gap: 14px;
+  padding: 14px;
 }
 .card::after {
   content: ''; position: absolute; top: -4px; right: -4px;
   width: 7px; height: 7px;
   background: var(--card-color, var(--green));
 }
-.card-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.card-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
 .card-name {
-  font-family: var(--grotesk); font-size: 22px; font-weight: 700;
+  font-family: var(--grotesk); font-size: 28px; font-weight: 700;
   letter-spacing: -0.5px; color: var(--card-color, var(--green));
   line-height: 1.1;
 }
@@ -157,14 +157,14 @@ body.loading { background: var(--black); }
   display: inline-block;
   animation: cursorBlink 1.1s steps(1) infinite;
 }
-.card-type { font-family: var(--mono); font-size: 9px; font-weight: 700; color: var(--white); line-height: 1.3; }
-.card-origin { font-family: var(--mono); font-size: 9px; color: var(--secondary); line-height: 1.3; }
-.card-desc { font-family: var(--grotesk); font-size: 11px; font-weight: 500; line-height: 1.35; color: var(--desc); }
+.card-type { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--white); line-height: 1.3; }
+.card-origin { font-family: var(--mono); font-size: 11px; color: var(--secondary); line-height: 1.3; }
+.card-desc { font-family: var(--grotesk); font-size: 15px; font-weight: 500; line-height: 1.4; color: var(--desc); }
 .card-badge {
   display: inline-block;
   background: var(--red); color: var(--black);
-  font-family: var(--mono); font-size: 9px; font-weight: 700;
-  padding: 2px 7px; margin-top: 2px;
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  padding: 3px 9px; margin-top: 3px;
   width: fit-content;
 }
 
@@ -176,9 +176,9 @@ body.loading { background: var(--black); }
   display: flex; flex-direction: column; justify-content: center; gap: 8px;
 }
 .prow { display: flex; flex-direction: column; gap: 3px; }
-.prow-label { font-family: var(--mono); font-size: 8px; font-weight: 700; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; }
+.prow-label { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; }
 .prow-blocks { display: flex; gap: 2px; }
-.pblock { width: 100%; height: 7px; background: var(--dim); flex: 1; }
+.pblock { width: 100%; height: 9px; background: var(--dim); flex: 1; }
 .pblock.on { background: var(--card-color, var(--green)); }
 .pblock.last-on { animation: vuTick 1.6s ease-in-out infinite; }
 @keyframes vuTick {
@@ -194,8 +194,8 @@ body.loading { background: var(--black); }
 
 /* ── FOOTER ── */
 .footer { display: flex; justify-content: space-between; align-items: center; }
-.footer-left { font-family: var(--mono); font-size: 9px; font-weight: 700; color: var(--green); }
-.footer-right { font-family: var(--mono); font-size: 9px; color: var(--secondary); }
+.footer-left { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--green); }
+.footer-right { font-family: var(--mono); font-size: 11px; color: var(--secondary); }
 
 /* ── GLITCH ── */
 .glitch-active { position: relative; }
@@ -255,28 +255,29 @@ body.cursor-hidden, body.cursor-hidden * { cursor: none !important; }
 }
 
 /* ── HORIZONTAL OVERRIDES (applied via JS class) ── */
-.stage-h .brand-title { font-size: 24px; }
-.stage-h .brand-descriptor { font-size: 11px; }
-.stage-h .brand-slogan { font-size: 11px; }
-.stage-h .hud-left, .stage-h .hud-right { font-size: 10px; }
-.stage-h .hud-time { font-size: 10px; }
+.stage-h .brand-title { font-size: 30px; }
+.stage-h .brand-descriptor { font-size: 13px; }
+.stage-h .brand-slogan { font-size: 12px; }
+.stage-h .hud-left, .stage-h .hud-right { font-size: 12px; }
+.stage-h .hud-time { font-size: 12px; }
 
 /* hot cards in horizontal */
-.stage-h .hot-cards .card { padding: 14px; }
-.stage-h .hot-cards .card-name { font-size: 24px; }
-.stage-h .hot-cards .card-origin { font-size: 10px; }
-.stage-h .hot-cards .card-desc { font-size: 13px; }
-.stage-h .hot-cards .profile { width: 150px; min-width: 150px; }
-.stage-h .hot-cards .pblock { height: 9px; }
-.stage-h .hot-cards .prow-label { font-size: 9px; }
+.stage-h .hot-cards .card { padding: 16px; }
+.stage-h .hot-cards .card-name { font-size: 30px; }
+.stage-h .hot-cards .card-origin { font-size: 12px; }
+.stage-h .hot-cards .card-desc { font-size: 16px; }
+.stage-h .hot-cards .profile { width: 160px; min-width: 160px; }
+.stage-h .hot-cards .pblock { height: 10px; }
+.stage-h .hot-cards .prow-label { font-size: 11px; }
 
 /* cold cards in horizontal */
-.stage-h .cold-cards .card { padding: 11px; }
-.stage-h .cold-cards .card-name { font-size: 22px; }
-.stage-h .cold-cards .card-desc { font-size: 12px; }
-.stage-h .cold-cards .pblock { height: 8px; }
+.stage-h .cold-cards .card { padding: 14px; }
+.stage-h .cold-cards .card-name { font-size: 26px; }
+.stage-h .cold-cards .card-desc { font-size: 14px; }
+.stage-h .cold-cards .pblock { height: 9px; }
+.stage-h .cold-cards .prow-label { font-size: 10px; }
 
-.stage-h .footer-left, .stage-h .footer-right { font-size: 11px; }
+.stage-h .footer-left, .stage-h .footer-right { font-size: 12px; }
 </style>
 </head>
 <body class="loading">

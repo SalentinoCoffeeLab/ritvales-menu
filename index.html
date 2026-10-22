@@ -370,7 +370,7 @@ const params = new URLSearchParams(location.search);
 const forceView = params.get('view');
 const forceLang = params.get('lang');
 const isTouchSmall = ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth < 600;
-let currentLang = forceLang === 'es' ? 'es' : forceLang === 'en' ? 'en' : 'en';
+let currentLang = forceLang === 'es' ? 'es' : forceLang === 'en' ? 'en' : 'es';
 let langCycleTimer = null;
 let viewMode = 'v'; // 'v', 'h', 'mobile'
 let isHidden = false;
@@ -695,6 +695,7 @@ function animateVUEntry() {
 // LANGUAGE SYSTEM
 // ══════════════════════════════════════════
 function setLang(lang) {
+  console.log('[LANG] setLang called:', lang, 'current:', currentLang, 'view:', viewMode);
   if (lang === currentLang) return;
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -814,7 +815,7 @@ function scrambleText(el, target) {
 // ══════════════════════════════════════════
 // LANGUAGE CYCLE (screens only)
 // ══════════════════════════════════════════
-var langPhase = 'en';
+var langPhase = 'es';
 function startLangCycle() {
   if (forceLang || viewMode === 'mobile') return;
   clearTimeout(langCycleTimer);
